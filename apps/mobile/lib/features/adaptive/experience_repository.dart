@@ -15,6 +15,8 @@ import '../care/care_repository.dart';
 import '../home/home_shell.dart';
 import '../keepsakes/keepsake_access.dart';
 import '../premium/premium_repository.dart' show selectedCapabilitiesProvider;
+import '../rhythm/rhythm_models.dart' show Interest, UserPreferences;
+import '../rhythm/rhythm_repository.dart' show userPreferencesProvider;
 import '../solids/solids_today.dart' show sdOnTodayProvider;
 import '../spending/spending_models.dart' show SpendingAccess;
 import '../today/today_layout.dart' show allowedActions;
@@ -283,3 +285,44 @@ final adaptiveTodayProvider = Provider.family<List<RankedWidget>, String>(
     ref.watch(rankSignalsProvider(babyId)),
   ),
 );
+
+/// D-143 (4): the goals replace EN01's interests, so a child's content topics come from that
+/// child's goals. Mirrors `interestsForGoals` in `packages/contracts/src/adaptive.ts`; spending,
+/// family and reminders have no content topic.
+List<Interest> interestsForGoals(Iterable<Goal> goals) {
+  final picked = {
+    for (final g in goals)
+      ...switch (g) {
+        Goal.trackCare => const [
+          Interest.sleep,
+          Interest.feeding,
+          Interest.nutrition,
+        ],
+        Goal.memories => const [Interest.moments],
+        Goal.growthVaccines => const [Interest.milestones, Interest.vaccines],
+        Goal.family || Goal.spending || Goal.reminders => const <Interest>[],
+      },
+  };
+  return [
+    for (final i in Interest.values)
+      if (picked.contains(i)) i,
+  ];
+}
+
+/// The person's preferences as [babyId]'s content uses them: with Adaptive Experience the
+/// topics are this child's goals (D-143), otherwise the person's EN01 interests. Digest time,
+/// quiet hours and "Ít gợi ý kiểu này hơn" stay the person's.
+final contentPreferencesProvider =
+    Provider.family<UserPreferences, ({String uid, String babyId})>((ref, q) {
+      final prefs =
+          ref.watch(userPreferencesProvider(q.uid)).value ??
+          UserPreferences.defaults;
+      if (!ref.watch(adaptiveOnProvider)) return prefs;
+      final me = ref.watch(selectedMembershipProvider);
+      if (me == null || me.uid != q.uid || me.babyId != q.babyId) return prefs;
+      return prefs.copyWith(
+        interests: interestsForGoals(
+          ref.watch(experienceProvider(q.babyId)).goals,
+        ),
+      );
+    });

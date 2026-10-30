@@ -308,10 +308,10 @@ abstract class AppLocalizations {
   /// **'Cùng con lớn lên,\nđồng hành từng bước.'**
   String get welcomeTitle;
 
-  /// Welcome primary: feature tour.
+  /// Welcome primary: feature tour. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Bắt đầu chặng đầu cùng con'**
+  /// **'Bắt đầu cùng con'**
   String get welcomeExplore;
 
   /// Welcome: go to sign-in.
@@ -476,10 +476,10 @@ abstract class AppLocalizations {
   /// **'M|B|Bà|L'**
   String get tourPrivateInitials;
 
-  /// Tour 4/4 primary.
+  /// Tour 4/4 primary. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Tạo hồ sơ bé'**
+  /// **'Tạo hồ sơ'**
   String get tourCreateProfile;
 
   /// Sign-in sheet title (27:488).
@@ -752,7 +752,7 @@ abstract class AppLocalizations {
   /// **'Đã liên kết email với tài khoản của bạn.'**
   String get existsLinked;
 
-  /// Screen 10a title (115:11756).
+  /// Screen 10a title (115:11756). D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
   /// **'Bạn là ai với bé?'**
@@ -842,10 +842,10 @@ abstract class AppLocalizations {
   /// **'Tên thân mật'**
   String get babyNicknameLabel;
 
-  /// Shown while the nickname is empty.
+  /// Shown while the nickname is empty. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Tên bé'**
+  /// **'Tên thân mật'**
   String get babyNicknamePlaceholder;
 
   /// Detail row / sheet title.
@@ -920,10 +920,10 @@ abstract class AppLocalizations {
   /// **'Đổi ảnh đại diện'**
   String get a11yChangeBabyPhoto;
 
-  /// Validation when Tiếp is tapped without a nickname.
+  /// Validation when Tiếp is tapped without a nickname. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Đặt tên thân mật cho bé nhé.'**
+  /// **'Nhập tên thân mật nhé.'**
   String get babyNicknameRequired;
 
   /// Live age under the date wheel (38:1498).
@@ -1124,16 +1124,16 @@ abstract class AppLocalizations {
   /// **'Chọn ít nhất một mục'**
   String get trackersPickOne;
 
-  /// R-043.
+  /// R-043. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Mỗi tài khoản tạo được tối đa 3 hồ sơ bé.'**
+  /// **'Mỗi tài khoản tạo được tối đa 3 hồ sơ.'**
   String get createBabyLimit;
 
-  /// createBaby failed.
+  /// createBaby failed. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Chưa tạo được hồ sơ bé. Kiểm tra mạng rồi thử lại nhé.'**
+  /// **'Chưa tạo được hồ sơ. Kiểm tra mạng rồi thử lại nhé.'**
   String get createBabyFailed;
 
   /// Server rejected DOB.
@@ -1364,10 +1364,10 @@ abstract class AppLocalizations {
   /// **'{relation} · {role}'**
   String memberDetail(String relation, String role);
 
-  /// Baby switcher sheet title (125:13223).
+  /// Baby switcher sheet title (125:13223). D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Chọn bé'**
+  /// **'Chọn hồ sơ'**
   String get babyPickerTitle;
 
   /// Your relation (parents) or role (others) on a baby row.
@@ -1382,10 +1382,10 @@ abstract class AppLocalizations {
   /// **'{age} · {youAre}'**
   String babyPickerRowDetail(String age, String youAre);
 
-  /// Add row in the baby switcher.
+  /// Add row in the baby switcher. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Thêm hồ sơ bé'**
+  /// **'Thêm hồ sơ'**
   String get babyPickerAdd;
 
   /// Profiles you created out of the limit (R-043).
@@ -1394,10 +1394,10 @@ abstract class AppLocalizations {
   /// **'{count}/{max}'**
   String babyPickerCount(int count, int max);
 
-  /// Footnote under the baby list.
+  /// Footnote under the baby list. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Bạn tạo được tối đa {max} hồ sơ bé.'**
+  /// **'Bạn tạo được tối đa {max} hồ sơ.'**
   String babyPickerLimit(int max);
 
   /// Toast after switching baby (125:13338).
@@ -1514,10 +1514,10 @@ abstract class AppLocalizations {
   /// **'Vẫn xoá tài khoản'**
   String get acDeleteAnyway;
 
-  /// AU-3: server refused deletion, the account still owns babies (R-046).
+  /// AU-3: server refused deletion, the account still owns babies (R-046). D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Cần chuyển chủ hồ sơ bé trước khi xoá tài khoản.'**
+  /// **'Cần chuyển chủ hồ sơ của các con trước khi xoá tài khoản.'**
   String get acDeleteOwnsBabies;
 
   /// AU-4: baby or personal profile save failed.
@@ -1526,10 +1526,10 @@ abstract class AppLocalizations {
   /// **'Chưa lưu được hồ sơ. Thử lại nhé.'**
   String get profileSaveFailed;
 
-  /// AU-5: 13k edit form could not load the saved profile.
+  /// AU-5: 13k edit form could not load the saved profile. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Chưa tải được hồ sơ của bé.'**
+  /// **'Chưa tải được hồ sơ.'**
   String get bpLoadFailed;
 
   /// FJ-1: 16 preview failed (not a closed invite).
@@ -1688,7 +1688,7 @@ abstract class AppLocalizations {
   /// **'Chưa tải được danh sách. Kiểm tra mạng nhé.'**
   String get familyLoadFailed;
 
-  /// 14b relation label.
+  /// 14b relation label. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
   /// **'Người được mời là'**
@@ -1700,10 +1700,10 @@ abstract class AppLocalizations {
   /// **'Quyền'**
   String get inviteRoleLabel;
 
-  /// Custom relation field for "Khác…".
+  /// Custom relation field for "Khác…". D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Là ai với bé'**
+  /// **'Là ai với con'**
   String get inviteCustomLabel;
 
   /// 14b role subtitle.
@@ -1760,7 +1760,7 @@ abstract class AppLocalizations {
   /// **'Cho xem thêm'**
   String get relativeRightsMore;
 
-  /// Extra right: DOB and weight.
+  /// Extra right: DOB and weight. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
   /// **'Thông tin bé'**
@@ -2144,10 +2144,10 @@ abstract class AppLocalizations {
   /// **'Bỏ giới hạn'**
   String get memberAccessClear;
 
-  /// 14f detail row.
+  /// 14f detail row. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Là ai với bé'**
+  /// **'Là ai với con'**
   String get memberRelation;
 
   /// 14f destructive.
@@ -2258,10 +2258,10 @@ abstract class AppLocalizations {
   /// **'{inviter} mời bạn'**
   String joinInviterTitle(String inviter);
 
-  /// 16 line before the role chip.
+  /// 16 line before the role chip. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'cùng chăm bé {baby} với vai trò'**
+  /// **'cùng chăm {baby} với vai trò'**
   String joinRoleLine(String baby);
 
   /// 16 primary → 16b.
@@ -2408,10 +2408,10 @@ abstract class AppLocalizations {
   /// **'Xin lời mời mới'**
   String get lostAccessRequest;
 
-  /// Message shared from 9d.
+  /// Message shared from 9d. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Mình không còn xem được hồ sơ của bé trên Child Life. Bạn gửi mình lời mời mới nhé?'**
+  /// **'Mình không còn xem được hồ sơ trên Child Life nữa. Bạn gửi mình lời mời mới nhé?'**
   String get lostAccessShareText;
 
   /// Less than a minute ago.
@@ -6872,25 +6872,25 @@ abstract class AppLocalizations {
   /// **'{used} / {quota}'**
   String meStorageOf(String used, String quota);
 
-  /// 13a footnote.
+  /// 13a footnote. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Dùng chung cho tất cả các bé của bạn'**
+  /// **'Dùng chung cho tất cả các con của bạn'**
   String get meStorageShared;
 
-  /// 13a row / 13i title.
+  /// 13a row / 13i title. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Hồ sơ các bé'**
+  /// **'Hồ sơ các con'**
   String get meBabies;
 
-  /// 13g row.
+  /// 13g row. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
   /// **'Bé được giao'**
   String get meAssigned;
 
-  /// 13h row.
+  /// 13h row. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
   /// **'Các bé bạn theo dõi'**
@@ -6968,10 +6968,10 @@ abstract class AppLocalizations {
   /// **'/ {quota}'**
   String stOfQuota(String quota);
 
-  /// 13b helper.
+  /// 13b helper. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Dùng chung cho tất cả các bé · ảnh ba và mẹ tải lên đều tính vào đây'**
+  /// **'Dùng chung cho tất cả các con · ảnh ba và mẹ tải lên đều tính vào đây'**
   String get stFootnote;
 
   /// 13c banner.
@@ -7166,10 +7166,10 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{{age} · 1 người cùng chăm} other{{age} · {count} người cùng chăm}}'**
   String bpCarers(String age, int count);
 
-  /// 13i tile.
+  /// 13i tile. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Thêm bé'**
+  /// **'Thêm hồ sơ'**
   String get bpAdd;
 
   /// 13i row while purging.
@@ -7466,10 +7466,10 @@ abstract class AppLocalizations {
   /// **'Người nhận trở thành chủ hồ sơ của {names}: xoá hồ sơ, chuyển tiếp và dung lượng gia đình. Họ cần đồng ý.'**
   String acTransferBody(String names);
 
-  /// Transfer sheet empty.
+  /// Transfer sheet empty. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Chưa có ai Cùng nuôi tất cả các bé.'**
+  /// **'Chưa có ai Cùng nuôi tất cả các con.'**
   String get acTransferNone;
 
   /// Transfer sheet button.
@@ -10165,10 +10165,10 @@ abstract class AppLocalizations {
   /// **'Kéo để sắp xếp'**
   String get a11yDragToReorder;
 
-  /// 01 Chào mừng body (368:998).
+  /// 01 Chào mừng body (368:998). D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Chăm sóc, thấu hiểu và lưu giữ hành trình của con — bắt đầu từ năm đầu đời.'**
+  /// **'Chăm sóc, thấu hiểu và lưu giữ hành trình lớn lên của con.'**
   String get welcomeBody;
 
   /// Journey illustration card (368:967).
@@ -10225,10 +10225,10 @@ abstract class AppLocalizations {
   /// **'6–12 tuổi'**
   String get journeyStage4;
 
-  /// Journey illustration label.
+  /// Journey illustration label. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Hành trình lớn lên của con, từ năm đầu đời đến 12 tuổi'**
+  /// **'Hành trình lớn lên của con, từ ngày đầu đến 12 tuổi'**
   String get a11yJourney;
 
   /// R1 sheet title (368:1274).
@@ -11323,7 +11323,7 @@ abstract class AppLocalizations {
   /// **'Cần ngày sinh của {name} để lập lịch tiêm.'**
   String vxNoDob(String name);
 
-  /// No DOB body.
+  /// No DOB body. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
   /// **'Ba mẹ thêm ngày sinh trong hồ sơ bé.'**
@@ -12043,7 +12043,7 @@ abstract class AppLocalizations {
   /// **'Nhập mã mời'**
   String get joinFromProfile;
 
-  /// Under the row.
+  /// Under the row. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
   /// **'Được mời chăm một bé khác? Nhập mã 6 số trong lời mời.'**
@@ -12127,10 +12127,10 @@ abstract class AppLocalizations {
   /// **'Lời mời cùng chăm bé'**
   String get myInviteSheetTitle;
 
-  /// Under Đồng ý / Từ chối.
+  /// Under Đồng ý / Từ chối. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Đồng ý xong, {baby} sẽ có trong danh sách bé của bạn.'**
+  /// **'Đồng ý xong, {baby} sẽ có trong danh sách của bạn.'**
   String myInviteSheetHint(String baby);
 
   /// Chi tiêu (v1.1 8a–8o).
@@ -15475,7 +15475,7 @@ abstract class AppLocalizations {
   /// **'Child Life tìm ảnh và video có thể có con. Bạn xem lại rồi mới tải lên.'**
   String get autoSaveIntroLead;
 
-  /// AS02 step 1
+  /// AS02 step 1 D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
   /// **'Chọn bé và vài ảnh rõ mặt'**
@@ -15529,7 +15529,7 @@ abstract class AppLocalizations {
   /// **'Gợi ý ảnh của bé nào?'**
   String get autoSavePickBabyTitle;
 
-  /// AS03 subtitle
+  /// AS03 subtitle D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
   /// **'Bước 1/3 · Có thể thêm bé khác sau trong Cài đặt.'**
@@ -16381,7 +16381,7 @@ abstract class AppLocalizations {
   /// **'Tối đa 1 lần/ngày · không báo trong giờ yên lặng'**
   String get autoSaveNotifyNewHint;
 
-  /// AS19 section
+  /// AS19 section D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
   /// **'Bé & ảnh mẫu'**
@@ -16399,7 +16399,7 @@ abstract class AppLocalizations {
   /// **'Chưa có ảnh mẫu · tạm tắt'**
   String get autoSaveSamplesNone;
 
-  /// AS19 row
+  /// AS19 row D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
   /// **'Thêm bé'**
@@ -17245,7 +17245,7 @@ abstract class AppLocalizations {
   /// **'Hoàn thiện video'**
   String get ksVideoFinishTitle;
 
-  /// MM07 chip.
+  /// MM07 chip. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
   /// **'Điền sẵn từ hồ sơ của bé'**
@@ -25212,16 +25212,16 @@ abstract class AppLocalizations {
   /// **'Đã ẩn. Bạn vẫn chỉnh được trong Tôi › Cá nhân hoá.'**
   String get hnInviteHidden;
 
-  /// Line under "Dành cho bé hôm nay" when the person picked interests.
+  /// Line under "Dành cho bé hôm nay" when the person picked interests. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Theo điều bạn quan tâm'**
+  /// **'Theo điều bạn chọn'**
   String get hnForBabyBecause;
 
-  /// Line under "Dành cho bé hôm nay" without interests.
+  /// Line under "Dành cho bé hôm nay" without interests. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Chưa chọn điều bạn quan tâm'**
+  /// **'Chưa chọn gì'**
   String get hnForBabyNoInterests;
 
   /// Link that opens EN01 (interests).
@@ -30648,10 +30648,10 @@ abstract class AppLocalizations {
   /// **'Theo ưu tiên tuần này của bạn'**
   String get pv2BecauseFocus;
 
-  /// Personalization v2: BecauseInterest
+  /// Personalization v2: BecauseInterest D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Theo tuổi của bé và điều bạn quan tâm'**
+  /// **'Theo tuổi của bé và điều bạn chọn'**
   String get pv2BecauseInterest;
 
   /// Personalization v2: why today’s pick, when it is there for the baby’s age only (P-172 audit P2 #7)
@@ -32622,10 +32622,10 @@ abstract class AppLocalizations {
   /// **'Bạn muốn ghi những gì cho {name}?'**
   String axTrackersTitle(String name);
 
-  /// AX05 sub-line ("Hồ sơ › Tuỳ chỉnh theo dõi" until the Hồ sơ tab exists).
+  /// AX05 sub-line ("Hồ sơ › Tuỳ chỉnh theo dõi" until the Hồ sơ tab exists). D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Chỉ hiện những ô bạn chọn trên Hôm nay. Đổi lại sau trong hồ sơ bé.'**
+  /// **'Chỉ hiện những ô bạn chọn trên Hôm nay. Đổi lại sau trong hồ sơ.'**
   String get axTrackersSub;
 
   /// NavBar v2 tab (917:3012).
@@ -32934,10 +32934,10 @@ abstract class AppLocalizations {
   /// **'Lưu vào Kỷ niệm'**
   String get exSaveToMemories;
 
-  /// AX34 group.
+  /// AX34 group. D-143: cross-age wording.
   ///
   /// In vi, this message translates to:
-  /// **'Các bé'**
+  /// **'Các con'**
   String get pfChildren;
 
   /// AX34 child row subtitle.
@@ -40151,6 +40151,24 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Cả nhà đã xong bao nhiêu việc hôm nay'**
   String get glanceGalleryPlanFamilyBlurb;
+
+  /// MM10 "Chọn dịp" chip for a birthday from 2 to 12 years (D-143); {years} is the age turned (en "Turning {years}": Flutter plurals have no ordinal forms). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sinh nhật {years} tuổi'**
+  String ksOccBirthday(int years);
+
+  /// The big words on a birthday card from 2 to 12 years (like ksTitleY1 "1 tuổi"); {years} is the age turned. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{years} tuổi'**
+  String ksTitleYears(int years);
+
+  /// Default "Lời nhắn" on a birthday card from 2 to 12 years (D-143). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm một tuổi, thêm bao điều để nhớ'**
+  String get ksQuoteBirthday;
 }
 
 class _AppLocalizationsDelegate

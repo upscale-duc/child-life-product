@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { interests, type Interest } from './personalization.js';
 
 /**
  * Adaptive Experience (Figma `930:11858`, AX00–AX45; plan `docs/product/adaptive-experience-plan.md`).
@@ -63,6 +64,26 @@ export const presetGoals: Record<AgeBand, readonly Goal[]> = {
   b3_6: ['memories', 'spending', 'family'],
   b6_12: ['memories', 'reminders', 'spending'],
 };
+
+/**
+ * D-143 (4): the goals replace EN01's interests, so the content topics come from the child's
+ * goals. Mirrors `interestsForGoals` in `apps/mobile/lib/features/adaptive/experience_repository.dart`.
+ * Spending, family and reminders have no content topic.
+ */
+const goalInterests: Record<Goal, readonly Interest[]> = {
+  track_care: ['sleep', 'feeding', 'nutrition'],
+  memories: ['moments'],
+  growth_vaccines: ['milestones', 'vaccines'],
+  family: [],
+  spending: [],
+  reminders: [],
+};
+
+/** The content topics of [goals], in `interests` order, without duplicates. */
+export function interestsForGoals(chosen: readonly Goal[]): Interest[] {
+  const picked = new Set(chosen.flatMap((g) => goalInterests[g]));
+  return interests.filter((i) => picked.has(i));
+}
 
 /** The goal list as AX03/AX04 show it: the band's presets first, then the rest in a fixed order. */
 export function goalOrder(band: AgeBand): Goal[] {

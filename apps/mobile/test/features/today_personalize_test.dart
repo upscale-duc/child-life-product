@@ -15,9 +15,11 @@ import 'package:child_life/features/today/today_layout.dart';
 import 'package:child_life/features/today/today_personalize.dart';
 import 'package:child_life/features/today/today_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:child_life/features/adaptive/adaptive_engine.dart' show AgeBand;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
+import '../helpers/adaptive_fixtures.dart';
 import '../helpers/family_fixtures.dart';
 import '../helpers/hn_fixtures.dart';
 import '../helpers/reminder_fixtures.dart';
@@ -162,6 +164,24 @@ void main() {
       await tester.tap(find.text('Bắt đầu'));
       await tester.pumpAndSettle();
       expect(visits.last.location, TodayRoutes.personalize);
+    });
+
+    testWidgets('D-143: with Adaptive Experience the goals replace it', (
+      tester,
+    ) async {
+      await pumpRouted(
+        tester,
+        _today,
+        overrides: [
+          ...hnOverrides(repo: StampingRhythmRepository()),
+          ...adaptiveOverrides(
+            band: AgeBand.b0_1,
+            repo: FakeExperienceRepository(),
+          ),
+        ],
+      );
+      expect(find.byKey(_invite), findsNothing);
+      expect(find.text('Hôm nay theo cách của nhà bạn'), findsNothing);
     });
 
     testWidgets('× hides it for this person', (tester) async {
@@ -509,9 +529,9 @@ void main() {
       );
       expect(find.text('Dành cho bé hôm nay'), findsOneWidget);
       // Owner 2026-10-18: interests are a button by the title, not a line under it.
-      expect(find.text('Theo điều bạn quan tâm'), findsNothing);
+      expect(find.text('Theo điều bạn chọn'), findsNothing);
       expect(
-        find.bySemanticsLabel(RegExp('^Theo điều bạn quan tâm · Đổi')),
+        find.bySemanticsLabel(RegExp('^Theo điều bạn chọn · Đổi')),
         findsOneWidget,
       );
       // Nhịp lớn lên is a compact row of "Tuần này của Teddy" (no "Beta" pill to parents).
@@ -555,7 +575,7 @@ void main() {
         ),
       );
       expect(
-        find.bySemanticsLabel(RegExp('^Chưa chọn điều bạn quan tâm · Chọn')),
+        find.bySemanticsLabel(RegExp('^Chưa chọn gì · Chọn')),
         findsOneWidget,
       );
       expect(

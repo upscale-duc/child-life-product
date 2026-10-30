@@ -51,7 +51,9 @@ Details: `references/ui-copy-patterns.md` §5.
 ## Always
 
 - **Voice:** warm, calm, clear, never judging. Address the reader as "bạn" / "you"; the child is
-  "bé" / "your baby" or `{name}`.
+  `{name}` first; "bé" / "your baby" on infant care screens; on cross-age screens (profile,
+  family, switcher, invites, Kỷ niệm) "con" when the reader is a parent, else neutral, and
+  "child" in English (D-143, glossary §7).
 - **Technical terms depend on context.**
   - Plain wording is the default on everyday surfaces.
   - Precise terms (đồng bộ / sync, offline, sao lưu / backup, quyền / access, dữ liệu / data)

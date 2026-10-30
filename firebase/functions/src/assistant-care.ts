@@ -661,7 +661,7 @@ export async function careAnswer(x: CareAnswerInput): Promise<CareAnswer> {
   const [rules, rows, prefs, filters] = await Promise.all([
     readRhythmRules(db),
     readFeedback(db, s.babyId),
-    readPreferences(db, s.uid),
+    readPreferences(db, s.uid, s.babyId),
     personalFilters(db, s.babyId, s.uid, x.now),
   ]);
   const found = findApprovedGuidance({

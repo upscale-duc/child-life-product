@@ -196,6 +196,34 @@ void main() {
       expect(suggestedOccasion(dob, DateTime(2027, 5, 1)), Occasion.m7);
       expect(suggestedOccasion(dob, DateTime(2027, 9, 5)), Occasion.y1);
     });
+
+    test(
+      'D-143: a birthday every year from 2 to 12, offered once it has come',
+      () {
+        expect(Occasion.y2.dateFor(dob, const []), DateTime(2028, 9, 17));
+        expect(Occasion.y12.dateFor(dob, const []), DateTime(2038, 9, 17));
+        // A 29 February birthday falls on 28 February in other years.
+        expect(
+          Occasion.y3.dateFor(DateTime(2024, 2, 29), const []),
+          DateTime(2027, 2, 28),
+        );
+        expect(Occasion.y5.laterBirthday, isTrue);
+        expect(Occasion.y1.laterBirthday, isFalse);
+        expect(Occasion.m11.laterBirthday, isFalse);
+        // At 5 years and 2 months: the 2nd to 5th birthdays, not the 6th yet.
+        final chips = Occasion.chipsFor(dob, DateTime(2031, 11, 20), const []);
+        expect(chips.where((o) => o.laterBirthday), [
+          Occasion.y2,
+          Occasion.y3,
+          Occasion.y4,
+          Occasion.y5,
+        ]);
+        // Two weeks before the 6th birthday it is offered and suggested.
+        final near = DateTime(2032, 9, 5);
+        expect(Occasion.chipsFor(dob, near, const []), contains(Occasion.y6));
+        expect(suggestedOccasion(dob, near), Occasion.y6);
+      },
+    );
   });
 
   test(
@@ -366,10 +394,7 @@ void main() {
         await tester.tap(find.text('Ảnh'));
         await tester.pumpAndSettle();
         expect(find.text('Chạm ảnh để đổi · kéo để căn'), findsOneWidget);
-        expect(
-          find.text('Lưu vào Kỷ niệm · Chỉ ba mẹ'),
-          findsOneWidget,
-        );
+        expect(find.text('Lưu vào Kỷ niệm · Chỉ ba mẹ'), findsOneWidget);
         expect(find.text('“Một tháng yêu thương”'), findsWidgets);
         expect(tester.takeException(), isNull);
       });

@@ -170,38 +170,39 @@ void main() {
     });
   });
 
-  testWidgets('Hồ sơ: no back, "Các bé" opens that child\'s Tuỳ chỉnh (AX34)', (
-    tester,
-  ) async {
-    final (visits, container) = await pumpRouted(
-      tester,
-      const MeScreen(asTab: true),
-      overrides: [
-        ...familyOverrides(email: 'mai@gmail.com', providers: ['password']),
-        ...memoryOverrides(),
-        ...meOverrides(),
-      ],
-    );
-    await tester.pumpAndSettle();
-    expect(find.text('Hồ sơ'), findsWidgets);
-    expect(find.bySemanticsLabel('Quay lại'), findsNothing);
-    expect(find.text('Các bé'), findsOneWidget);
-    // Every Tôi row stays (D-097 Q-090).
-    await tester.scrollUntilVisible(
-      find.text('Đăng xuất'),
-      300,
-      scrollable: find.byType(Scrollable).first,
-    );
-    expect(find.text('Đăng xuất'), findsOneWidget);
-    await tester.scrollUntilVisible(
-      find.byKey(const ValueKey('profileChild_$teddyId')),
-      -300,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.tap(find.byKey(const ValueKey('profileChild_$teddyId')));
-    await tester.pumpAndSettle();
-    expect(visits.last.location, AdaptiveRoutes.customize);
-    expect(container.read(selectedBabyIdProvider), teddyId);
-    expect(Routes.profile, '/profile');
-  });
+  testWidgets(
+    'Hồ sơ: no back, "Các con" opens that child\'s Tuỳ chỉnh (AX34)',
+    (tester) async {
+      final (visits, container) = await pumpRouted(
+        tester,
+        const MeScreen(asTab: true),
+        overrides: [
+          ...familyOverrides(email: 'mai@gmail.com', providers: ['password']),
+          ...memoryOverrides(),
+          ...meOverrides(),
+        ],
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Hồ sơ'), findsWidgets);
+      expect(find.bySemanticsLabel('Quay lại'), findsNothing);
+      expect(find.text('Các con'), findsOneWidget);
+      // Every Tôi row stays (D-097 Q-090).
+      await tester.scrollUntilVisible(
+        find.text('Đăng xuất'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.text('Đăng xuất'), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('profileChild_$teddyId')),
+        -300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.tap(find.byKey(const ValueKey('profileChild_$teddyId')));
+      await tester.pumpAndSettle();
+      expect(visits.last.location, AdaptiveRoutes.customize);
+      expect(container.read(selectedBabyIdProvider), teddyId);
+      expect(Routes.profile, '/profile');
+    },
+  );
 }

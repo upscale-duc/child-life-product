@@ -525,7 +525,7 @@ export async function personalizedDay(
     delivery,
   ] = await Promise.all([
     stateRef(db, uid, babyId).get(),
-    readPreferences(db, uid),
+    readPreferences(db, uid, babyId),
     readRhythmContent(db),
     db.doc(`babies/${babyId}/restricted/profile`).get(),
     db.collection(`babies/${babyId}/notebook`).limit(200).get(),

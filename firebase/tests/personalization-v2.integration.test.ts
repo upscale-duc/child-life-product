@@ -486,6 +486,12 @@ describe('P-172 daily suggestions and truthful aggregates', () => {
     const interest = await read('carer');
     expect(interest.activityIds[0]).toBe('act_face_to_face');
     expect(interest.reason).toBe('INTEREST');
+    // D-143 (4): once the person has an arrangement for this child, its goals replace EN01.
+    await db.doc('users/carer/experience/baby').set({ goals: ['spending'] });
+    expect((await read('carer')).reason).toBe('AGE_CONTENT');
+    await db.doc('users/carer/experience/baby').set({ goals: ['growth_vaccines'] });
+    expect((await read('carer')).reason).toBe('INTEREST');
+    await db.doc('users/carer/experience/baby').delete();
     // What the family reported today wins over the focus.
     await call('carer', { kind: 'focus', value: 'play' });
     await db

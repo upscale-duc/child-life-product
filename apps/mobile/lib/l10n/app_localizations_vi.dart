@@ -122,7 +122,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get welcomeTitle => 'Cùng con lớn lên,\nđồng hành từng bước.';
 
   @override
-  String get welcomeExplore => 'Bắt đầu chặng đầu cùng con';
+  String get welcomeExplore => 'Bắt đầu cùng con';
 
   @override
   String get welcomeSignIn => 'Đăng nhập';
@@ -209,7 +209,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get tourPrivateInitials => 'M|B|Bà|L';
 
   @override
-  String get tourCreateProfile => 'Tạo hồ sơ bé';
+  String get tourCreateProfile => 'Tạo hồ sơ';
 
   @override
   String get signInTitle => 'Chào bạn';
@@ -404,7 +404,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get babyNicknameLabel => 'Tên thân mật';
 
   @override
-  String get babyNicknamePlaceholder => 'Tên bé';
+  String get babyNicknamePlaceholder => 'Tên thân mật';
 
   @override
   String get babyDob => 'Ngày sinh';
@@ -444,7 +444,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get a11yChangeBabyPhoto => 'Đổi ảnh đại diện';
 
   @override
-  String get babyNicknameRequired => 'Đặt tên thân mật cho bé nhé.';
+  String get babyNicknameRequired => 'Nhập tên thân mật nhé.';
 
   @override
   String dobAgeHint(String name, String age) {
@@ -573,11 +573,11 @@ class AppLocalizationsVi extends AppLocalizations {
   String get trackersPickOne => 'Chọn ít nhất một mục';
 
   @override
-  String get createBabyLimit => 'Mỗi tài khoản tạo được tối đa 3 hồ sơ bé.';
+  String get createBabyLimit => 'Mỗi tài khoản tạo được tối đa 3 hồ sơ.';
 
   @override
   String get createBabyFailed =>
-      'Chưa tạo được hồ sơ bé. Kiểm tra mạng rồi thử lại nhé.';
+      'Chưa tạo được hồ sơ. Kiểm tra mạng rồi thử lại nhé.';
 
   @override
   String get createBabyDobFuture => 'Ngày sinh không thể ở tương lai.';
@@ -712,7 +712,7 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get babyPickerTitle => 'Chọn bé';
+  String get babyPickerTitle => 'Chọn hồ sơ';
 
   @override
   String babyPickerYouAre(String label) {
@@ -725,7 +725,7 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get babyPickerAdd => 'Thêm hồ sơ bé';
+  String get babyPickerAdd => 'Thêm hồ sơ';
 
   @override
   String babyPickerCount(int count, int max) {
@@ -734,7 +734,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String babyPickerLimit(int max) {
-    return 'Bạn tạo được tối đa $max hồ sơ bé.';
+    return 'Bạn tạo được tối đa $max hồ sơ.';
   }
 
   @override
@@ -828,13 +828,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get acDeleteOwnsBabies =>
-      'Cần chuyển chủ hồ sơ bé trước khi xoá tài khoản.';
+      'Cần chuyển chủ hồ sơ của các con trước khi xoá tài khoản.';
 
   @override
   String get profileSaveFailed => 'Chưa lưu được hồ sơ. Thử lại nhé.';
 
   @override
-  String get bpLoadFailed => 'Chưa tải được hồ sơ của bé.';
+  String get bpLoadFailed => 'Chưa tải được hồ sơ.';
 
   @override
   String get joinLoadFailedTitle => 'Chưa mở được lời mời';
@@ -956,7 +956,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get inviteRoleLabel => 'Quyền';
 
   @override
-  String get inviteCustomLabel => 'Là ai với bé';
+  String get inviteCustomLabel => 'Là ai với con';
 
   @override
   String get roleCoParentHint => 'Toàn quyền, như ba mẹ';
@@ -1227,7 +1227,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get memberAccessClear => 'Bỏ giới hạn';
 
   @override
-  String get memberRelation => 'Là ai với bé';
+  String get memberRelation => 'Là ai với con';
 
   @override
   String memberRemove(String name) {
@@ -1306,7 +1306,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String joinRoleLine(String baby) {
-    return 'cùng chăm bé $baby với vai trò';
+    return 'cùng chăm $baby với vai trò';
   }
 
   @override
@@ -1395,7 +1395,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get lostAccessShareText =>
-      'Mình không còn xem được hồ sơ của bé trên Child Life. Bạn gửi mình lời mời mới nhé?';
+      'Mình không còn xem được hồ sơ trên Child Life nữa. Bạn gửi mình lời mời mới nhé?';
 
   @override
   String get agoJustNow => 'Vừa xong';
@@ -4072,10 +4072,10 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get meStorageShared => 'Dùng chung cho tất cả các bé của bạn';
+  String get meStorageShared => 'Dùng chung cho tất cả các con của bạn';
 
   @override
-  String get meBabies => 'Hồ sơ các bé';
+  String get meBabies => 'Hồ sơ các con';
 
   @override
   String get meAssigned => 'Bé được giao';
@@ -4135,7 +4135,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get stFootnote =>
-      'Dùng chung cho tất cả các bé · ảnh ba và mẹ tải lên đều tính vào đây';
+      'Dùng chung cho tất cả các con · ảnh ba và mẹ tải lên đều tính vào đây';
 
   @override
   String stNearTitle(int percent) {
@@ -4267,7 +4267,7 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get bpAdd => 'Thêm bé';
+  String get bpAdd => 'Thêm hồ sơ';
 
   @override
   String get bpDeleting => 'Đang xoá…';
@@ -4471,7 +4471,7 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get acTransferNone => 'Chưa có ai Cùng nuôi tất cả các bé.';
+  String get acTransferNone => 'Chưa có ai Cùng nuôi tất cả các con.';
 
   @override
   String get acTransferSend => 'Gửi đề nghị';
@@ -6127,7 +6127,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get welcomeBody =>
-      'Chăm sóc, thấu hiểu và lưu giữ hành trình của con — bắt đầu từ năm đầu đời.';
+      'Chăm sóc, thấu hiểu và lưu giữ hành trình lớn lên của con.';
 
   @override
   String get journeyFeed => 'Bú bình · 120 ml';
@@ -6158,7 +6158,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get a11yJourney =>
-      'Hành trình lớn lên của con, từ năm đầu đời đến 12 tuổi';
+      'Hành trình lớn lên của con, từ ngày đầu đến 12 tuổi';
 
   @override
   String get welcomeBackTitle => 'Chào mừng trở lại';
@@ -7274,7 +7274,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String myInviteSheetHint(String baby) {
-    return 'Đồng ý xong, $baby sẽ có trong danh sách bé của bạn.';
+    return 'Đồng ý xong, $baby sẽ có trong danh sách của bạn.';
   }
 
   @override
@@ -13392,7 +13392,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asComposerAnswer => 'Trả lời câu hỏi…';
 
   @override
-  @override
   String asComposerAnswering(String question) {
     return 'Đang trả lời: $question';
   }
@@ -13400,6 +13399,7 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get asComposerDropQuestion => 'Bỏ câu hỏi này';
 
+  @override
   String get asSend => 'Gửi';
 
   @override
@@ -13421,9 +13421,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asFabLabel => 'Mở Lumi';
 
   @override
-  @override
   String get asHistoryAsk => 'Hỏi Lumi: “hôm nay bé bú mấy cữ?”';
 
+  @override
   String get asModuleExpenseTitle => 'Chụp hoá đơn hoặc nhắn để ghi';
 
   @override
@@ -15093,10 +15093,10 @@ class AppLocalizationsVi extends AppLocalizations {
       'Đã ẩn. Bạn vẫn chỉnh được trong Tôi › Cá nhân hoá.';
 
   @override
-  String get hnForBabyBecause => 'Theo điều bạn quan tâm';
+  String get hnForBabyBecause => 'Theo điều bạn chọn';
 
   @override
-  String get hnForBabyNoInterests => 'Chưa chọn điều bạn quan tâm';
+  String get hnForBabyNoInterests => 'Chưa chọn gì';
 
   @override
   String get hnForBabyChange => 'Đổi';
@@ -16445,12 +16445,12 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asEditDiaper => 'Sửa thay tã';
 
   @override
-  @override
   String get asEditMeal => 'Sửa bữa ăn';
 
   @override
   String get asHistoryAskMeal => 'Kể bữa ăn với Lumi: “trưa nay ăn cháo bí đỏ”';
 
+  @override
   String get asEditGrowth => 'Sửa cân đo';
 
   @override
@@ -18393,7 +18393,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2BecauseFocus => 'Theo ưu tiên tuần này của bạn';
 
   @override
-  String get pv2BecauseInterest => 'Theo tuổi của bé và điều bạn quan tâm';
+  String get pv2BecauseInterest => 'Theo tuổi của bé và điều bạn chọn';
 
   @override
   String get pv2BecauseAge => 'Theo tuổi của bé';
@@ -19560,7 +19560,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get axTrackersSub =>
-      'Chỉ hiện những ô bạn chọn trên Hôm nay. Đổi lại sau trong hồ sơ bé.';
+      'Chỉ hiện những ô bạn chọn trên Hôm nay. Đổi lại sau trong hồ sơ.';
 
   @override
   String get tabExplore => 'Khám phá';
@@ -19729,7 +19729,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get exSaveToMemories => 'Lưu vào Kỷ niệm';
 
   @override
-  String get pfChildren => 'Các bé';
+  String get pfChildren => 'Các con';
 
   @override
   String pfChildRow(String age) {
@@ -23869,8 +23869,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get cuTitle => 'Sắp tới';
 
   @override
-  String cuBasis(int days) {
-  @override
   String get pmInPremium => 'Có trong Premium';
 
   @override
@@ -23878,6 +23876,8 @@ class AppLocalizationsVi extends AppLocalizations {
     return 'Nhật ký của $name đã đủ để biết trước khoảng giờ cữ bú và giấc ngủ tiếp theo.';
   }
 
+  @override
+  String cuBasis(int days) {
     return 'Theo nhật ký $days ngày gần đây';
   }
 
@@ -24173,4 +24173,17 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get glanceGalleryPlanFamilyBlurb =>
       'Cả nhà đã xong bao nhiêu việc hôm nay';
+
+  @override
+  String ksOccBirthday(int years) {
+    return 'Sinh nhật $years tuổi';
+  }
+
+  @override
+  String ksTitleYears(int years) {
+    return '$years tuổi';
+  }
+
+  @override
+  String get ksQuoteBirthday => 'Thêm một tuổi, thêm bao điều để nhớ';
 }

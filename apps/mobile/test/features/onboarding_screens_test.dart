@@ -180,9 +180,7 @@ void main() {
       findsOneWidget,
     );
     expect(
-      find.text(
-        'Chăm sóc, thấu hiểu và lưu giữ hành trình của con — bắt đầu từ năm đầu đời.',
-      ),
+      find.text('Chăm sóc, thấu hiểu và lưu giữ hành trình lớn lên của con.'),
       findsOneWidget,
     );
     expect(find.byType(JourneyHero), findsOneWidget);
@@ -190,7 +188,7 @@ void main() {
       find.bySemanticsLabel(RegExp('Hành trình lớn lên của con')),
       findsOneWidget,
     );
-    expect(find.text('Bắt đầu chặng đầu cùng con'), findsOneWidget);
+    expect(find.text('Bắt đầu cùng con'), findsOneWidget);
     await tester.tap(find.text('Đăng nhập'));
     await tester.pumpAndSettle();
     expect(visited, [Routes.signIn]);
@@ -198,7 +196,7 @@ void main() {
 
   testWidgets('01 in English', (tester) async {
     await pumpScreen(tester, const WelcomeScreen(), locale: const Locale('en'));
-    expect(find.text('Start the first stage together'), findsOneWidget);
+    expect(find.text('Get started'), findsOneWidget);
     expect(find.text('Invite code'), findsOneWidget);
   });
 
@@ -255,7 +253,7 @@ void main() {
   });
 
   testWidgets(
-    '02–05 tour: Next pages through, the last page offers "Tạo hồ sơ bé"',
+    '02–05 tour: Next pages through, the last page offers "Tạo hồ sơ"',
     (tester) async {
       final (visited, _) = await pumpScreen(tester, const TourScreen());
       expect(find.text('Ghi bú, ngủ, tã\nchỉ bằng một tay'), findsOneWidget);
@@ -265,7 +263,7 @@ void main() {
       }
       expect(find.text('Đúng người,\nđúng quyền'), findsOneWidget);
       expect(find.text('Bỏ qua'), findsNothing);
-      await tester.tap(find.text('Tạo hồ sơ bé'));
+      await tester.tap(find.text('Tạo hồ sơ'));
       await tester.pumpAndSettle();
       expect(visited, [Routes.signIn]);
     },

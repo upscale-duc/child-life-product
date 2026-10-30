@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  interestsForGoals,
   ageBandFor,
   analyticsObservationSchema,
   ageInMonths,
@@ -263,5 +264,23 @@ describe('adaptive analytics events (MET-01, P-175)', () => {
         detail: 'chosen',
       }).success,
     ).toBe(false);
+  });
+});
+
+describe('D-143: goals replace EN01 interests', () => {
+  it('maps each goal to its content topics, in interests order, without duplicates', () => {
+    expect(interestsForGoals(['track_care', 'memories'])).toEqual([
+      'sleep',
+      'feeding',
+      'nutrition',
+      'moments',
+    ]);
+    expect(interestsForGoals(['memories', 'growth_vaccines', 'growth_vaccines'])).toEqual([
+      'milestones',
+      'vaccines',
+      'moments',
+    ]);
+    expect(interestsForGoals(['spending', 'family', 'reminders'])).toEqual([]);
+    expect(interestsForGoals([])).toEqual([]);
   });
 });

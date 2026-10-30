@@ -32,7 +32,19 @@ enum Occasion {
   stands('stands', 'p_stands'),
   firstTooth('first_tooth', 'p_first_tooth'),
   firstSolids('first_solids', 'p_first_solids'),
-  firstWord('first_word', 'p_first_word');
+  firstWord('first_word', 'p_first_word'),
+  // D-143 (3): a birthday every year, 2 to 12 years (no nudges, D-068 #9).
+  y2('y2', 'p_birthday_2', months: 24),
+  y3('y3', 'p_birthday_3', months: 36),
+  y4('y4', 'p_birthday_4', months: 48),
+  y5('y5', 'p_birthday_5', months: 60),
+  y6('y6', 'p_birthday_6', months: 72),
+  y7('y7', 'p_birthday_7', months: 84),
+  y8('y8', 'p_birthday_8', months: 96),
+  y9('y9', 'p_birthday_9', months: 108),
+  y10('y10', 'p_birthday_10', months: 120),
+  y11('y11', 'p_birthday_11', months: 132),
+  y12('y12', 'p_birthday_12', months: 144);
 
   /// The occasions with milestone nudges (D-068 #9) and always shown in MM10.
   static const nudged = [
@@ -49,6 +61,7 @@ enum Occasion {
   /// MM10's order: by age, then the first-time ones.
   static const _chipOrder = [
     birth, d7, m1, m2, m3, d100, m4, m5, m6, m7, m8, m9, m10, m11, y1, //
+    y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, //
     firstSmile,
     laughs,
     rollsOver,
@@ -87,6 +100,11 @@ enum Occasion {
     bool fits(Occasion o) {
       if (nudged.contains(o) || o == current) return true;
       if (o == birth) return ageDays <= 60;
+      // Every birthday so far, and the next one two weeks ahead: a family that joins late can
+      // still make the card for the 3rd birthday (D-143).
+      if (o.laterBirthday) {
+        return o.dateFor(dob, const [])!.difference(t).inDays <= 14;
+      }
       if (o.months != null) {
         final gap = o.dateFor(dob, const [])!.difference(t).inDays;
         return gap <= 14 && gap >= -30;
@@ -109,6 +127,9 @@ enum Occasion {
   final int? months;
 
   bool get byAge => days != null || months != null;
+
+  /// The yearly birthdays after the first (D-143).
+  bool get laterBirthday => months != null && months! >= 24 && months! % 12 == 0;
 
   ClIcons get icon => switch (this) {
     Occasion.firstSmile || Occasion.laughs => ClIcons.heart,
@@ -136,6 +157,7 @@ enum Occasion {
     Occasion.firstTooth => l10n.ksOccFirstTooth,
     Occasion.firstSolids => l10n.ksOccFirstSolids,
     Occasion.firstWord => l10n.ksOccFirstWord,
+    _ when laterBirthday => l10n.ksOccBirthday(months! ~/ 12),
     _ => l10n.ksOccMonth(months!),
   };
 
@@ -151,7 +173,11 @@ enum Occasion {
 
   /// The big words on the card ("1 tháng", "1 tuổi").
   String title(AppLocalizations l10n) =>
-      this == Occasion.y1 ? l10n.ksTitleY1 : label(l10n);
+      this == Occasion.y1
+      ? l10n.ksTitleY1
+      : laterBirthday
+      ? l10n.ksTitleYears(months! ~/ 12)
+      : label(l10n);
 
   /// The default "Lời nhắn" (MM11 "Một tháng yêu thương").
   String quote(AppLocalizations l10n) => switch (this) {
@@ -170,6 +196,7 @@ enum Occasion {
     Occasion.firstTooth => l10n.ksQuoteFirstTooth,
     Occasion.firstSolids => l10n.ksQuoteFirstSolids,
     Occasion.firstWord => l10n.ksQuoteFirstWord,
+    _ when laterBirthday => l10n.ksQuoteBirthday,
     _ => l10n.ksQuoteMonth(months!),
   };
 

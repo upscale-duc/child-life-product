@@ -11,6 +11,10 @@ import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../l10n/app_localizations.dart';
+import '../adaptive/adaptive_engine.dart' show Goal;
+import '../adaptive/experience_repository.dart'
+    show adaptiveOnProvider, experienceProvider;
+import '../adaptive/today_adaptive.dart' show editChildGoals, goalLabel;
 import '../ai/ai_repository.dart' show aiSettingsProvider;
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
@@ -89,6 +93,10 @@ class PersonalizeScreen extends ConsumerWidget {
     final prefs =
         ref.watch(userPreferencesProvider(me.uid)).value ??
         UserPreferences.defaults;
+    final adaptive = ref.watch(adaptiveOnProvider);
+    final goals = adaptive
+        ? ref.watch(experienceProvider(me.babyId)).goals
+        : const <Goal>[];
     final canFeedback = familyCan(me, FamilyAction.rhythmFeedback);
     // A1: my own AI consent (per person), with the `ai_assist` rollout. Someone who consented
     // can always come back to withdraw it, even after the rollout is switched off.
@@ -109,16 +117,28 @@ class PersonalizeScreen extends ConsumerWidget {
               subtitle: l10n.pv2Open,
               onTap: () => context.push(Routes.personalDay),
             ),
-            MeRow(
-              icon: ClIcons.sliders,
-              title: l10n.rhInterestsRow,
-              subtitle: prefs.interests.isEmpty
-                  ? l10n.rhInterestsNone
-                  : prefs.interests
-                        .map((i) => interestLabel(l10n, i))
-                        .join(', '),
-              onTap: () => context.push(Routes.rhythmInterests),
-            ),
+            // D-143 (4): with Adaptive Experience this child's goals replace EN01; they are a
+            // parent's (Q-092), so a caregiver has no row here.
+            if (!adaptive)
+              MeRow(
+                icon: ClIcons.sliders,
+                title: l10n.rhInterestsRow,
+                subtitle: prefs.interests.isEmpty
+                    ? l10n.rhInterestsNone
+                    : prefs.interests
+                          .map((i) => interestLabel(l10n, i))
+                          .join(', '),
+                onTap: () => context.push(Routes.rhythmInterests),
+              )
+            else if (me.role == MemberRole.coParent)
+              MeRow(
+                icon: ClIcons.sliders,
+                title: l10n.axGoalsLabel,
+                subtitle: goals.isEmpty
+                    ? l10n.rhInterestsNone
+                    : goals.map((g) => goalLabel(l10n, g)).join(', '),
+                onTap: () => editChildGoals(context, ref, me.babyId),
+              ),
             MeRow(
               icon: ClIcons.clock,
               title: l10n.rhDigestRow,

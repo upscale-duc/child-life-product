@@ -20,6 +20,8 @@ import {
   defaultUserPreferences,
   familyCan,
   feedbackMemory,
+  goals,
+  interestsForGoals,
   localDateIn,
   needOf,
   needsHealthSupport,
@@ -43,6 +45,7 @@ import {
   type DueDate,
   type FeedbackMemory,
   type FeedbackRef,
+  type Goal,
   type GrantEnvironment,
   type Need,
   type NextActionAnswer,
@@ -146,13 +149,31 @@ async function rhythmInputs(db: Firestore, babyId: string, now: Date): Promise<R
 }
 
 /** The caller's own preferences (EN01, EN05), or the defaults. */
-export async function readPreferences(db: Firestore, uid: string): Promise<UserPreferences> {
-  const data = (await db.doc(`users/${uid}/settings/personalization`).get()).data();
-  if (!data) return defaultUserPreferences;
-  const updatedAt =
-    data.updatedAt instanceof Timestamp ? data.updatedAt.toDate().toISOString() : data.updatedAt;
-  const parsed = userPreferencesSchema.safeParse({ ...data, updatedAt: updatedAt ?? null });
-  return parsed.success ? parsed.data : defaultUserPreferences;
+export async function readPreferences(
+  db: Firestore,
+  uid: string,
+  babyId?: string,
+): Promise<UserPreferences> {
+  const [snap, experience] = await Promise.all([
+    db.doc(`users/${uid}/settings/personalization`).get(),
+    babyId ? db.doc(`users/${uid}/experience/${babyId}`).get() : null,
+  ]);
+  const data = snap.data();
+  let prefs = defaultUserPreferences;
+  if (data) {
+    const updatedAt =
+      data.updatedAt instanceof Timestamp ? data.updatedAt.toDate().toISOString() : data.updatedAt;
+    const parsed = userPreferencesSchema.safeParse({ ...data, updatedAt: updatedAt ?? null });
+    if (parsed.success) prefs = parsed.data;
+  }
+  // D-143 (4): this child's goals replace EN01's interests once the person has an arrangement
+  // for the child (Adaptive Experience); without one, the person's EN01 answers still apply.
+  const stored = experience?.exists ? experience.get('goals') : undefined;
+  if (Array.isArray(stored)) {
+    const chosen = stored.filter((g): g is Goal => (goals as readonly unknown[]).includes(g));
+    prefs = { ...prefs, interests: interestsForGoals(chosen) };
+  }
+  return prefs;
 }
 
 export type FeedbackRow = RecFeedback & { createdAtMs: number };
@@ -364,7 +385,7 @@ interface RankContext {
 /** One run of the contract ranking for a need; `null` when nothing is eligible. */
 async function rank(db: Firestore, x: RankContext) {
   const [prefs, filters] = await Promise.all([
-    readPreferences(db, x.uid),
+    readPreferences(db, x.uid, x.babyId),
     personalFilters(db, x.babyId, x.uid, x.now, false),
   ]);
   const memory = feedbackMemory(x.feedback, x.inputs.rules.cooldownDays);

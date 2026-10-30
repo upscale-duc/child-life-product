@@ -1,4 +1,7 @@
 import 'package:child_life/features/adaptive/adaptive_engine.dart';
+import 'package:child_life/features/adaptive/experience_repository.dart'
+    show interestsForGoals;
+import 'package:child_life/features/rhythm/rhythm_models.dart' show Interest;
 import 'package:flutter_test/flutter_test.dart';
 
 // Same fixtures as packages/contracts/test/adaptive.test.ts (Figma 930:11858).
@@ -304,6 +307,28 @@ void main() {
           [WidgetId.tiles, WidgetId.reminders, WidgetId.forYou],
         );
       },
+    );
+  });
+
+  // Same vectors as packages/contracts/test/adaptive.test.ts.
+  test('D-143: goals replace EN01 interests', () {
+    expect(interestsForGoals([Goal.trackCare, Goal.memories]), [
+      Interest.sleep,
+      Interest.feeding,
+      Interest.nutrition,
+      Interest.moments,
+    ]);
+    expect(
+      interestsForGoals([
+        Goal.memories,
+        Goal.growthVaccines,
+        Goal.growthVaccines,
+      ]),
+      [Interest.milestones, Interest.vaccines, Interest.moments],
+    );
+    expect(
+      interestsForGoals([Goal.spending, Goal.family, Goal.reminders]),
+      isEmpty,
     );
   });
 }

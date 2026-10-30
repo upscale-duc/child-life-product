@@ -998,6 +998,28 @@ String _ageLabel(BuildContext context, WidgetRef ref, String babyId) {
   );
 }
 
+/// D-143 (4): the goals replace EN01's interests, so "Đổi" on Dành cho bé hôm nay opens this
+/// child's goals and saves them as AX14's "Sửa" does.
+Future<void> editChildGoals(
+  BuildContext context,
+  WidgetRef ref,
+  String babyId,
+) async {
+  final band =
+      ref.read(childBandProvider(babyId)) ??
+      ref.read(experienceProvider(babyId)).bandApplied;
+  final picked = await showGoalsSheet(
+    context,
+    name: ref.read(babyProvider(babyId)).value?.nickname ?? '',
+    band: band,
+    selected: ref.read(experienceProvider(babyId)).goals,
+    ageLabel: _ageLabel(context, ref, babyId),
+  );
+  if (picked != null) {
+    ref.read(experienceProvider(babyId).notifier).setGoals(picked);
+  }
+}
+
 /// AX03 / AX04 "Bạn muốn Child Life giúp gì cho {tên}?" as a sheet (the AX14 "Sửa" chip and
 /// Hồ sơ › bé, G-110). Presets first with "Gợi ý cho {tuổi}"; returns null when closed.
 Future<List<Goal>?> showGoalsSheet(

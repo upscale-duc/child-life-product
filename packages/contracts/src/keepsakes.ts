@@ -70,6 +70,18 @@ export const occasions = {
   first_tooth: { kind: 'first', milestoneId: 'p_first_tooth' },
   first_solids: { kind: 'first', milestoneId: 'p_first_solids' },
   first_word: { kind: 'first', milestoneId: 'p_first_word' },
+  // D-143 (3): a birthday every year, 2 to 12 years, next to the first birthday (no nudges).
+  y2: { kind: 'age', months: 24, milestoneId: 'p_birthday_2' },
+  y3: { kind: 'age', months: 36, milestoneId: 'p_birthday_3' },
+  y4: { kind: 'age', months: 48, milestoneId: 'p_birthday_4' },
+  y5: { kind: 'age', months: 60, milestoneId: 'p_birthday_5' },
+  y6: { kind: 'age', months: 72, milestoneId: 'p_birthday_6' },
+  y7: { kind: 'age', months: 84, milestoneId: 'p_birthday_7' },
+  y8: { kind: 'age', months: 96, milestoneId: 'p_birthday_8' },
+  y9: { kind: 'age', months: 108, milestoneId: 'p_birthday_9' },
+  y10: { kind: 'age', months: 120, milestoneId: 'p_birthday_10' },
+  y11: { kind: 'age', months: 132, milestoneId: 'p_birthday_11' },
+  y12: { kind: 'age', months: 144, milestoneId: 'p_birthday_12' },
 } as const satisfies Record<
   string,
   { kind: 'age' | 'first'; days?: number; months?: number; milestoneId: string }

@@ -14,6 +14,7 @@ import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../l10n/app_localizations.dart';
+import '../adaptive/experience_repository.dart' show adaptiveOnProvider;
 import '../baby/baby_repository.dart';
 import '../home/home_shell.dart';
 import '../onboarding/widgets/onboarding_layout.dart';
@@ -220,7 +221,9 @@ class PersonalizeInviteCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final me = ref.watch(selectedMembershipProvider);
+    // D-143 (4): the goals asked in setup replace "Hôm nay theo cách của nhà bạn".
     if (me == null ||
+        ref.watch(adaptiveOnProvider) ||
         !personalizationOffered(ref.watch(selectedCapabilitiesProvider)) ||
         ref.watch(personalizeAfterSetupProvider) == me.babyId ||
         ref.watch(personalizeInviteHiddenProvider(me.uid))) {
@@ -335,7 +338,11 @@ class PersonalizeFlowScreen extends ConsumerStatefulWidget {
 
 class _PersonalizeFlowScreenState extends ConsumerState<PersonalizeFlowScreen> {
   static const _steps = 3;
-  late int _step = widget.notificationsOnly ? 2 : 0;
+
+  /// D-143 (4): with Adaptive Experience the child's goals replace EN01, so the flow starts at
+  /// EN02 (giờ gợi ý).
+  late final int _first = ref.read(adaptiveOnProvider) ? 1 : 0;
+  late int _step = widget.notificationsOnly ? 2 : _first;
   Set<Interest>? _interests;
   UserPreferences? _draft;
   bool _busy = false;
@@ -425,7 +432,7 @@ class _PersonalizeFlowScreenState extends ConsumerState<PersonalizeFlowScreen> {
         ? null
         : Row(
             children: [
-              _StepBars(step: _step, count: _steps),
+              _StepBars(step: _step - _first, count: _steps - _first),
               const Spacer(),
               RhLink(label: l10n.rhSkip, muted: true, onTap: _leave),
             ],
@@ -509,9 +516,9 @@ class _PersonalizeFlowScreenState extends ConsumerState<PersonalizeFlowScreen> {
 
     return PopScope(
       // Back goes to the previous step; from EN01 (or EN03 on its own) it leaves.
-      canPop: _step == 0 || widget.notificationsOnly,
+      canPop: _step == _first || widget.notificationsOnly,
       onPopInvokedWithResult: (didPop, _) {
-        if (!didPop && _step > 0) setState(() => _step--);
+        if (!didPop && _step > _first) setState(() => _step--);
       },
       child: OnboardingScaffold(
         topBar: topBar,

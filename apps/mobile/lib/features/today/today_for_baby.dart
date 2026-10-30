@@ -10,7 +10,11 @@ import '../../core/design/tokens.g.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../l10n/app_localizations.dart';
+import '../adaptive/experience_repository.dart'
+    show adaptiveOnProvider, contentPreferencesProvider;
+import '../adaptive/today_adaptive.dart' show editChildGoals;
 import '../ai/handover_screen.dart' show HandoverEntry;
+import '../baby/baby_models.dart' show MemberRole;
 import '../baby/baby_repository.dart';
 import '../care/care_repository.dart';
 import '../home/home_shell.dart';
@@ -68,9 +72,10 @@ class TodayForBabySection extends ConsumerWidget {
       for (final c in ref.watch(forBabyCardsProvider(query)))
         if (c.id != teaser?.id) c,
     ];
-    final interests =
-        ref.watch(userPreferencesProvider(me.uid)).value?.interests ??
-        const <Interest>[];
+    // D-143: with Adaptive Experience the topics are this child's goals.
+    final interests = ref
+        .watch(contentPreferencesProvider((uid: me.uid, babyId: me.babyId)))
+        .interests;
     final dayKey = (babyId: me.babyId, uid: me.uid, locale: language);
     final dayState = ref.watch(personalDayProvider(dayKey));
     // D-091: the kept copy draws the card at once; the fresh snapshot replaces it.
@@ -154,13 +159,20 @@ class TodayHandoverRow extends ConsumerWidget {
 /// "Dành cho bé hôm nay" with a small interests button at its end (owner, 2026-10-18: the line
 /// "Theo điều bạn quan tâm · Đổi" took a row that is rarely needed). Before the person picked
 /// anything, the button carries a dot so "Chọn" is still noticed.
-class ForBabyHeader extends StatelessWidget {
+class ForBabyHeader extends ConsumerWidget {
   const ForBabyHeader({required this.hasInterests, super.key});
   final bool hasInterests;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    // D-143 (4): with Adaptive Experience the topics are this child's goals, so the button
+    // opens them; otherwise EN01's interests.
+    final goals = ref.watch(adaptiveOnProvider);
+    final me = ref.watch(selectedMembershipProvider);
+    final babyId = me?.babyId;
+    // Goals are a parent's (D-097 Q-092): a caregiver's topics follow the child's age.
+    final canChange = !goals || me?.role == MemberRole.coParent;
     final cl = context.cl;
     final link = hasInterests ? l10n.hnForBabyChange : l10n.hnForBabyPick;
     final why = hasInterests
@@ -176,44 +188,48 @@ class ForBabyHeader extends StatelessWidget {
               child: Text(l10n.rhSectionForYou, style: cl.text.headline),
             ),
           ),
-          ClPressable(
-            key: const Key('forBabyChange'),
-            onPressed: () => context.push(Routes.rhythmInterests),
-            semanticLabel: '$why · $link · ${l10n.rhInterestsRow}',
-            child: SizedBox.square(
-              dimension: ClSpace.tapMin,
-              child: Center(
-                child: Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: cl.colors.surface2,
-                    shape: BoxShape.circle,
-                  ),
-                  alignment: Alignment.center,
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      ClIcon(ClIcons.sliders, size: 18, color: cl.colors.ink),
-                      if (!hasInterests)
-                        Positioned(
-                          right: -3,
-                          top: -3,
-                          child: Container(
-                            width: 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color: cl.colors.mintText,
-                              shape: BoxShape.circle,
+          if (canChange)
+            ClPressable(
+              key: const Key('forBabyChange'),
+              onPressed: () => goals && babyId != null
+                  ? editChildGoals(context, ref, babyId)
+                  : context.push(Routes.rhythmInterests),
+              semanticLabel:
+                  '$why · $link · ${goals ? l10n.axGoalsLabel : l10n.rhInterestsRow}',
+              child: SizedBox.square(
+                dimension: ClSpace.tapMin,
+                child: Center(
+                  child: Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: cl.colors.surface2,
+                      shape: BoxShape.circle,
+                    ),
+                    alignment: Alignment.center,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        ClIcon(ClIcons.sliders, size: 18, color: cl.colors.ink),
+                        if (!hasInterests)
+                          Positioned(
+                            right: -3,
+                            top: -3,
+                            child: Container(
+                              width: 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: cl.colors.mintText,
+                                shape: BoxShape.circle,
+                              ),
                             ),
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );
@@ -300,9 +316,9 @@ final forBabyCardsProvider = Provider.family<List<ForBabyCard>, ForBabyQuery>((
   ref,
   q,
 ) {
-  final prefs =
-      ref.watch(userPreferencesProvider(q.uid)).value ??
-      UserPreferences.defaults;
+  final prefs = ref.watch(
+    contentPreferencesProvider((uid: q.uid, babyId: q.babyId)),
+  );
   final day = ref.watch(
     personalDayHomeProvider((
       babyId: q.babyId,

@@ -166,9 +166,9 @@
   "@welcomeTitle": {
     "description": "Welcome title (26:4)."
   },
-  "welcomeExplore": "Bắt đầu chặng đầu cùng con",
+  "welcomeExplore": "Bắt đầu cùng con",
   "@welcomeExplore": {
-    "description": "Welcome primary: feature tour."
+    "description": "Welcome primary: feature tour. D-143: cross-age wording."
   },
   "welcomeSignIn": "Đăng nhập",
   "@welcomeSignIn": {
@@ -278,9 +278,9 @@
   "@tourPrivateInitials": {
     "description": "Tour 4 avatar initials: mother|father|grandma|nanny, separated by |."
   },
-  "tourCreateProfile": "Tạo hồ sơ bé",
+  "tourCreateProfile": "Tạo hồ sơ",
   "@tourCreateProfile": {
-    "description": "Tour 4/4 primary."
+    "description": "Tour 4/4 primary. D-143: cross-age wording."
   },
   "signInTitle": "Chào bạn",
   "@signInTitle": {
@@ -469,7 +469,7 @@
   },
   "whoTitle": "Bạn là ai với bé?",
   "@whoTitle": {
-    "description": "Screen 10a title (115:11756)."
+    "description": "Screen 10a title (115:11756). D-143: cross-age wording."
   },
   "whoSubtitle": "Cả nhà sẽ thấy “{label} ghi” trên từng bản ghi.",
   "@whoSubtitle": {
@@ -532,9 +532,9 @@
   "@babyNicknameLabel": {
     "description": "Baby nickname label (29:721)."
   },
-  "babyNicknamePlaceholder": "Tên bé",
+  "babyNicknamePlaceholder": "Tên thân mật",
   "@babyNicknamePlaceholder": {
-    "description": "Shown while the nickname is empty."
+    "description": "Shown while the nickname is empty. D-143: cross-age wording."
   },
   "babyDob": "Ngày sinh",
   "@babyDob": {
@@ -584,9 +584,9 @@
   "@a11yChangeBabyPhoto": {
     "description": "Camera badge on the avatar."
   },
-  "babyNicknameRequired": "Đặt tên thân mật cho bé nhé.",
+  "babyNicknameRequired": "Nhập tên thân mật nhé.",
   "@babyNicknameRequired": {
-    "description": "Validation when Tiếp is tapped without a nickname."
+    "description": "Validation when Tiếp is tapped without a nickname. D-143: cross-age wording."
   },
   "dobAgeHint": "{name} được {age}",
   "@dobAgeHint": {
@@ -786,13 +786,13 @@
   "@trackersPickOne": {
     "description": "Disabled primary when nothing is selected."
   },
-  "createBabyLimit": "Mỗi tài khoản tạo được tối đa 3 hồ sơ bé.",
+  "createBabyLimit": "Mỗi tài khoản tạo được tối đa 3 hồ sơ.",
   "@createBabyLimit": {
-    "description": "R-043."
+    "description": "R-043. D-143: cross-age wording."
   },
-  "createBabyFailed": "Chưa tạo được hồ sơ bé. Kiểm tra mạng rồi thử lại nhé.",
+  "createBabyFailed": "Chưa tạo được hồ sơ. Kiểm tra mạng rồi thử lại nhé.",
   "@createBabyFailed": {
-    "description": "createBaby failed."
+    "description": "createBaby failed. D-143: cross-age wording."
   },
   "createBabyDobFuture": "Ngày sinh không thể ở tương lai.",
   "@createBabyDobFuture": {
@@ -1001,9 +1001,9 @@
       }
     }
   },
-  "babyPickerTitle": "Chọn bé",
+  "babyPickerTitle": "Chọn hồ sơ",
   "@babyPickerTitle": {
-    "description": "Baby switcher sheet title (125:13223)."
+    "description": "Baby switcher sheet title (125:13223). D-143: cross-age wording."
   },
   "babyPickerYouAre": "Bạn là {label}",
   "@babyPickerYouAre": {
@@ -1026,9 +1026,9 @@
       }
     }
   },
-  "babyPickerAdd": "Thêm hồ sơ bé",
+  "babyPickerAdd": "Thêm hồ sơ",
   "@babyPickerAdd": {
-    "description": "Add row in the baby switcher."
+    "description": "Add row in the baby switcher. D-143: cross-age wording."
   },
   "babyPickerCount": "{count}/{max}",
   "@babyPickerCount": {
@@ -1042,9 +1042,9 @@
       }
     }
   },
-  "babyPickerLimit": "Bạn tạo được tối đa {max} hồ sơ bé.",
+  "babyPickerLimit": "Bạn tạo được tối đa {max} hồ sơ.",
   "@babyPickerLimit": {
-    "description": "Footnote under the baby list.",
+    "description": "Footnote under the baby list. D-143: cross-age wording.",
     "placeholders": {
       "max": {
         "type": "int"
@@ -1152,17 +1152,17 @@
   "@acDeleteAnyway": {
     "description": "AU-3: delete although writes are unsent."
   },
-  "acDeleteOwnsBabies": "Cần chuyển chủ hồ sơ bé trước khi xoá tài khoản.",
+  "acDeleteOwnsBabies": "Cần chuyển chủ hồ sơ của các con trước khi xoá tài khoản.",
   "@acDeleteOwnsBabies": {
-    "description": "AU-3: server refused deletion, the account still owns babies (R-046)."
+    "description": "AU-3: server refused deletion, the account still owns babies (R-046). D-143: cross-age wording."
   },
   "profileSaveFailed": "Chưa lưu được hồ sơ. Thử lại nhé.",
   "@profileSaveFailed": {
     "description": "AU-4: baby or personal profile save failed."
   },
-  "bpLoadFailed": "Chưa tải được hồ sơ của bé.",
+  "bpLoadFailed": "Chưa tải được hồ sơ.",
   "@bpLoadFailed": {
-    "description": "AU-5: 13k edit form could not load the saved profile."
+    "description": "AU-5: 13k edit form could not load the saved profile. D-143: cross-age wording."
   },
   "joinLoadFailedTitle": "Chưa mở được lời mời",
   "@joinLoadFailedTitle": {
@@ -1318,15 +1318,15 @@
   },
   "inviteRelationLabel": "Người được mời là",
   "@inviteRelationLabel": {
-    "description": "14b relation label."
+    "description": "14b relation label. D-143: cross-age wording."
   },
   "inviteRoleLabel": "Quyền",
   "@inviteRoleLabel": {
     "description": "14b / 14f role label."
   },
-  "inviteCustomLabel": "Là ai với bé",
+  "inviteCustomLabel": "Là ai với con",
   "@inviteCustomLabel": {
-    "description": "Custom relation field for \"Khác…\"."
+    "description": "Custom relation field for \"Khác…\". D-143: cross-age wording."
   },
   "roleCoParentHint": "Toàn quyền, như ba mẹ",
   "@roleCoParentHint": {
@@ -1366,7 +1366,7 @@
   },
   "rightBabyInfo": "Thông tin bé",
   "@rightBabyInfo": {
-    "description": "Extra right: DOB and weight."
+    "description": "Extra right: DOB and weight. D-143: cross-age wording."
   },
   "rightBabyInfoHint": "Ngày sinh, cân nặng",
   "@rightBabyInfoHint": {
@@ -1717,9 +1717,9 @@
   "@memberAccessClear": {
     "description": "Access date sheet plain."
   },
-  "memberRelation": "Là ai với bé",
+  "memberRelation": "Là ai với con",
   "@memberRelation": {
-    "description": "14f detail row."
+    "description": "14f detail row. D-143: cross-age wording."
   },
   "memberRemove": "Xoá {name} khỏi gia đình",
   "@memberRemove": {
@@ -1836,9 +1836,9 @@
       }
     }
   },
-  "joinRoleLine": "cùng chăm bé {baby} với vai trò",
+  "joinRoleLine": "cùng chăm {baby} với vai trò",
   "@joinRoleLine": {
-    "description": "16 line before the role chip.",
+    "description": "16 line before the role chip. D-143: cross-age wording.",
     "placeholders": {
       "baby": {
         "type": "String"
@@ -1969,9 +1969,9 @@
   "@lostAccessRequest": {
     "description": "9d secondary → share sheet."
   },
-  "lostAccessShareText": "Mình không còn xem được hồ sơ của bé trên Child Life. Bạn gửi mình lời mời mới nhé?",
+  "lostAccessShareText": "Mình không còn xem được hồ sơ trên Child Life nữa. Bạn gửi mình lời mời mới nhé?",
   "@lostAccessShareText": {
-    "description": "Message shared from 9d."
+    "description": "Message shared from 9d. D-143: cross-age wording."
   },
   "agoJustNow": "Vừa xong",
   "@agoJustNow": {
@@ -6161,21 +6161,21 @@
       }
     }
   },
-  "meStorageShared": "Dùng chung cho tất cả các bé của bạn",
+  "meStorageShared": "Dùng chung cho tất cả các con của bạn",
   "@meStorageShared": {
-    "description": "13a footnote."
+    "description": "13a footnote. D-143: cross-age wording."
   },
-  "meBabies": "Hồ sơ các bé",
+  "meBabies": "Hồ sơ các con",
   "@meBabies": {
-    "description": "13a row / 13i title."
+    "description": "13a row / 13i title. D-143: cross-age wording."
   },
   "meAssigned": "Bé được giao",
   "@meAssigned": {
-    "description": "13g row."
+    "description": "13g row. D-143: cross-age wording."
   },
   "meFollowing": "Các bé bạn theo dõi",
   "@meFollowing": {
-    "description": "13h row."
+    "description": "13h row. D-143: cross-age wording."
   },
   "meNotifications": "Thông báo",
   "@meNotifications": {
@@ -6235,9 +6235,9 @@
       }
     }
   },
-  "stFootnote": "Dùng chung cho tất cả các bé · ảnh ba và mẹ tải lên đều tính vào đây",
+  "stFootnote": "Dùng chung cho tất cả các con · ảnh ba và mẹ tải lên đều tính vào đây",
   "@stFootnote": {
-    "description": "13b helper."
+    "description": "13b helper. D-143: cross-age wording."
   },
   "stNearTitle": "Sắp đầy · {percent}%",
   "@stNearTitle": {
@@ -6422,9 +6422,9 @@
       }
     }
   },
-  "bpAdd": "Thêm bé",
+  "bpAdd": "Thêm hồ sơ",
   "@bpAdd": {
-    "description": "13i tile."
+    "description": "13i tile. D-143: cross-age wording."
   },
   "bpDeleting": "Đang xoá…",
   "@bpDeleting": {
@@ -6743,9 +6743,9 @@
       }
     }
   },
-  "acTransferNone": "Chưa có ai Cùng nuôi tất cả các bé.",
+  "acTransferNone": "Chưa có ai Cùng nuôi tất cả các con.",
   "@acTransferNone": {
-    "description": "Transfer sheet empty."
+    "description": "Transfer sheet empty. D-143: cross-age wording."
   },
   "acTransferSend": "Gửi đề nghị",
   "@acTransferSend": {
@@ -9210,9 +9210,9 @@
   "@a11yDragToReorder": {
     "description": "Drag handle a11y."
   },
-  "welcomeBody": "Chăm sóc, thấu hiểu và lưu giữ hành trình của con — bắt đầu từ năm đầu đời.",
+  "welcomeBody": "Chăm sóc, thấu hiểu và lưu giữ hành trình lớn lên của con.",
   "@welcomeBody": {
-    "description": "01 Chào mừng body (368:998)."
+    "description": "01 Chào mừng body (368:998). D-143: cross-age wording."
   },
   "journeyFeed": "Bú bình · 120 ml",
   "@journeyFeed": {
@@ -9250,9 +9250,9 @@
   "@journeyStage4": {
     "description": "Journey stage chip."
   },
-  "a11yJourney": "Hành trình lớn lên của con, từ năm đầu đời đến 12 tuổi",
+  "a11yJourney": "Hành trình lớn lên của con, từ ngày đầu đến 12 tuổi",
   "@a11yJourney": {
-    "description": "Journey illustration label."
+    "description": "Journey illustration label. D-143: cross-age wording."
   },
   "welcomeBackTitle": "Chào mừng trở lại",
   "@welcomeBackTitle": {
@@ -10243,7 +10243,7 @@
   },
   "vxNoDobBody": "Ba mẹ thêm ngày sinh trong hồ sơ bé.",
   "@vxNoDobBody": {
-    "description": "No DOB body."
+    "description": "No DOB body. D-143: cross-age wording."
   },
   "vxViewTitle": "Xem lịch tiêm theo",
   "@vxViewTitle": {
@@ -10867,7 +10867,7 @@
   },
   "joinFromProfileHint": "Được mời chăm một bé khác? Nhập mã 6 số trong lời mời.",
   "@joinFromProfileHint": {
-    "description": "Under the row."
+    "description": "Under the row. D-143: cross-age wording."
   },
   "myInvitesTitle": "Lời mời cho bạn",
   "@myInvitesTitle": {
@@ -10957,9 +10957,9 @@
   "@myInviteSheetTitle": {
     "description": "The sheet for one invite mailed to me."
   },
-  "myInviteSheetHint": "Đồng ý xong, {baby} sẽ có trong danh sách bé của bạn.",
+  "myInviteSheetHint": "Đồng ý xong, {baby} sẽ có trong danh sách của bạn.",
   "@myInviteSheetHint": {
-    "description": "Under Đồng ý / Từ chối.",
+    "description": "Under Đồng ý / Từ chối. D-143: cross-age wording.",
     "placeholders": {
       "baby": {
         "type": "String"
@@ -13898,7 +13898,7 @@
   },
   "autoSaveStep1": "Chọn bé và vài ảnh rõ mặt",
   "@autoSaveStep1": {
-    "description": "AS02 step 1"
+    "description": "AS02 step 1 D-143: cross-age wording."
   },
   "autoSaveStep2": "App tìm trong ảnh mới",
   "@autoSaveStep2": {
@@ -13939,7 +13939,7 @@
   },
   "autoSavePickBabySub": "Bước 1/3 · Có thể thêm bé khác sau trong Cài đặt.",
   "@autoSavePickBabySub": {
-    "description": "AS03 subtitle"
+    "description": "AS03 subtitle D-143: cross-age wording."
   },
   "autoSaveYouAre": "Bạn là {relation}",
   "@autoSaveYouAre": {
@@ -14764,7 +14764,7 @@
   },
   "autoSaveBabies": "Bé & ảnh mẫu",
   "@autoSaveBabies": {
-    "description": "AS19 section"
+    "description": "AS19 section D-143: cross-age wording."
   },
   "autoSaveSamplesOn": "{count, plural, other{{count} ảnh mẫu · đang gợi ý}}",
   "@autoSaveSamplesOn": {
@@ -14781,7 +14781,7 @@
   },
   "autoSaveAddBaby": "Thêm bé",
   "@autoSaveAddBaby": {
-    "description": "AS19 row"
+    "description": "AS19 row D-143: cross-age wording."
   },
   "autoSaveLastStatus": "Trạng thái gần nhất",
   "@autoSaveLastStatus": {
@@ -15592,7 +15592,7 @@
   },
   "ksVideoPrefilled": "Điền sẵn từ hồ sơ của bé",
   "@ksVideoPrefilled": {
-    "description": "MM07 chip."
+    "description": "MM07 chip. D-143: cross-age wording."
   },
   "ksVideoBaby": "Bé",
   "@ksVideoBaby": {
@@ -22334,13 +22334,13 @@
   "@hnInviteHidden": {
     "description": "Toast after closing the Home invite."
   },
-  "hnForBabyBecause": "Theo điều bạn quan tâm",
+  "hnForBabyBecause": "Theo điều bạn chọn",
   "@hnForBabyBecause": {
-    "description": "Line under \"Dành cho bé hôm nay\" when the person picked interests."
+    "description": "Line under \"Dành cho bé hôm nay\" when the person picked interests. D-143: cross-age wording."
   },
-  "hnForBabyNoInterests": "Chưa chọn điều bạn quan tâm",
+  "hnForBabyNoInterests": "Chưa chọn gì",
   "@hnForBabyNoInterests": {
-    "description": "Line under \"Dành cho bé hôm nay\" without interests."
+    "description": "Line under \"Dành cho bé hôm nay\" without interests. D-143: cross-age wording."
   },
   "hnForBabyChange": "Đổi",
   "@hnForBabyChange": {
@@ -27208,7 +27208,7 @@
   "pv2Next": "Gợi ý cho hôm nay",
   "pv2BecauseNeed": "Theo điều gia đình vừa ghi nhận hôm nay",
   "pv2BecauseFocus": "Theo ưu tiên tuần này của bạn",
-  "pv2BecauseInterest": "Theo tuổi của bé và điều bạn quan tâm",
+  "pv2BecauseInterest": "Theo tuổi của bé và điều bạn chọn",
   "pv2BecauseAge": "Theo tuổi của bé",
   "pv2BecauseHelpful": "Nhà mình từng thấy cách này có ích",
   "pv2Minutes": "phút",
@@ -27334,7 +27334,7 @@
     "description": "Personalization v2: BecauseFocus"
   },
   "@pv2BecauseInterest": {
-    "description": "Personalization v2: BecauseInterest"
+    "description": "Personalization v2: BecauseInterest D-143: cross-age wording."
   },
   "@pv2BecauseAge": {
     "description": "Personalization v2: why today’s pick, when it is there for the baby’s age only (P-172 audit P2 #7)"
@@ -28910,9 +28910,9 @@
       }
     }
   },
-  "axTrackersSub": "Chỉ hiện những ô bạn chọn trên Hôm nay. Đổi lại sau trong hồ sơ bé.",
+  "axTrackersSub": "Chỉ hiện những ô bạn chọn trên Hôm nay. Đổi lại sau trong hồ sơ.",
   "@axTrackersSub": {
-    "description": "AX05 sub-line (\"Hồ sơ › Tuỳ chỉnh theo dõi\" until the Hồ sơ tab exists)."
+    "description": "AX05 sub-line (\"Hồ sơ › Tuỳ chỉnh theo dõi\" until the Hồ sơ tab exists). D-143: cross-age wording."
   },
   "tabExplore": "Khám phá",
   "@tabExplore": {
@@ -29148,9 +29148,9 @@
   "@exSaveToMemories": {
     "description": "AX45 button."
   },
-  "pfChildren": "Các bé",
+  "pfChildren": "Các con",
   "@pfChildren": {
-    "description": "AX34 group."
+    "description": "AX34 group. D-143: cross-age wording."
   },
   "pfChildRow": "{age} · mục tiêu & Hôm nay",
   "@pfChildRow": {
@@ -35415,5 +35415,27 @@
   "glanceGalleryPlanFamilyBlurb": "Cả nhà đã xong bao nhiêu việc hôm nay",
   "@glanceGalleryPlanFamilyBlurb": {
     "description": "Widget gallery blurb. EN is an engineering draft for owner review."
+  },
+  "ksOccBirthday": "Sinh nhật {years} tuổi",
+  "@ksOccBirthday": {
+    "description": "MM10 \"Chọn dịp\" chip for a birthday from 2 to 12 years (D-143); {years} is the age turned (en \"Turning {years}\": Flutter plurals have no ordinal forms). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "years": {
+        "type": "int"
+      }
+    }
+  },
+  "ksTitleYears": "{years} tuổi",
+  "@ksTitleYears": {
+    "description": "The big words on a birthday card from 2 to 12 years (like ksTitleY1 \"1 tuổi\"); {years} is the age turned. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "years": {
+        "type": "int"
+      }
+    }
+  },
+  "ksQuoteBirthday": "Thêm một tuổi, thêm bao điều để nhớ",
+  "@ksQuoteBirthday": {
+    "description": "Default \"Lời nhắn\" on a birthday card from 2 to 12 years (D-143). EN is an engineering draft for owner review."
   }
 }

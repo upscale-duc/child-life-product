@@ -122,7 +122,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcomeTitle => 'Grow up together,\nevery step of the way.';
 
   @override
-  String get welcomeExplore => 'Start the first stage together';
+  String get welcomeExplore => 'Get started';
 
   @override
   String get welcomeSignIn => 'Sign in';
@@ -209,7 +209,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tourPrivateInitials => 'M|D|G|N';
 
   @override
-  String get tourCreateProfile => 'Create baby profile';
+  String get tourCreateProfile => 'Create your child’s profile';
 
   @override
   String get signInTitle => 'Hello';
@@ -359,7 +359,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get existsLinked => 'Your email is now linked to your account.';
 
   @override
-  String get whoTitle => 'Who are you to the baby?';
+  String get whoTitle => 'How are you related to the child?';
 
   @override
   String whoSubtitle(String label) {
@@ -406,7 +406,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get babyNicknameLabel => 'Nickname';
 
   @override
-  String get babyNicknamePlaceholder => 'Baby\'s name';
+  String get babyNicknamePlaceholder => 'Child’s name';
 
   @override
   String get babyDob => 'Date of birth';
@@ -446,7 +446,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get a11yChangeBabyPhoto => 'Change profile photo';
 
   @override
-  String get babyNicknameRequired => 'Give your baby a nickname.';
+  String get babyNicknameRequired => 'Give your child a nickname.';
 
   @override
   String dobAgeHint(String name, String age) {
@@ -629,8 +629,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get trackersPickOne => 'Pick at least one';
 
   @override
-  String get createBabyLimit =>
-      'Each account can create up to 3 baby profiles.';
+  String get createBabyLimit => 'Each account can add up to 3 children.';
 
   @override
   String get createBabyFailed =>
@@ -770,7 +769,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get babyPickerTitle => 'Choose baby';
+  String get babyPickerTitle => 'Choose a child';
 
   @override
   String babyPickerYouAre(String label) {
@@ -783,7 +782,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get babyPickerAdd => 'Add baby profile';
+  String get babyPickerAdd => 'Add a child';
 
   @override
   String babyPickerCount(int count, int max) {
@@ -792,7 +791,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String babyPickerLimit(int max) {
-    return 'You can create up to $max baby profiles.';
+    return 'You can add up to $max children.';
   }
 
   @override
@@ -890,14 +889,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get acDeleteOwnsBabies =>
-      'Transfer your baby profiles before deleting your account.';
+      'Transfer your children’s profiles before deleting your account.';
 
   @override
   String get profileSaveFailed =>
       'Couldn\'t save the profile. Please try again.';
 
   @override
-  String get bpLoadFailed => 'Couldn\'t load the baby\'s profile.';
+  String get bpLoadFailed => 'Couldn’t load the profile.';
 
   @override
   String get joinLoadFailedTitle => 'Couldn\'t open the invite';
@@ -1017,13 +1016,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Couldn\'t load the list. Check your connection.';
 
   @override
-  String get inviteRelationLabel => 'They are your baby\'s';
+  String get inviteRelationLabel => 'They are your child’s';
 
   @override
   String get inviteRoleLabel => 'Access';
 
   @override
-  String get inviteCustomLabel => 'Relation to the baby';
+  String get inviteCustomLabel => 'Relation to your child';
 
   @override
   String get roleCoParentHint => 'Full access, like a parent';
@@ -1054,7 +1053,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get relativeRightsMore => 'Also allow';
 
   @override
-  String get rightBabyInfo => 'Baby info';
+  String get rightBabyInfo => 'Child info';
 
   @override
   String get rightBabyInfoHint => 'Birthday, weight';
@@ -1298,7 +1297,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get memberAccessClear => 'Remove limit';
 
   @override
-  String get memberRelation => 'Relation to baby';
+  String get memberRelation => 'Relation to the child';
 
   @override
   String memberRemove(String name) {
@@ -1469,7 +1468,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get lostAccessShareText =>
-      'I can\'t see our baby\'s profile on Child Life anymore. Could you send me a new invite?';
+      'I can’t see the profile on Child Life anymore. Could you send me a new invite?';
 
   @override
   String get agoJustNow => 'Just now';
@@ -4444,16 +4443,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get meStorageShared => 'Shared by all your babies';
+  String get meStorageShared => 'Shared by all your children';
 
   @override
-  String get meBabies => 'Baby profiles';
+  String get meBabies => 'Your children';
 
   @override
-  String get meAssigned => 'Assigned babies';
+  String get meAssigned => 'Assigned children';
 
   @override
-  String get meFollowing => 'Babies you follow';
+  String get meFollowing => 'Children you follow';
 
   @override
   String get meNotifications => 'Notifications';
@@ -4505,7 +4504,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get stFootnote =>
-      'Shared by all babies · photos both parents upload count here';
+      'Shared by all your children · photos both parents upload count here';
 
   @override
   String stNearTitle(int percent) {
@@ -4641,7 +4640,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get bpAdd => 'Add a baby';
+  String get bpAdd => 'Add a child';
 
   @override
   String get bpDeleting => 'Deleting…';
@@ -4845,7 +4844,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get acTransferNone => 'Nobody co-parents all the babies yet.';
+  String get acTransferNone => 'Nobody co-parents all the children yet.';
 
   @override
   String get acTransferSend => 'Send offer';
@@ -6566,7 +6565,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get welcomeBody =>
-      'Care for, understand and keep your child’s journey — starting with the first year.';
+      'Care for, understand and keep your child’s story as they grow.';
 
   @override
   String get journeyFeed => 'Bottle · 120 ml';
@@ -6597,7 +6596,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get a11yJourney =>
-      'Your child’s growing-up journey, from the first year to 12';
+      'Your child’s growing-up journey, from day one to 12';
 
   @override
   String get welcomeBackTitle => 'Welcome back';
@@ -7287,7 +7286,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get vxNoDobBody => 'Parents add it in the baby profile.';
+  String get vxNoDobBody => 'Parents add it in the child’s profile.';
 
   @override
   String get vxViewTitle => 'View the schedule by';
@@ -7729,7 +7728,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get joinFromProfileHint =>
-      'Invited to care for another baby? Enter the 6-digit code from the invite.';
+      'Invited to care for another child? Enter the 6-digit code from the invite.';
 
   @override
   String get myInvitesTitle => 'Invites for you';
@@ -7784,7 +7783,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String myInviteSheetHint(String baby) {
-    return 'Once you accept, $baby joins your list of babies.';
+    return 'Once you accept, $baby joins your list.';
   }
 
   @override
@@ -9958,7 +9957,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Child Life finds photos and videos that may show your baby. You check them before anything is uploaded.';
 
   @override
-  String get autoSaveStep1 => 'Pick your baby and a few clear photos';
+  String get autoSaveStep1 => 'Pick your child and a few clear photos';
 
   @override
   String get autoSaveStep2 => 'The app looks through new photos';
@@ -9990,7 +9989,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get autoSavePickBabySub =>
-      'Step 1 of 3 · You can add another baby later in Settings.';
+      'Step 1 of 3 · You can add another child later in Settings.';
 
   @override
   String autoSaveYouAre(String relation) {
@@ -10623,7 +10622,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'At most once a day · never in quiet hours';
 
   @override
-  String get autoSaveBabies => 'Babies and samples';
+  String get autoSaveBabies => 'Children and samples';
 
   @override
   String autoSaveSamplesOn(int count) {
@@ -10640,7 +10639,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get autoSaveSamplesNone => 'No samples · paused';
 
   @override
-  String get autoSaveAddBaby => 'Add a baby';
+  String get autoSaveAddBaby => 'Add a child';
 
   @override
   String get autoSaveLastStatus => 'Latest status';
@@ -11166,7 +11165,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ksVideoFinishTitle => 'Finish the video';
 
   @override
-  String get ksVideoPrefilled => 'Filled in from the baby’s profile';
+  String get ksVideoPrefilled => 'Filled in from the child’s profile';
 
   @override
   String get ksVideoBaby => 'Baby';
@@ -11995,11 +11994,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String rhReviewedBy(String reviewer, String credential) {
     return 'Reviewed by $reviewer · $credential';
   }
+
   @override
   String rhReviewedByTeam(String reviewer) {
     return 'Reviewed by $reviewer';
   }
-
 
   @override
   String rhJoinTwo(String a, String b) {
@@ -14332,7 +14331,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asComposerAnswer => 'Type your answer…';
 
   @override
-  @override
   String asComposerAnswering(String question) {
     return 'Replying to: $question';
   }
@@ -14340,6 +14338,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get asComposerDropQuestion => 'Drop this question';
 
+  @override
   String get asSend => 'Send';
 
   @override
@@ -14361,9 +14360,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asFabLabel => 'Open Lumi';
 
   @override
-  @override
   String get asHistoryAsk => 'Ask Lumi: “How many feeds today?”';
 
+  @override
   String get asModuleExpenseTitle => 'Snap a receipt or type to log';
 
   @override
@@ -16137,10 +16136,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Hidden. You can still adjust this in Me › Personalisation.';
 
   @override
-  String get hnForBabyBecause => 'Based on what you care about';
+  String get hnForBabyBecause => 'Based on what you picked';
 
   @override
-  String get hnForBabyNoInterests => 'No interests picked yet';
+  String get hnForBabyNoInterests => 'Nothing picked yet';
 
   @override
   String get hnForBabyChange => 'Change';
@@ -17535,13 +17534,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asEditDiaper => 'Edit diaper change';
 
   @override
-  @override
   String get asEditMeal => 'Edit meal';
 
   @override
   String get asHistoryAskMeal =>
       'Tell Lumi about a meal: “Pumpkin porridge at lunch”';
 
+  @override
   String get asEditGrowth => 'Edit measurement';
 
   @override
@@ -19556,7 +19555,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pv2BecauseInterest =>
-      'Based on your baby’s age and your interests';
+      'Based on your baby’s age and what you picked';
 
   @override
   String get pv2BecauseAge => 'Based on your baby’s age';
@@ -25554,4 +25553,17 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get glanceGalleryPlanFamilyBlurb =>
       'How much the family has done today';
+
+  @override
+  String ksOccBirthday(int years) {
+    return 'Turning $years';
+  }
+
+  @override
+  String ksTitleYears(int years) {
+    return '$years years';
+  }
+
+  @override
+  String get ksQuoteBirthday => 'Another year, so much to remember';
 }

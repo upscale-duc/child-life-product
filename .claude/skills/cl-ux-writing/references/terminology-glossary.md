@@ -125,6 +125,7 @@ docs.
 | Co-parent | Cùng nuôi | Co-parent | — | Implemented | Verified | `roleCoParent` |
 | Caregiver | Người chăm sóc (11) · Người chăm (12) · người cùng chăm (5) | Caregiver | Recommended: "Người chăm sóc" as the role; "người cùng chăm" only in sentences about everyone who helps | Implemented | **Owner decision** (role name) | `roleCaregiver`, `familyInvite` |
 | Relative | Người thân | **Family member** (role) · relatives (13) | Recommended: en "Family member" for the role label, "relatives" only in plain sentences | Implemented | **Owner decision** | `roleRelative`, `babyPrivacyNote` |
+| The child (cross-age screens) | Tên con · "con" when the reader is a parent; neutral ("hồ sơ", the name) on screens caregivers and relatives also read · "bé" kept on infant care screens | The child's name · child / children / your child · "baby" only on infant care screens | D-143: no "baby" in English on profile, family, switcher, invites, Kỷ niệm; Vietnamese "con" only for parents (a nanny or grandparent is not the child's parent) | Implemented | **Owner decision** (D-143) | `babyPickerTitle`, `meBabies`, `memberRelation`, `tool/d143_child_terms_strings.py` |
 | Parents | ba mẹ (55) | the parents · parents | Avoid "cha mẹ" (spending only), "bố mẹ" | Implemented | Recommended | — |
 | Invite | Mời · Lời mời | Invite · invitation | en "invite" in UI, "invitation" in mail and push | Implemented | Recommended | `joinExpiredTitle`, push templates |
 | Access / permissions | Quyền | Access | Avoid "Permission" in UI | Implemented | Verified | `inviteRoleLabel` |
