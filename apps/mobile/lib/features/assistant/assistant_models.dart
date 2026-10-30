@@ -344,7 +344,10 @@ enum NoticeCode with WireEnum {
   questionSetAside('QUESTION_SET_ASIDE'),
 
   /// A follow-up read against what waits ("là sao", "xoá cái vừa ghi"): said plainly.
-  followUp('FOLLOW_UP');
+  followUp('FOLLOW_UP'),
+
+  /// Lumi L5: "nhắc cữ bú mỗi 3 tiếng" — `link` opens the rule editor filled with it.
+  ruleSuggested('RULE_SUGGESTED');
 
   const NoticeCode(this.wire);
   @override

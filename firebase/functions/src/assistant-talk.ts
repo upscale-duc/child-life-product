@@ -1,4 +1,9 @@
-import type { AssistantPart, DraftKind, SmallTalkKind } from '@child-life/contracts';
+import type {
+  AssistantPart,
+  DraftKind,
+  ReminderRuleType,
+  SmallTalkKind,
+} from '@child-life/contracts';
 import { sha } from './assistant-common.js';
 
 /**
@@ -81,7 +86,8 @@ type NoticeCode =
   | 'MEDICINE_NOT_SCHEDULED'
   | 'DUPLICATE_SUSPECTED'
   | 'PREVIOUS_SAVED'
-  | 'CORRECTION_APPLIED';
+  | 'CORRECTION_APPLIED'
+  | 'REMINDER_ONCE';
 
 const notices: Record<NoticeCode, { vi: string; en: string }> = {
   MODULE_UNAVAILABLE: L(
@@ -115,6 +121,11 @@ const notices: Record<NoticeCode, { vi: string; en: string }> = {
   CORRECTION_APPLIED: L(
     'Mình đã sửa theo ý bạn và bỏ bản nháp trước.',
     'Corrected; the previous draft was set aside.',
+  ),
+  // Lumi L5: the repeating reminders are the care rules (feeds, sleep, diapers, pumping).
+  REMINDER_ONCE: L(
+    'Nhắc việc này chỉ nhắc một lần. Nhắc lặp lại hiện có cho cữ bú, giấc ngủ, thay tã và hút sữa.',
+    'This reminder rings once. Repeating reminders are for feeds, sleep, diaper changes and pumping.',
   ),
 };
 
@@ -281,5 +292,60 @@ export function appUpdatePart(kind: DraftKind, locale: Locale, link: string | nu
     text: words[locale],
     code: 'APP_UPDATE_NEEDED',
     ...(link ? { link } : {}),
+  };
+}
+
+// ---------- Lumi L5: recurring reminders ----------
+
+const ruleKind: Record<ReminderRuleType, { vi: string; en: string }> = {
+  feed: L('cữ bú', 'feeds'),
+  sleep: L('giấc ngủ', 'sleep'),
+  diaper: L('thay tã', 'diaper changes'),
+  pump: L('hút sữa', 'pumping'),
+};
+
+const hm = (m: number) => {
+  const h = Math.floor(m / 60);
+  const r = m % 60;
+  return { vi: r ? `${h} giờ ${r} phút` : `${h} giờ`, en: r ? `${h} h ${r} min` : `${h} h` };
+};
+
+/**
+ * "nhắc cữ bú mỗi 3 tiếng" from a Cùng nuôi: the app's rule editor opens with it (`link`); who is
+ * reminded is picked there, and nothing is saved until the person saves it. Anyone else: why not.
+ */
+export function rulePart(
+  r: { type: ReminderRuleType; intervalMinutes: number | null; times: string[] },
+  link: string,
+  canCreate: boolean,
+  locale: Locale,
+): AssistantPart {
+  if (!canCreate) {
+    return {
+      type: 'text',
+      schemaVersion: 1,
+      text: L(
+        'Chỉ Cùng nuôi đặt được nhắc lặp lại, nên mình chưa đặt nhắc này.',
+        'Only co-parents can set repeating reminders, so this one was not set.',
+      )[locale],
+    };
+  }
+  const kind = ruleKind[r.type][locale];
+  const when =
+    r.intervalMinutes !== null
+      ? L(
+          `mỗi ${hm(r.intervalMinutes).vi} sau lần ghi gần nhất`,
+          `every ${hm(r.intervalMinutes).en} after the last log`,
+        )
+      : L(`lúc ${r.times.join(', ')}`, `at ${r.times.join(', ')}`);
+  return {
+    type: 'text',
+    schemaVersion: 1,
+    text: L(
+      `Mình chuẩn bị sẵn nhắc ${kind} ${when.vi}. Chạm Đặt nhắc để chọn người được nhắc và lưu.`,
+      `Here is a reminder for ${kind} ${when.en}. Tap Set up reminder to choose who gets it and save.`,
+    )[locale],
+    code: 'RULE_SUGGESTED',
+    link,
   };
 }

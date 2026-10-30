@@ -63,6 +63,7 @@ import '../features/library/library_routes.dart';
 import '../features/me/profile_screen.dart';
 import '../features/me/storage_screens.dart';
 import '../features/reminders/reminder_screens.dart';
+import '../features/reminders/rule_models.dart' show RuleType;
 import '../features/reminders/rule_screens.dart';
 import '../features/feedback/feedback_repository.dart';
 import '../features/feedback/feedback_screens.dart';
@@ -598,6 +599,28 @@ final routerProvider = Provider<GoRouter>((ref) {
                           initialIntervalMinutes: int.tryParse(
                             s.uri.queryParameters['interval'] ?? '',
                           ),
+                          // Lumi L5: the kind, fixed times and days said.
+                          initialType: RuleType.values
+                              .asNameMap()[s.uri.queryParameters['type']],
+                          initialTimes: [
+                            for (final t
+                                in (s.uri.queryParameters['times'] ?? '').split(
+                                  ',',
+                                ))
+                              if (RegExp(
+                                r'^([01]\d|2[0-3]):[0-5]\d$',
+                              ).hasMatch(t))
+                                t,
+                          ],
+                          initialDays: [
+                            for (final d
+                                in (s.uri.queryParameters['days'] ?? '').split(
+                                  ',',
+                                ))
+                              if (int.tryParse(d) case final n?
+                                  when n >= 1 && n <= 7)
+                                n,
+                          ],
                         ),
                       ),
                       _route(

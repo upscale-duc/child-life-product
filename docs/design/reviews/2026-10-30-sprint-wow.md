@@ -64,6 +64,15 @@
 - **Kiểm chứng:** Functions unit 517 đạt (+7 `dishOf`); tích hợp Lumi 202 đạt (+2 ca bữa ăn); e2e model giả 349/350 (chỉ `ga-11` trong baseline, gồm 5 ca L5 mới `21-meals-l5.json`); model thật 12 ca (L5 + các câu có chữ "ăn") rồi 3 ca sau khi sửa tên món: 15 lượt `gpt-4.1-mini`, khoảng 110 000 token vào, 1 700 ra, khoảng 0,05 USD. Ca-02/ca-03 ("con 7 tháng ăn gì được?") trả thêm thẻ Thư viện nên harness đếm là "answer" thay vì "care"; câu trả lời vẫn đúng, không liên quan việc ghi bữa ăn. Ảnh: `as/ch06m_meal`, `as/ch06n_meal_edit` (Light/Night × vi/en).
 - **Đã deploy dev:** `startTask`, `submitClarification`, `runAssistantTask`, `quoteTask`, `patchDraft`, `confirmDrafts`.
 
+## L5 nhắc lặp lại qua Lumi (31/10)
+
+- **Làm gì:** "nhắc cữ bú mỗi 3 tiếng", "nhắc thay tã lúc 8h, 12h và 4h chiều hằng ngày", "remind me to pump every 3 hours" → thẻ "Mình chuẩn bị sẵn nhắc … Chạm Đặt nhắc để chọn người được nhắc và lưu." với nút **Đặt nhắc** mở màn "Nhắc mới" đã điền loại, khoảng cách hoặc giờ, ngày. Người dùng chọn người nhận và bấm Lưu ở đó (Lumi không tự lưu).
+- **Đọc bằng quy tắc**, không gọi model, 0 lượt (`assistant-recurring.ts`). Chữ "mỗi"/"cứ" đọc cả dấu, để "mới"/"cũ" không bị hiểu là lặp.
+- **Chỉ Cùng nuôi** nhận nút (như quyền tạo nhắc lặp của app); vai trò khác được nói rõ lý do.
+- **Nhắc việc thường kèm "mỗi"** ("nhắc tắm cho bé mỗi tối 7h"): vẫn tạo nhắc một lần như trước, nhưng giờ nói rõ "Nhắc việc này chỉ nhắc một lần. Nhắc lặp lại hiện có cho cữ bú, giấc ngủ, thay tã và hút sữa." Trước đây phần "mỗi" bị bỏ qua lặng lẽ.
+- **Khác kế hoạch:** nhắc lặp không thành thẻ nháp lưu ngay trong chat như bữa ăn, vì nó cần chọn người nhận và giờ yên lặng; màn "Nhắc mới" của app đã làm việc đó. Nhắc lặp cho việc ngoài chăm sóc (vitamin, tắm) cần một loại nhắc mới: quyết định của chủ sản phẩm.
+- **Kiểm chứng:** Functions unit 524 đạt (+9 `assistant-recurring`); app: test Lumi, replay và nhắc nhở 986 đạt (+ test điền sẵn, test link); e2e model giả 353/354 (chỉ `ga-11` baseline), gồm 4 ca mới `22-recurring-l5.json`; model thật 2 ca, 1 lượt gọi (7 767 token vào, 107 ra). Ảnh `as/ch06r_rule` (Light/Night × vi/en).
+
 ## Ghi chú
 
 - **23 ca e2e cũ đã cập nhật.**

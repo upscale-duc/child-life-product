@@ -17534,6 +17534,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asEditDiaper => 'Edit diaper change';
 
   @override
+  @override
+  String get asSetRule => 'Set up reminder';
+
   String get asEditMeal => 'Edit meal';
 
   @override

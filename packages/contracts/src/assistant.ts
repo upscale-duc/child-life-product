@@ -260,6 +260,12 @@ export const assistantNoticeCodes = [
   'QUESTION_SET_ASIDE',
   /** A follow-up was read against what waits ("180 chứ", "xoá cái vừa ghi", "là sao"). */
   'FOLLOW_UP',
+  // ---- Lumi L5 (recurring reminders) ----
+  /**
+   * "nhắc cữ bú mỗi 3 tiếng": the app's rule editor opened with what was said (`link`, under
+   * `/care/reminders/rules/new`); the person picks who is reminded and saves it there.
+   */
+  'RULE_SUGGESTED',
 ] as const;
 export type AssistantNoticeCode = (typeof assistantNoticeCodes)[number];
 

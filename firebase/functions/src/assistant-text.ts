@@ -1,4 +1,5 @@
 import type { Firestore, Timestamp } from 'firebase-admin/firestore';
+import { saysRecurring } from './assistant-recurring.js';
 import {
   addDaysIso,
   agoIn,
@@ -180,7 +181,9 @@ export type TextNoticeCode =
   | 'CORRECTION_APPLIED'
   | 'TIMER_RUNNING'
   // ---- Lumi fixes 2026-10-16 ----
-  | 'APP_UPDATE_NEEDED';
+  | 'APP_UPDATE_NEEDED'
+  // ---- Lumi L5: "mỗi sáng" on a one-time reminder ----
+  | 'REMINDER_ONCE';
 
 export interface TextNotice {
   kind: DraftKind;
@@ -1221,6 +1224,9 @@ export async function planTextIntents(
           continue;
         }
         if (!grounded(title)) uncertain.add('title');
+        // Lumi L5: a reminder only rings once; "mỗi sáng" is said, never dropped silently (the
+        // repeating ones are the care rules, assistant-recurring.ts).
+        if (saysRecurring(ctx.text)) notices.push({ kind, code: 'REMINDER_ONCE' });
         const d = relativeDateIn(ctx.text, today, 'future');
         let date: string | null = d?.date ?? null;
         if (d && !d.certain) uncertain.add('date');

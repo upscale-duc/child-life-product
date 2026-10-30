@@ -834,8 +834,21 @@ class _RulePage extends ConsumerWidget {
 /// times), then recipients and a summary (1d) → "Lưu nhắc" → 1a with a toast and the
 /// notification ask (1e, via the 8c pre-prompt since iOS cannot change the alert's body).
 class RuleEditorScreen extends ConsumerStatefulWidget {
-  const RuleEditorScreen({this.ruleId, this.initialIntervalMinutes, super.key});
+  const RuleEditorScreen({
+    this.ruleId,
+    this.initialIntervalMinutes,
+    this.initialType,
+    this.initialTimes,
+    this.initialDays,
+    super.key,
+  });
   final int? initialIntervalMinutes;
+
+  /// Lumi L5 ("nhắc thay tã lúc 8h, 12h hằng ngày"): the kind, fixed times and days said; the
+  /// person still picks who is reminded and saves.
+  final RuleType? initialType;
+  final List<String>? initialTimes;
+  final List<int>? initialDays;
 
   /// Null for a new rule.
   final String? ruleId;
@@ -860,8 +873,21 @@ class _RuleEditorScreenState extends ConsumerState<RuleEditorScreen> {
       return rule == null ? null : RuleDraft.of(rule);
     }
     if (members == null) return null;
+    final times = widget.initialTimes ?? const <String>[];
+    final days = widget.initialDays ?? const <int>[];
+    // Filled from somewhere else (Nhịp riêng, Lumi): only this person is ticked to begin with.
+    final prefilled =
+        widget.initialIntervalMinutes != null ||
+        widget.initialType != null ||
+        times.isNotEmpty;
     return RuleDraft(
       id: newRuleId(),
+      type: widget.initialType ?? RuleType.feed,
+      mode: times.isNotEmpty ? RuleMode.fixed : RuleMode.afterLast,
+      times: times.isNotEmpty
+          ? times.take(RuleLimits.timesMax).toList()
+          : const ['09:00', '13:00', '19:30'],
+      days: days.isNotEmpty ? days : RuleLimits.allDays,
       intervalMinutes:
           widget.initialIntervalMinutes != null &&
               widget.initialIntervalMinutes! >= RuleLimits.intervalMin &&
@@ -871,9 +897,7 @@ class _RuleEditorScreenState extends ConsumerState<RuleEditorScreen> {
           : 180,
       recipients: [
         for (final m in members)
-          if (_canReceive(m) &&
-              (widget.initialIntervalMinutes == null || m.uid == c.me.uid))
-            m.uid,
+          if (_canReceive(m) && (!prefilled || m.uid == c.me.uid)) m.uid,
       ],
     );
   }

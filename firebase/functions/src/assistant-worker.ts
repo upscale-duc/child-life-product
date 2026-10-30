@@ -1,3 +1,4 @@
+import { recurringRuleIn, ruleEditorLink } from './assistant-recurring.js';
 import { assistantReadsIn, privateReadTool } from '@child-life/contracts';
 import { assistantRead, firstAidRead, allowsAssistantRead } from './assistant-reads.js';
 import { Timestamp, type Firestore } from 'firebase-admin/firestore';
@@ -71,6 +72,7 @@ import {
 import {
   appUpdatePart,
   helpPart,
+  rulePart,
   noticePart,
   privateConversationId,
   reaskPart,
@@ -472,6 +474,24 @@ async function process(
   const dialogue = dialogueSnap?.exists ? dialogueOf(dialogueSnap, now) : undefined;
   if (t.followUp && t.followUp.kind !== 'continue' && t.modality === 'text') {
     return { ...(await processFollowUp(db, t, s, dialogue ?? null, now)), dialogue };
+  }
+  // Lumi L5: "nhắc cữ bú mỗi 3 tiếng" opens the app's rule editor with it (rules, 0 credits).
+  const rule =
+    t.modality === 'text' && (t.round ?? 0) === 0 && answers.length === 0
+      ? recurringRuleIn(text)
+      : null;
+  if (rule) {
+    const parts = [rulePart(rule, ruleEditorLink(rule), s.member.role === 'coParent', t.locale)];
+    return {
+      outcome: { kind: 'answer', parts },
+      errorCode: null,
+      drafts: [],
+      parts,
+      clarification: null,
+      modelCalls: 0,
+      releaseReady: true,
+      dialogue,
+    };
   }
   // Phase 2: known read questions never need a model, AI availability or credits.
   const directReads = t.modality === 'text' && t.ruleRead === true ? assistantReadsIn(text) : [];

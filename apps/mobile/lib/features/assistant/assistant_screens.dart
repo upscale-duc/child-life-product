@@ -2347,6 +2347,18 @@ class _ThreadView {
                 onPressed: () => GoRouter.of(context).pushSafe(link),
               ),
       ),
+      // Lumi L5: the rule editor, filled with what was said; saved there, never here.
+      NoticeCode.ruleSuggested => AsNoticeCard(
+        icon: ClIcons.bell,
+        text: text,
+        action: switch (ruleEditorRoute(link)) {
+          final route? => AsLink(
+            label: l10n.asSetRule,
+            onPressed: () => GoRouter.of(context).pushSafe(route),
+          ),
+          null => null,
+        },
+      ),
       NoticeCode.medicineNotScheduled => AsNoticeCard(
         icon: ClIcons.bell,
         text: text,
@@ -4839,6 +4851,28 @@ String? moduleRoute(String? link) {
   return uri.pathSegments.isNotEmpty && uri.pathSegments.every(safe.hasMatch)
       ? path
       : null;
+}
+
+/// Lumi L5: the rule editor a "nhắc … mỗi 3 tiếng" reply opens (`/care/reminders/rules/new` with
+/// only `type`, `interval`, `times`, `days`, each in its own shape); null for anything else.
+String? ruleEditorRoute(String? link) {
+  final uri = link == null ? null : Uri.tryParse(link);
+  if (uri == null || uri.hasScheme || uri.hasAuthority) return null;
+  if (uri.path != Routes.ruleNew) return null;
+  final shapes = {
+    'type': RegExp(r'^(feed|sleep|diaper|pump)$'),
+    'interval': RegExp(r'^\d{2,3}$'),
+    'times': RegExp(r'^\d{2}:\d{2}(,\d{2}:\d{2}){0,7}$'),
+    'days': RegExp(r'^[1-7](,[1-7]){0,6}$'),
+  };
+  final q = uri.queryParameters;
+  if (!q.entries.every((e) => shapes[e.key]?.hasMatch(e.value) ?? false)) {
+    return null;
+  }
+  return Uri(
+    path: Routes.ruleNew,
+    queryParameters: q.isEmpty ? null : q,
+  ).toString();
 }
 
 /// The app route of a timer notice's link (`/care/timer/{sleep|breast}`, query dropped); null

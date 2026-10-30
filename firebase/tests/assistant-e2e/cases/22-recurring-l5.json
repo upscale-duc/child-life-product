@@ -1,0 +1,50 @@
+{
+  "group": "reminder.rule",
+  "note": "Lumi L5 (recurring reminders, 2026-10-30): a repeating care reminder opens the app's rule editor filled with what was said (rules, no model, 0 credits); only a Cùng nuôi gets the button; a one-time reminder said with \"mỗi\" is told it rings once.",
+  "cases": [
+    {
+      "id": "l5r-01-feed-every-3h",
+      "title": "\"nhắc cữ bú mỗi 3 tiếng\": the rule editor, filled; nothing saved; no model",
+      "turns": [{ "say": "nhắc cữ bú mỗi 3 tiếng", "model": null }],
+      "expect": { "kinds": [], "codes": ["RULE_SUGGESTED"], "saved": 0, "credits": 0, "calls": 0 }
+    },
+    {
+      "id": "l5r-02-diaper-fixed-times",
+      "title": "\"nhắc thay tã lúc 8h, 12h và 4h chiều hằng ngày\": fixed times",
+      "turns": [{ "say": "nhắc thay tã lúc 8h, 12h và 4h chiều hằng ngày", "model": null }],
+      "expect": { "kinds": [], "codes": ["RULE_SUGGESTED"], "saved": 0, "credits": 0, "calls": 0 }
+    },
+    {
+      "id": "l5r-03-caregiver-told-why",
+      "title": "a Người chăm sóc asks for a repeating reminder: told only Cùng nuôi sets it, no button",
+      "as": "NANNY",
+      "turns": [{ "say": "nhắc hút sữa mỗi 3 tiếng", "model": null }],
+      "expect": {
+        "kinds": [],
+        "notCodes": ["RULE_SUGGESTED"],
+        "saved": 0,
+        "credits": 0,
+        "calls": 0
+      }
+    },
+    {
+      "id": "l5r-04-one-time-with-moi",
+      "title": "\"nhắc tắm cho bé mỗi tối 7h\": not a care rule; a one-time reminder, said to ring once",
+      "turns": [
+        {
+          "say": "nhắc tắm cho bé mỗi tối 7h",
+          "model": {
+            "i": [
+              {
+                "k": "reminder",
+                "f": { "title": "tắm cho bé", "time": "19:00" },
+                "ev": { "title": "tắm cho bé", "time": "7h" }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": { "kinds": ["reminder"], "notCodes": ["RULE_SUGGESTED"] }
+    }
+  ]
+}

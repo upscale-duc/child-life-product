@@ -198,6 +198,31 @@ final _cases = <String, _Case>{
       await tester.pumpAndSettle();
     },
   ),
+  // Lumi L5: a repeating care reminder → the rule editor, filled ("Đặt nhắc").
+  'ch06r_rule': _c(
+    repo: () => _repo(
+      tasks: {
+        taskA: snapshotWith(
+          task: taskJson(),
+          messages: [
+            userMessage('nhắc cữ bú mỗi 3 tiếng'),
+            assistantMessage([
+              {
+                'type': 'text',
+                'schemaVersion': 1,
+                'text':
+                    'Mình chuẩn bị sẵn nhắc cữ bú mỗi 3 giờ sau lần ghi gần '
+                    'nhất. Chạm Đặt nhắc để chọn người được nhắc và lưu.',
+                'code': 'RULE_SUGGESTED',
+                'link': '/care/reminders/rules/new?type=feed&interval=180',
+              },
+            ]),
+          ],
+        ),
+      },
+    ),
+    prefs: () => _thread([taskA]),
+  ),
   'ch07_partial': _c(
     height: 900,
     repo: () => _repo(

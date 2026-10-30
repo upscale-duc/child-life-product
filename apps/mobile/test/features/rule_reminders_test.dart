@@ -245,6 +245,36 @@ void main() {
       expect(find.text('Đã lưu nhắc bú'), findsOneWidget);
     });
 
+    testWidgets(
+      'Lumi L5: filled with the kind, times and days said; only me ticked',
+      (tester) async {
+        final repo = FakeRuleRepository();
+        await pumpRouted(
+          tester,
+          const RuleEditorScreen(
+            initialType: RuleType.diaper,
+            initialTimes: ['08:00', '16:00'],
+            initialDays: [1, 2, 3, 4, 5],
+          ),
+          overrides: careOverrides(records: mockDay(), ruleRepo: repo),
+        );
+        for (var i = 0; i < 2; i++) {
+          await tester.ensureVisible(find.text('Tiếp tục'));
+          await tester.tap(find.text('Tiếp tục'));
+          await tester.pumpAndSettle();
+        }
+        await tester.ensureVisible(find.text('Lưu nhắc'));
+        await tester.tap(find.text('Lưu nhắc'));
+        await tester.pumpAndSettle();
+        final saved = repo.saved.single;
+        expect(saved.type, RuleType.diaper);
+        expect(saved.mode, RuleMode.fixed);
+        expect(saved.times, ['08:00', '16:00']);
+        expect(saved.days, [1, 2, 3, 4, 5]);
+        expect(saved.recipients, ['u_mai']);
+      },
+    );
+
     testWidgets('fixed times: labelled by time of day, removable', (
       tester,
     ) async {

@@ -16445,6 +16445,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asEditDiaper => 'Sửa thay tã';
 
   @override
+  @override
+  String get asSetRule => 'Đặt nhắc';
+
   String get asEditMeal => 'Sửa bữa ăn';
 
   @override
