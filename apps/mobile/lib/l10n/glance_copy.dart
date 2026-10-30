@@ -98,6 +98,8 @@ Map<String, String> glanceCopy(AppLocalizations l) => {
   'rule.log.pump': l.ruleLogPump,
   'rule.snooze': l.notifSnooze15,
   'rule.skip': l.ruleSkip,
+  'ct.done': l.actionDone,
+  'ct.snooze': l.cpPushSnooze10,
   'vx.view': l.notifVxView,
   'vx.snooze': l.notifVxSnooze,
   'vx.move': l.vxReschedule,

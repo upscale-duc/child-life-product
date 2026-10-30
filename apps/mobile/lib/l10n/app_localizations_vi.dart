@@ -23839,4 +23839,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String careAtTime(String time) {
     return 'lúc $time';
   }
+
+  @override
+  String get cpPushSnooze10 => 'Nhắc lại 10 phút';
 }

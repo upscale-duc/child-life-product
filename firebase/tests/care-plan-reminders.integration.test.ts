@@ -34,11 +34,11 @@ const member = (uid: string, role: string) => ({
   role,
   status: 'active',
   displayName: uid,
-  relation: 'other',
-  relationCustom: null,
+  relation: uid === dad ? 'father' : 'other',
+  relationCustom: uid === nanny ? 'Cô Lan' : null,
 });
 
-const sent: { token: string; title: string; body: string; data: Record<string, string> }[] = [];
+const sent: ({ token: string } & Parameters<PushSender['send']>[1])[] = [];
 const sender: PushSender = {
   async send(tokens, message) {
     for (const token of tokens) sent.push({ token, ...message });
@@ -97,15 +97,20 @@ describe('N1 task reminders', () => {
     expect(to(dad)).toHaveLength(1);
     expect(to(nanny)).toHaveLength(1);
     expect(to(mom)).toHaveLength(0);
-    expect(to(dad)[0]!.title).toBe('5 phút nữa Teddy cần bạn rồi nè');
-    expect(to(dad)[0]!.body).toBe('09:00 Vitamin');
+    expect(to(dad)[0]!.title).toBe('Ba ơi, 5 phút nữa Teddy cần Ba rồi nè');
+    expect(to(dad)[0]!.body).toBe('Vitamin');
+    expect(to(nanny)[0]!.title).toBe('Cô Lan ơi, 5 phút nữa Teddy cần Cô Lan rồi nè');
     expect(to(dad)[0]!.data).toMatchObject({
       kind: 'careTaskDue',
       destination: 'CARE_TASK_DUE',
       babyId,
       date,
       items: id(1),
+      // Vitamin needs no log: "Xong" answers from the lock screen.
+      opensApp: '0',
     });
+    // Figma N1: Xong · Nhắc lại 10 phút, drawn by the app on Android.
+    expect(to(dad)[0]).toMatchObject({ androidDraws: true, apns: { category: 'CL_CARE_TASK' } });
     // The next minutes, and a retried run, send nothing more.
     await ringCareTaskReminders(db, sender, vn(8, 56));
     await ringCareTaskReminders(db, sender, vn(8, 56));
@@ -118,7 +123,7 @@ describe('N1 task reminders', () => {
     await task(1, '09:00', [dad, nanny]);
     await ringCareTaskReminders(db, sender, vn(8, 45));
     expect(to(dad)).toHaveLength(1);
-    expect(to(dad)[0]!.title).toBe('15 phút nữa Teddy cần bạn rồi nè');
+    expect(to(dad)[0]!.title).toBe('Ba ơi, 15 phút nữa Teddy cần Ba rồi nè');
     await ringCareTaskReminders(db, sender, vn(8, 59));
     expect(to(nanny)).toHaveLength(0);
   });
@@ -129,14 +134,16 @@ describe('N1 task reminders', () => {
     await task(3, '09:20', [dad], 'bath');
     await ringCareTaskReminders(db, sender, vn(8, 55));
     expect(to(dad)).toHaveLength(1);
-    expect(to(dad)[0]!.body).toBe('09:00 Vitamin · 09:10 Bú bình');
+    expect(to(dad)[0]!.body).toBe('Vitamin · Bú bình');
+    // Bú bình writes a log first (D-138): "Xong" opens the app.
+    expect(to(dad)[0]!.data.opensApp).toBe('1');
     expect(to(dad)[0]!.data.items).toBe(`${id(1)},${id(2)}`);
     // 09:10 was in that push; 09:20 rings on its own.
     await ringCareTaskReminders(db, sender, vn(9, 5));
     expect(to(dad)).toHaveLength(1);
     await ringCareTaskReminders(db, sender, vn(9, 15));
     expect(to(dad)).toHaveLength(2);
-    expect(to(dad)[1]!.body).toBe('09:20 Tắm');
+    expect(to(dad)[1]!.body).toBe('Tắm');
   });
 
   it('a moved task or a new person is reminded again; done or skipped tasks are not', async () => {
@@ -189,7 +196,7 @@ describe('N1 task reminders', () => {
       vn(6),
     );
     await ringCareTaskReminders(db, sender, vn(9, 55));
-    expect(to(nanny)[0]!.body).toBe('10:00 Việc riêng');
+    expect(to(nanny)[0]!.body).toBe('Việc riêng');
   });
 
   it('rings in quiet hours by default; held for who turned that off (Q5)', async () => {
@@ -211,8 +218,11 @@ describe('N1 task reminders', () => {
   it('copy without the baby’s name reads “bé”', () => {
     expect(careTaskCopy([{ task: 'bottle', time: '07:00' }], 10, 'vi')).toEqual({
       title: '10 phút nữa bé cần bạn rồi nè',
-      body: '07:00 Bú bình',
+      body: 'Bú bình',
     });
-    expect(careTaskCopy([{ task: 'bottle', time: '07:00' }], 10, 'en').body).toBe('07:00 Bottle');
+    expect(careTaskCopy([{ task: 'bottle', time: '07:00' }], 10, 'en').body).toBe('Bottle');
+    expect(
+      careTaskCopy([{ task: 'bottle', time: '07:00' }], 10, 'vi', { vi: 'Ba', en: 'Dad' }).title,
+    ).toBe('Ba ơi, 10 phút nữa bé cần Ba rồi nè');
   });
 });

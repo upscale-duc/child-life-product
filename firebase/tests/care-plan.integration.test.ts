@@ -362,7 +362,8 @@ describe('D-138: a log in Chăm sóc ticks the plan', () => {
     expect(byId[id(1)]).toMatchObject({ status: 'done', doneBy: 'dad', recordId: 'r1' });
     expect(byId[id(2)]!.status).toBe('open');
     expect(byId[id(3)]!.status).toBe('open');
-    expect((await history()).at(-1)).toMatchObject({ action: 'done', by: 'dad' });
+    // Every entry has the same `at` here: find it rather than trust the order.
+    expect((await history()).find((h) => h.action === 'done')).toMatchObject({ by: 'dad' });
   });
 
   it('more than an hour away, or a log from the plan itself, ticks nothing more', async () => {

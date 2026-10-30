@@ -183,6 +183,10 @@ s('cpShareCopied', 'Đã sao chép', 'Copied', 'Cùng Chăm Con 12: toast after 
 s('cpShareText', '{headline}: {count} việc. {people}', '{headline}: {count} tasks. {people}', 'Cùng Chăm Con 12: the copied summary.' + NOTE, headline='String', count='int', people='String')
 s('cpShareFailed', 'Chưa chia sẻ được. Thử lại nhé.', 'Couldn\'t share. Try again.', 'Cùng Chăm Con 12: share failed.' + NOTE)
 
+# N1 push buttons on Android (iOS registers its own, RuleNotifications.swift)
+s('cpPushSnooze10', 'Nhắc lại 10 phút', 'Remind me in 10 min',
+  'Cùng Chăm Con N1: the task push\'s second button; it rings again in ten minutes (Figma 1353:22588).' + NOTE)
+
 # Existing ids whose Vietnamese copy now follows Figma (English unchanged).
 VI = {
     'cpAssignGroup': 'Giao cả ca',

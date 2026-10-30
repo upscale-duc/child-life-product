@@ -39689,6 +39689,12 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'lúc {time}'**
   String careAtTime(String time);
+
+  /// Cùng Chăm Con N1: the task push's second button; it rings again in ten minutes (Figma 1353:22588). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc lại 10 phút'**
+  String get cpPushSnooze10;
 }
 
 class _AppLocalizationsDelegate

@@ -290,7 +290,13 @@ class CarePlanTodaySection extends ConsumerWidget {
 // ---------------------------------------------------------------------------------------------
 
 /// A task push (CARE_TASK_DUE) that was opened: show its tasks once nothing is in the way.
-typedef CarePlanDueRequest = ({String babyId, String date, List<String> ids});
+/// [done]: opened with the push's "Xong" (N1), so they are finished at once, logs first (D-138).
+typedef CarePlanDueRequest = ({
+  String babyId,
+  String date,
+  List<String> ids,
+  bool done,
+});
 
 class CarePlanDueRequests extends Notifier<CarePlanDueRequest?> {
   @override
@@ -469,6 +475,18 @@ class _CarePlanDueGateState extends ConsumerState<CarePlanDueGate> {
         unawaited(context.push(Routes.carePlan));
         ClToaster.of(context).show(message: l10n.cpDueGone);
         return;
+      }
+      if (request.done) {
+        final l10n = AppLocalizations.of(context);
+        return markCarePlanDone(
+          ref,
+          ClToaster.of(context),
+          l10n,
+          babyId: me.babyId,
+          date: request.date,
+          items: open,
+          context: context,
+        );
       }
       return _show(me, request.date, open, memory, now);
     }

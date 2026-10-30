@@ -67,21 +67,55 @@ function taskOf(d: DocumentSnapshot): Task | null {
   };
 }
 
-/** "09:00 Vitamin · 09:10 Bú bình". */
+/** "09:00 Vitamin · 09:10 Bú bình" (N5's first task). */
 export function taskLine(tasks: { task: CarePlanTask; time: string }[], language: Language) {
   return tasks.map((t) => `${t.time} ${carePlanTaskNames[t.task][language]}`).join(' · ');
 }
 
-/** The built-in copy (template version 0): "5 phút nữa bé cần bạn rồi nè". */
+/** "Vitamin · Bú bình" (Figma N1: the names, the title already says when). */
+export function taskNames(tasks: { task: CarePlanTask }[], language: Language) {
+  return tasks.map((t) => carePlanTaskNames[t.task][language]).join(' · ');
+}
+
+const relationLabels: Record<string, { vi: string; en: string }> = {
+  mother: { vi: 'Mẹ', en: 'Mum' },
+  father: { vi: 'Ba', en: 'Dad' },
+  grandmother: { vi: 'Bà', en: 'Grandma' },
+  grandfather: { vi: 'Ông', en: 'Grandpa' },
+};
+
+/** What the family calls a member ("Ba", "Cô Lan"); null when nothing is known. */
+export function memberLabel(
+  member: DocumentSnapshot | undefined,
+): { vi: string; en: string } | null {
+  if (!member?.exists) return null;
+  const known = relationLabels[(member.get('relation') as string | undefined) ?? ''];
+  if (known) return known;
+  const own =
+    (member.get('relationCustom') as string | undefined)?.trim() ||
+    (member.get('displayName') as string | undefined)?.trim();
+  return own ? { vi: own.slice(0, 40), en: own.slice(0, 40) } : null;
+}
+
+/** The built-in copy (template version 0): "Ba ơi, 5 phút nữa bé cần Ba rồi nè". */
 export function careTaskCopy(
   tasks: { task: CarePlanTask; time: string }[],
   minutes: number,
   language: Language,
+  person?: { vi: string; en: string } | null,
 ): { title: string; body: string } {
-  return language === 'en'
-    ? { title: `Your baby needs you in ${minutes} min`, body: taskLine(tasks, 'en') }
-    : { title: `${minutes} phút nữa bé cần bạn rồi nè`, body: taskLine(tasks, 'vi') };
+  if (language === 'en') {
+    const lead = person ? `${person.en}, your` : 'Your';
+    return { title: `${lead} baby needs you in ${minutes} min`, body: taskNames(tasks, 'en') };
+  }
+  const title = person
+    ? `${person.vi} ơi, ${minutes} phút nữa bé cần ${person.vi} rồi nè`
+    : `${minutes} phút nữa bé cần bạn rồi nè`;
+  return { title, body: taskNames(tasks, 'vi') };
 }
+
+/** Tasks the app must open for (a log to write or the sleep timer, D-138); others are done from the lock screen. */
+const opensApp = new Set<CarePlanTask>(['bottle', 'breast', 'pump', 'diaper', 'sleep']);
 
 /** For each person, the tasks that ring now: the first one due within their lead, plus theirs
  * less than [carePlanGroupMinutes] after it that were not reminded yet. */
@@ -154,6 +188,7 @@ export async function ringCareTaskReminders(
           : null,
       ]),
     );
+    const labels = new Map(people.map((u, i) => [u, memberLabel(members[i])]));
     const groups = dueGroups(tasks, (u) => prefs.get(u)?.leadMinutes ?? 0, now);
     for (const [uid, group] of groups) {
       const claimed = await db.runTransaction(async (tx) => {
@@ -174,6 +209,7 @@ export async function ringCareTaskReminders(
       const first = claimed[0]!;
       const minutes = Math.max(1, Math.round((first.dueAt.getTime() - now.getTime()) / MINUTE));
       const lines = claimed.map((t) => ({ task: t.task, time: t.time }));
+      const person = labels.get(uid) ?? null;
       pushes += 1;
       const result = await notifyUsers(
         db,
@@ -183,18 +219,33 @@ export async function ringCareTaskReminders(
           kind: 'careTaskDue',
           id: `ct-${first.id}-r${first.revision}`,
           babyId,
-          data: { babyId, date: first.date, items: claimed.map((t) => t.id).join(',') },
+          data: {
+            babyId,
+            date: first.date,
+            items: claimed.map((t) => t.id).join(','),
+            // "Xong" opens the app when a task writes a log or starts the sleep timer (D-138).
+            opensApp: claimed.some((t) => opensApp.has(t.task)) ? '1' : '0',
+          },
           message: (language) => ({
-            ...careTaskCopy(lines, minutes, language),
+            ...careTaskCopy(lines, minutes, language, person),
             // Stale after the task's time: the push says "in 5 min".
             expiresAt: first.dueAt.getTime() + 30 * MINUTE,
-            apns: { collapseId: `ct-${first.id}`, threadId: `ct-${babyId}` },
+            // Figma N1: "Xong" · "Nhắc lại 10 phút" (RuleNotifications.swift, Push.kt).
+            apns: {
+              category: claimed.some((t) => opensApp.has(t.task))
+                ? 'CL_CARE_TASK_APP'
+                : 'CL_CARE_TASK',
+              collapseId: `ct-${first.id}`,
+              threadId: `ct-${babyId}`,
+            },
+            androidDraws: true,
           }),
           template: {
             id: 'care.task_due',
             values: {
               minutes,
-              task_line: { vi: taskLine(lines, 'vi'), en: taskLine(lines, 'en') },
+              task_line: { vi: taskNames(lines, 'vi'), en: taskNames(lines, 'en') },
+              ...(person ? { recipient_name: person } : {}),
             },
           },
           quietHours: prefs.get(uid)?.quietHours === false ? 'held' : 'rings',

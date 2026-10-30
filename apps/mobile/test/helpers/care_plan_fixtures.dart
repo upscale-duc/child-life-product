@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:child_life/features/care/care_repository.dart';
 import 'package:child_life/features/care_plan/care_plan_models.dart';
 import 'package:child_life/features/care_plan/care_plan_repository.dart';
@@ -113,8 +115,13 @@ class FakeCarePlanRepository implements CarePlanRepository {
     String date,
     List<String> itemIds,
     List<String> assignees,
-  ) async =>
-      calls.add(('assign', {'itemIds': itemIds, 'assignees': assignees}));
+  ) async {
+    calls.add(('assign', {'itemIds': itemIds, 'assignees': assignees}));
+    await assignGate?.future;
+  }
+
+  /// Holds [assign] open until completed (the sheet's loading state).
+  Completer<void>? assignGate;
 
   @override
   Future<void> setStatus(

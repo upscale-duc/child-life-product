@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:child_life/core/widgets/cl_button.dart';
 import 'package:child_life/features/adaptive/explore_screen.dart';
 import 'package:child_life/features/baby/baby_models.dart';
@@ -231,6 +233,41 @@ void main() {
       for (final i in plan)
         if (i.period == CarePlanPeriod.morning) i.id,
     ]);
+  });
+
+  testWidgets('05: the sheet waits on the server with its button loading', (
+    tester,
+  ) async {
+    final plan = planFresh();
+    final repo = await _pump(tester, days: {carePlanToday: plan});
+    repo.assignGate = Completer<void>();
+    await _tap(tester, find.byKey(const ValueKey('cp_assign_morning')));
+    await _tap(tester, find.byKey(ValueKey('cp_assign_${lan.uid}')));
+    await tester.tap(find.byKey(const Key('cp_assign_confirm')));
+    await tester.pump();
+    final button = find.byKey(const Key('cp_assign_confirm'));
+    expect(button, findsOneWidget);
+    expect(tester.widget<ClButton>(button).loading, isTrue);
+    repo.assignGate!.complete();
+    await tester.pumpAndSettle();
+    expect(button, findsNothing);
+    expect(repo.calls.single.$1, 'assign');
+  });
+
+  testWidgets('05: a failed save keeps the sheet and says so', (tester) async {
+    final plan = planFresh();
+    final repo = await _pump(tester, days: {carePlanToday: plan});
+    repo.assignGate = Completer<void>();
+    await _tap(tester, find.byKey(const ValueKey('cp_assign_morning')));
+    await _tap(tester, find.byKey(ValueKey('cp_assign_${lan.uid}')));
+    await tester.tap(find.byKey(const Key('cp_assign_confirm')));
+    await tester.pump();
+    repo.assignGate!.completeError(StateError('offline'));
+    await tester.pumpAndSettle();
+    final button = find.byKey(const Key('cp_assign_confirm'));
+    expect(button, findsOneWidget);
+    expect(tester.widget<ClButton>(button).loading, isFalse);
+    expect(find.text(l.cpSaveFailed), findsOneWidget);
   });
 
   testWidgets('06b: skip today from the edit sheet; delete an everyday task', (

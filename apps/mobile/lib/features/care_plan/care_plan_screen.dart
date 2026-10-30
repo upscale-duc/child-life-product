@@ -102,16 +102,6 @@ class _CarePlanScreenState extends ConsumerState<CarePlanScreen> {
     }
   }
 
-  Future<void> _run(Future<void> Function() call) async {
-    final l10n = AppLocalizations.of(context);
-    final toaster = ClToaster.of(context);
-    try {
-      await call();
-    } on Object {
-      toaster.show(message: l10n.cpSaveFailed, error: true);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -270,7 +260,8 @@ class _CarePlanScreenState extends ConsumerState<CarePlanScreen> {
                 for (final u in target.first.assignees)
                   if (target.every((i) => i.assignees.contains(u))) u,
               ];
-        final chosen = await showCarePlanAssign(
+        final toaster = ClToaster.of(context);
+        await showCarePlanAssign(
           context,
           title: title,
           people: people,
@@ -289,12 +280,18 @@ class _CarePlanScreenState extends ConsumerState<CarePlanScreen> {
                   target.last.time,
                 )
               : '${target.first.time} · ${carePlanTaskName(l10n, target.first)}',
-        );
-        if (chosen == null || !mounted) return;
-        await _run(
-          () => ref.read(carePlanRepositoryProvider).assign(babyId, date, [
-            for (final i in target) i.id,
-          ], chosen),
+          // The sheet waits on the server with its button loading (owner, 2026-10-30).
+          onSave: (chosen) async {
+            try {
+              await ref.read(carePlanRepositoryProvider).assign(babyId, date, [
+                for (final i in target) i.id,
+              ], chosen);
+              return true;
+            } on Object {
+              toaster.show(message: l10n.cpSaveFailed, error: true);
+              return false;
+            }
+          },
         );
       }
 
@@ -306,11 +303,14 @@ class _CarePlanScreenState extends ConsumerState<CarePlanScreen> {
           name: taskName,
           everyDay: item.everyDay,
         );
-        if (everyDay == null || !mounted) return;
+        if (everyDay == null || !context.mounted) return;
         try {
-          await ref
-              .read(carePlanRepositoryProvider)
-              .deleteItem(babyId, date, item.id, everyDay: everyDay);
+          await withClProgress(
+            context,
+            () => ref
+                .read(carePlanRepositoryProvider)
+                .deleteItem(babyId, date, item.id, everyDay: everyDay),
+          );
           toaster.show(message: l10n.cpDeletedToast(taskName));
         } on Object {
           toaster.show(message: l10n.cpSaveFailed, error: true);

@@ -8881,5 +8881,6 @@
   "cpShareText": "{headline}: {count} tasks. {people}",
   "cpShareFailed": "Couldn't share. Try again.",
   "cpHistEmptyBody": "Who edits, adds or gives tasks shows here.",
-  "careAtTime": "at {time}"
+  "careAtTime": "at {time}",
+  "cpPushSnooze10": "Remind me in 10 min"
 }

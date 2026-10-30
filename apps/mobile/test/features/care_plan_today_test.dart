@@ -245,11 +245,35 @@ void main() {
         babyId: minh.babyId,
         date: carePlanToday,
         ids: [for (final i in tasks) i.id],
+        done: false,
       ));
       await _waitGate(tester);
       expect(find.text(l.cpDueTitle), findsOneWidget);
       expect(find.text(l.cpDueDoneAll(tasks.length)), findsOneWidget);
       expect(container.read(carePlanDueRequestProvider), isNull);
+    });
+
+    testWidgets('the push\'s "Xong" (N1): done at once, no sheet', (
+      tester,
+    ) async {
+      final plan = planFresh();
+      final bath = plan.firstWhere((i) => i.task == CarePlanTask.bath);
+      final (repo, container) = await _pump(
+        tester,
+        _gate(tabRoot: false),
+        plan: plan,
+      );
+      container.read(carePlanDueRequestProvider.notifier).open((
+        babyId: minh.babyId,
+        date: carePlanToday,
+        ids: [bath.id],
+        done: true,
+      ));
+      await _waitGate(tester);
+      expect(find.text(l.cpDueTitle), findsNothing);
+      final (name, args) = repo.calls.single;
+      expect(name, 'status');
+      expect(args, {'itemId': bath.id, 'status': 'done'});
     });
 
     testWidgets('a push for a task already done: the day plan and a toast', (
@@ -262,6 +286,7 @@ void main() {
         babyId: minh.babyId,
         date: carePlanToday,
         ids: [done.id],
+        done: false,
       ));
       await _waitGate(tester);
       expect(find.text(l.cpDueTitle), findsNothing);

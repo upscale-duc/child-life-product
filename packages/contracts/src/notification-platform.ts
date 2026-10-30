@@ -1333,8 +1333,18 @@ export const notificationPlaceholders = {
     fallback: both('Việc chăm bé', 'A care task'),
     maxLength: 120,
     description: both(
-      'Giờ và tên việc trong danh mục (“09:00 Vitamin · 09:10 Bú bình”); không có tên tự gõ',
-      'Times and catalogue task names (“09:00 Vitamin · 09:10 Bottle”); never a typed title',
+      'Tên việc trong danh mục, có thể kèm giờ (“Vitamin · Bú bình”, “07:00 Bú bình”); không có tên tự gõ',
+      'Catalogue task names, maybe with a time (“Vitamin · Bottle”, “07:00 Bottle”); never a typed title',
+    ),
+  },
+  recipient_name: {
+    type: 'text',
+    sensitivity: 'member_name',
+    fallback: both('Bạn', 'Hi'),
+    maxLength: 40,
+    description: both(
+      'Cách cả nhà gọi người nhận (“Ba”, “Cô Lan”)',
+      'What the family calls the recipient (“Dad”, “Lan”)',
     ),
   },
   milestone_label: {
@@ -1866,14 +1876,22 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     'care.task_due',
     'careTaskDue',
     ['Việc chăm bé sắp đến giờ', 'Care task coming up'],
-    ['minutes', 'task_line', 'baby_name'],
+    ['recipient_name', 'minutes', 'task_line', 'baby_name'],
     {
-      vi: { title: '{{minutes}} phút nữa {{baby_name}} cần bạn rồi nè', body: '{{task_line}}' },
-      en: { title: '{{baby_name}} needs you in {{minutes}} min', body: '{{task_line}}' },
+      // Figma N1 (1353:22588): "Ba ơi, 5 phút nữa Teddy cần Ba rồi nè" · "Vitamin D3 · Bú bình".
+      vi: {
+        title: '{{recipient_name}} ơi, {{minutes}} phút nữa {{baby_name}} cần {{recipient_name}} rồi nè',
+        body: '{{task_line}}',
+      },
+      en: {
+        title: '{{recipient_name}}, {{baby_name}} needs you in {{minutes}} min',
+        body: '{{task_line}}',
+      },
     },
     {
+      recipient_name: both('Ba', 'Dad'),
       minutes: 5,
-      task_line: both('09:00 Vitamin · 09:10 Bú bình', '09:00 Vitamin · 09:10 Bottle'),
+      task_line: both('Vitamin · Bú bình', 'Vitamin · Bottle'),
       baby_name: both('Bin', 'Bin'),
     },
     ['task_line'],

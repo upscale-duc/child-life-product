@@ -110,6 +110,15 @@ object PushNotices {
                 b.addAction(0, label("rule.snooze", "Báo lại sau 15 phút"), answer(context, data, "snooze", base + 2))
                 b.addAction(0, label("rule.skip", "Bỏ qua lần này"), answer(context, data, "skip", base + 3))
             }
+            "careTaskDue" -> {
+                // Figma N1: "Xong" opens the app when a task writes a log or starts the sleep
+                // timer (D-138), else answers from here; "Nhắc lại 10 phút" draws it again later.
+                val done = label("ct.done", "Xong")
+                b.addAction(0, done,
+                    if (data["opensApp"] == "1") open(context, data, "done", base + 1)
+                    else answer(context, data, "ctDone", base + 1))
+                b.addAction(0, label("ct.snooze", "Nhắc lại 10 phút"), answer(context, data, "ctSnooze", base + 2))
+            }
             "vaccine" -> {
                 b.addAction(0, label("vx.view", "Xem lịch tiêm"), open(context, data, "view", base + 1))
                 b.addAction(0, label("vx.snooze", "Nhắc lại sáng mai"), answer(context, data, "vxSnooze", base + 2))
@@ -137,9 +146,17 @@ class PushActionReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val data = PushNotices.dataOf(intent.getStringExtra(PushNotices.EXTRA_PUSH)) ?: return
         val action = intent.getStringExtra(PushNotices.EXTRA_ACTION) ?: return
-        val pending = goAsync()
         val app = context.applicationContext
+        if (action == "ctShow") {
+            PushNotices.show(app, data)
+            return
+        }
         PushNotices.cancel(app, data)
+        if (action == "ctSnooze") {
+            snooze(app, intent)
+            return
+        }
+        val pending = goAsync()
         io.execute {
             try {
                 answer(app, data, action)
@@ -149,22 +166,46 @@ class PushActionReceiver : BroadcastReceiver() {
         }
     }
 
+    /** "Nhắc lại 10 phút": the same notice, drawn again in ten minutes. */
+    private fun snooze(context: Context, intent: Intent) {
+        val again = Intent(context, PushActionReceiver::class.java)
+            .setAction("app.childlife.CT_SHOW.${System.currentTimeMillis()}")
+            .putExtra(PushNotices.EXTRA_PUSH, intent.getStringExtra(PushNotices.EXTRA_PUSH))
+            .putExtra(PushNotices.EXTRA_ACTION, "ctShow")
+        val pending = PendingIntent.getBroadcast(context, 0, again,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        val alarms = context.getSystemService(android.app.AlarmManager::class.java)
+        alarms.setAndAllowWhileIdle(android.app.AlarmManager.RTC_WAKEUP,
+            System.currentTimeMillis() + 10 * 60_000L, pending)
+    }
+
     private fun answer(context: Context, data: Map<String, String>, action: String) {
         val snap = Glance.snapshot(context) ?: return
         val project = snap.optString("projectId").takeIf { it.isNotEmpty() } ?: return
         val emulator = snap.optString("emulatorHost").takeIf { it.isNotEmpty() && !snap.isNull("emulatorHost") }
         val client = CallableClient(project, emulator)
-        val call = request(data, action) ?: return
         var token = AuthToken.idToken(context) ?: return
-        var status = client.call(call.first, token, call.second)
-        if (status == 401) {
-            token = AuthToken.idToken(context, force = true) ?: return
-            status = client.call(call.first, token, call.second)
+        for (call in requests(data, action)) {
+            var status = client.call(call.first, token, call.second)
+            if (status == 401) {
+                token = AuthToken.idToken(context, force = true) ?: return
+                status = client.call(call.first, token, call.second)
+            }
+            debugTrace(context, "${call.first} answered $status")
         }
-        debugTrace(context, "${call.first} answered $status")
     }
 
     companion object {
+        /** Every call an action makes: one per task for a task push's "Xong". */
+        fun requests(data: Map<String, String>, action: String): List<Pair<String, Map<String, Any?>>> {
+            if (action != "ctDone") return listOfNotNull(request(data, action))
+            val babyId = data["babyId"] ?: return emptyList()
+            val date = data["date"] ?: return emptyList()
+            return (data["items"] ?: "").split(',').filter { it.isNotEmpty() }.map {
+                "setCarePlanItemStatus" to mapOf("babyId" to babyId, "date" to date, "itemId" to it, "status" to "done")
+            }
+        }
+
         /** The Function and its data for an action (the same requests as iOS). */
         fun request(data: Map<String, String>, action: String): Pair<String, Map<String, Any?>>? {
             val babyId = data["babyId"] ?: return null

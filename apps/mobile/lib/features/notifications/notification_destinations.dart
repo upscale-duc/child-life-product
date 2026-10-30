@@ -819,12 +819,15 @@ Future<_Opened> _tryOpen(
       select();
       open('${Routes.carePlan}?date=${params['date']}');
     case 'CARE_TASK_DUE':
-      // Over whatever is showing, once nothing is in the way (care_plan_today.dart).
+      // Over whatever is showing, once nothing is in the way (care_plan_today.dart); the push's
+      // "Xong" finishes them at once (N1).
+      final action = await launchAction?.call();
       select();
       ref.read(carePlanDueRequestProvider.notifier).open((
         babyId: babyId!,
         date: params['date']!,
         ids: params['items']!.split(','),
+        done: action == 'done',
       ));
     case 'CARE_PLAN_READY':
       select();

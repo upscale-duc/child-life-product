@@ -89,3 +89,34 @@ Tính trên 7 ngày gần nhất. Huy hiệu cá nhân trao cho người làm nh
   - Lịch sử hiện dòng Tắm, không lặp lại Bú bình, và ẩn dòng này ở bộ lọc Bú.
   - Tính toán báo cáo: hoàn tác, ngày liền, đúng nhịp, huy hiệu, phần trăm cộng đủ 100.
 - **Emulator:** 35 test care-plan, thêm hai test mới cho `amountMl` và `oldTime`.
+
+## Thông báo N1 và trạng thái chờ (30/10/2026)
+
+Figma `1353:22588` (4 thông báo N1–N4). Chủ sản phẩm báo: việc sắp tới chỉ nhắc trong app, không có push.
+
+### Vì sao không thấy push (dữ liệu dev, 30/10)
+
+- Server gửi đúng giờ. Hàm `ringCareTaskReminders` chạy mỗi phút; hôm nay việc 13:00 được nhắc lúc 12:50 (nhắc trước 10 phút) và Apple đã nhận.
+- Ngày 29/10: hai lần Apple từ chối token cũ của máy (sau khi cài bản mới), hai lần không có máy nào đăng ký token. Mở app sau khi cài là token mới được đăng ký.
+- Lịch hôm nay được tạo lúc 12:42, nên các việc 09:00–11:00 đã qua giờ và không được nhắc.
+- Khi app đang mở, iOS không hiện banner cho push của server.
+
+### Đã làm
+
+- **N1 theo Figma:** "Ba ơi, 5 phút nữa Teddy cần Ba rồi nè" / "Vitamin · Bú bình". Tên người nhận theo cách cả nhà gọi (Ba, Mẹ, Ông, Bà, hoặc tên tự đặt như "Cô Lan"), placeholder `recipient_name`; tên bé theo D-094.
+- **Nút trên thông báo:**
+  - **Xong:** việc không cần ghi (Vitamin, Tắm…) được đánh dấu xong ngay, không mở app.
+  - Việc Bú bình, Bú mẹ, Hút sữa, Thay tã thì mở app vào màn ghi, còn Ngủ thì mở app vào hẹn giờ ngủ (D-138).
+  - **Nhắc lại 10 phút:** thông báo hiện lại sau 10 phút trên chính máy đó.
+  - Có trên cả iOS (category `CL_CARE_TASK` / `CL_CARE_TASK_APP`) và Android (app tự vẽ, `Push.kt`).
+- **iOS khi app đang mở:** N1 vẫn hiện banner.
+- **Trạng thái chờ:**
+  - Sheet "Giao cho…" giữ mở, nút xác nhận hiện loading cho tới khi server lưu xong; lỗi thì báo và giữ lựa chọn.
+  - Xoá việc hiện vòng chờ toàn màn (`withClProgress`).
+
+### Chưa làm
+
+- **N2 "Teddy no bụng rồi, nhờ có Mẹ đó!" + Thả tim, N3 "Mẹ thả tim cho Ba", màn 10 Vừa xong:** thuộc bước 5, cần frame 10 và một công tắc riêng cho từng người.
+- **Icon việc trong thông báo** (ảnh nhỏ bên trái): cần Notification Service Extension (iOS) và ảnh lớn trên Android. Hiện thông báo chỉ có chữ.
+- **N4** đã có từ bước 3. Câu chữ hiện là "Cô Lan vừa bàn giao cho cả nhà"; Figma ghi "gửi lời bàn giao". Phần này để cho đợt sửa câu chữ thông báo đang chạy song song.
+- **Widget `1356:23340`:** chưa đọc được frame vì Figma đang chặn quyền MCP.

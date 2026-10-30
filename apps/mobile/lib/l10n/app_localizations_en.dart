@@ -25217,4 +25217,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String careAtTime(String time) {
     return 'at $time';
   }
+
+  @override
+  String get cpPushSnooze10 => 'Remind me in 10 min';
 }

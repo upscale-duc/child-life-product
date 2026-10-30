@@ -18,6 +18,15 @@ enum RuleNotifications {
   static let vaccineSnooze = "VX_SNOOZE"
   static let vaccineMove = "VX_MOVE"
 
+  /// Cùng Chăm Con N1 (Figma 1353:22588): Xong · Nhắc lại 10 phút. `CL_CARE_TASK_APP` opens the
+  /// app for "Xong" (a log to write or the sleep timer, D-138); `CL_CARE_TASK` marks it done here.
+  static let careTaskCategory = "CL_CARE_TASK"
+  static let careTaskAppCategory = "CL_CARE_TASK_APP"
+  static let careTaskDone = "CT_DONE"
+  static let careTaskSnooze = "CT_SNOOZE10"
+  /// A snoozed task push comes back as a local notification with this id prefix.
+  static let careTaskSnoozePrefix = "ctsnooze."
+
   /// "Ghi …" from a notification, for the app to pick up once Flutter runs.
   private static var launchAction: [String: Any]?
 
@@ -30,7 +39,8 @@ enum RuleNotifications {
 
   /// Keeps a tapped server push (not a dismissal, not a local notification) and tells Flutter.
   static func recordTap(_ response: UNNotificationResponse) {
-    guard response.notification.request.trigger is UNPushNotificationTrigger,
+    let request = response.notification.request
+    guard request.trigger is UNPushNotificationTrigger || request.identifier.hasPrefix(careTaskSnoozePrefix),
       response.actionIdentifier != UNNotificationDismissActionIdentifier
     else { return }
     // The same tap is never opened twice.
@@ -88,12 +98,27 @@ enum RuleNotifications {
       ],
       intentIdentifiers: [],
       options: [])
+    let snooze = UNNotificationAction(
+      identifier: careTaskSnooze, title: vi ? "Nhắc lại 10 phút" : "Remind me in 10 min", options: [])
+    let careTasks: Set<UNNotificationCategory> = [
+      UNNotificationCategory(
+        identifier: careTaskCategory,
+        actions: [UNNotificationAction(identifier: careTaskDone, title: vi ? "Xong" : "Done", options: []), snooze],
+        intentIdentifiers: [], options: []),
+      UNNotificationCategory(
+        identifier: careTaskAppCategory,
+        actions: [
+          UNNotificationAction(identifier: careTaskDone, title: vi ? "Xong" : "Done", options: [.foreground]), snooze,
+        ],
+        intentIdentifiers: [], options: []),
+    ]
     let center = UNUserNotificationCenter.current()
     center.getNotificationCategories { existing in
       let others = existing.filter {
         !$0.identifier.hasPrefix(categoryPrefix) && $0.identifier != vaccineCategory
+          && $0.identifier != careTaskCategory && $0.identifier != careTaskAppCategory
       }
-      center.setNotificationCategories(others.union(ours).union([vaccine]))
+      center.setNotificationCategories(others.union(ours).union([vaccine]).union(careTasks))
     }
   }
 
@@ -102,6 +127,9 @@ enum RuleNotifications {
     let content = response.notification.request.content
     if content.categoryIdentifier == vaccineCategory {
       return handleVaccine(response, completion: completion)
+    }
+    if content.categoryIdentifier == careTaskCategory || content.categoryIdentifier == careTaskAppCategory {
+      return handleCareTask(response, completion: completion)
     }
     guard content.categoryIdentifier.hasPrefix(categoryPrefix) else { return false }
     let info = content.userInfo
@@ -143,6 +171,44 @@ enum RuleNotifications {
         "action": response.actionIdentifier == vaccineView ? "view" : "move",
         "babyId": info["babyId"] as? String ?? "",
       ]
+      return false
+    default:
+      return false
+    }
+  }
+
+  private static func handleCareTask(
+    _ response: UNNotificationResponse, completion: @escaping () -> Void
+  ) -> Bool {
+    let content = response.notification.request.content
+    let info = content.userInfo
+    switch response.actionIdentifier {
+    case careTaskSnooze:
+      // Comes back in 10 minutes as the same notice, with the same buttons.
+      let again = content.mutableCopy() as! UNMutableNotificationContent
+      let request = UNNotificationRequest(
+        identifier: careTaskSnoozePrefix + UUID().uuidString, content: again,
+        trigger: UNTimeIntervalNotificationTrigger(timeInterval: 600, repeats: false))
+      UNUserNotificationCenter.current().add(request) { _ in completion() }
+      return true
+    case careTaskDone where content.categoryIdentifier == careTaskCategory:
+      // Nothing to write: done from the lock screen, as the one who tapped it.
+      Task {
+        if let babyId = info["babyId"] as? String, let date = info["date"] as? String,
+          let items = info["items"] as? String
+        {
+          for itemId in items.split(separator: ",") {
+            await callFunction(
+              "setCarePlanItemStatus",
+              ["babyId": babyId, "date": date, "itemId": String(itemId), "status": "done"])
+          }
+        }
+        completion()
+      }
+      return true
+    case careTaskDone:
+      // The app opens on the log (or the sleep timer) of those tasks.
+      launchAction = ["action": "done", "babyId": info["babyId"] as? String ?? ""]
       return false
     default:
       return false

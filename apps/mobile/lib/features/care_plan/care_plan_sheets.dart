@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -39,6 +41,7 @@ Future<List<String>?> showCarePlanAssign(
   Widget? leading,
   String? subtitle,
   bool group = false,
+  Future<bool> Function(List<String> chosen)? onSave,
 }) => showClSheet<List<String>>(
   context: context,
   builder: (_) => _AssignSheet(
@@ -51,6 +54,7 @@ Future<List<String>?> showCarePlanAssign(
     leading: leading,
     subtitle: subtitle,
     group: group,
+    onSave: onSave,
   ),
 );
 
@@ -159,6 +163,7 @@ class _AssignSheet extends StatefulWidget {
     required this.group,
     this.leading,
     this.subtitle,
+    this.onSave,
   });
 
   final String title;
@@ -171,6 +176,10 @@ class _AssignSheet extends StatefulWidget {
   final Widget? leading;
   final String? subtitle;
 
+  /// Saves the choice while the sheet stays open with its button loading; the sheet closes
+  /// once it returns true (a failure says so and keeps the choice).
+  final Future<bool> Function(List<String> chosen)? onSave;
+
   @override
   State<_AssignSheet> createState() => _AssignSheetState();
 }
@@ -181,6 +190,21 @@ class _AssignSheetState extends State<_AssignSheet> {
       if (widget.people.any((m) => m.uid == u)) u,
   };
   late bool _many = !widget.group && _chosen.length > 1;
+  bool _saving = false;
+
+  Future<void> _confirm() async {
+    final chosen = [
+      for (final m in widget.people)
+        if (_chosen.contains(m.uid)) m.uid,
+    ];
+    final save = widget.onSave;
+    if (save == null) return Navigator.of(context).pop(chosen);
+    setState(() => _saving = true);
+    final ok = await save(chosen);
+    if (!mounted) return;
+    if (ok) return Navigator.of(context).pop(chosen);
+    setState(() => _saving = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -329,12 +353,10 @@ class _AssignSheetState extends State<_AssignSheet> {
               ? l10n.cpAssignNobody
               : l10n.cpAssignGroup,
           expand: true,
+          loading: _saving,
           onPressed: names.isEmpty && !widget.allowNobody
               ? null
-              : () => Navigator.of(context).pop([
-                  for (final m in widget.people)
-                    if (_chosen.contains(m.uid)) m.uid,
-                ]),
+              : () => unawaited(_confirm()),
         ),
         const SizedBox(height: ClSpace.s2),
       ],

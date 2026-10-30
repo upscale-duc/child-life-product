@@ -30,6 +30,22 @@ import UserNotifications
     BackgroundUploads.shared.resume()
   }
 
+  /// Cùng Chăm Con N1 shows as a banner while the app is open too (owner, 2026-10-30: the
+  /// reminder only showed inside the app), with its Xong · Nhắc lại 10 phút buttons.
+  override func userNotificationCenter(
+    _ center: UNUserNotificationCenter, willPresent notification: UNNotification,
+    withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+  ) {
+    let request = notification.request
+    if (request.content.userInfo["kind"] as? String) == "careTaskDue"
+      || request.identifier.hasPrefix(RuleNotifications.careTaskSnoozePrefix)
+    {
+      completionHandler([.banner, .list, .sound])
+      return
+    }
+    super.userNotificationCenter(center, willPresent: notification, withCompletionHandler: completionHandler)
+  }
+
   /// Rule reminder actions (1f) are answered natively; "Đã tải xong 7 mục" and friends open Kỷ
   /// niệm; every other notification goes to the plugins.
   override func userNotificationCenter(
