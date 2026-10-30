@@ -1387,6 +1387,7 @@ export const en: Content = {
       paragraphs: [
         "Child Life's full privacy policy will be published here before the app launches.",
         "Your baby's photos, videos and information are only for the people you invite into your family. You decide who sees what.",
+        "The childlife.app website uses Google Analytics to count visits and learn which pages help. Google Analytics uses cookies and receives none of your baby's photos or information. You can block it in your browser settings or with Google's Analytics opt-out add-on.",
       ],
       contactLead: 'If you have a question about your data, write to us:',
     },

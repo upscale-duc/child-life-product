@@ -1408,6 +1408,7 @@ export const vi: Content = {
       paragraphs: [
         'Chính sách quyền riêng tư đầy đủ của Child Life sẽ được công bố tại đây trước khi ứng dụng ra mắt.',
         'Ảnh, video và thông tin của con chỉ dành cho những người bạn mời vào gia đình. Bạn quyết định ai được xem gì.',
+        'Trang web childlife.app dùng Google Analytics để đếm lượt truy cập và biết trang nào hữu ích. Google Analytics dùng cookie và không nhận ảnh hay thông tin nào của con. Bạn có thể chặn bằng cài đặt trình duyệt hoặc tiện ích chặn Google Analytics của Google.',
       ],
       contactLead: 'Nếu bạn có câu hỏi về dữ liệu của mình, hãy viết cho chúng tôi:',
     },

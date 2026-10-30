@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { en } from '../src/content/en';
+import { analyticsIds } from '../src/analytics';
 import { vi as viContent } from '../src/content/vi';
 import { render } from '../src/entry-server';
 import { alternateOf, pathOf, routeFor, routes, stageIds } from '../src/routes';
@@ -178,5 +179,16 @@ describe('prerender', () => {
     const page = render('/en/', 'prod');
     for (const item of en.homePage.trust.faq)
       expect(page.html).toContain(item.q.replace(/'/g, '&#x27;'));
+  });
+});
+
+describe('analytics', () => {
+  it('never measures dev; prod takes a GA4 measurement id or nothing', () => {
+    expect(analyticsIds.dev).toBeNull();
+    if (analyticsIds.prod !== null) expect(analyticsIds.prod).toMatch(/^G-[A-Z0-9]+$/);
+  });
+
+  it('prerendered pages load no analytics (gtag starts in the browser)', () => {
+    expect(render('/', 'prod').html).not.toContain('googletagmanager');
   });
 });

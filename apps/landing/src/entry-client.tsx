@@ -1,6 +1,7 @@
 import { resolveSiteEnvironment } from '@child-life/web-config';
 import { StrictMode } from 'react';
 import { hydrateRoot } from 'react-dom/client';
+import { startAnalytics } from './analytics';
 import { App } from './App';
 import { routeFor } from './routes';
 import './styles/index.css';
@@ -16,3 +17,4 @@ hydrateRoot(
     <App route={route} environment={environment} />
   </StrictMode>,
 );
+startAnalytics(environment);
