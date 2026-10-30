@@ -30,6 +30,17 @@ enum RuleNotifications {
   /// A snoozed task push comes back as a local notification with this id prefix.
   static let careTaskSnoozePrefix = "ctsnooze."
 
+  /// L6 "Bé dậy chưa?" (lumi-plan §7.1), a local notification of the app (wake_check.dart):
+  /// Dậy rồi · Dậy lúc… open the app on the sleep timer, handed over by `takeWakeAction`;
+  /// Vẫn ngủ goes to the plugin's background handler, which asks once more. The second ask
+  /// (`_LAST`) has no Vẫn ngủ. Registered here because the plugin would replace these categories.
+  static let wakeCheckCategory = "CL_WAKE_CHECK"
+  static let wakeCheckLastCategory = "CL_WAKE_CHECK_LAST"
+  static let wakeUp = "WC_UP"
+  static let wakePick = "WC_AT"
+  static let wakeAgain = "WC_AGAIN"
+  private static var wakeAction: [String: Any]?
+
   /// "Ghi …" from a notification, for the app to pick up once Flutter runs.
   private static var launchAction: [String: Any]?
 
@@ -119,20 +130,44 @@ enum RuleNotifications {
         actions: [UNNotificationAction(identifier: careDoneHeart, title: vi ? "Thả tim" : "Send a heart", options: [])],
         intentIdentifiers: [], options: []),
     ]
+    let up = UNNotificationAction(identifier: wakeUp, title: vi ? "Dậy rồi" : "Awake now", options: [.foreground])
+    let pick = UNNotificationAction(identifier: wakePick, title: vi ? "Dậy lúc…" : "Woke at…", options: [.foreground])
+    let again = UNNotificationAction(identifier: wakeAgain, title: vi ? "Vẫn ngủ" : "Still asleep", options: [])
+    let wakeChecks: Set<UNNotificationCategory> = [
+      UNNotificationCategory(
+        identifier: wakeCheckCategory, actions: [up, pick, again], intentIdentifiers: [], options: []),
+      UNNotificationCategory(
+        identifier: wakeCheckLastCategory, actions: [up, pick], intentIdentifiers: [], options: []),
+    ]
     let center = UNUserNotificationCenter.current()
     center.getNotificationCategories { existing in
       let others = existing.filter {
         !$0.identifier.hasPrefix(categoryPrefix) && $0.identifier != vaccineCategory
           && $0.identifier != careTaskCategory && $0.identifier != careTaskAppCategory
-          && $0.identifier != careDoneCategory
+          && $0.identifier != careDoneCategory && $0.identifier != wakeCheckCategory
+          && $0.identifier != wakeCheckLastCategory
       }
-      center.setNotificationCategories(others.union(ours).union([vaccine]).union(careTasks))
+      center.setNotificationCategories(
+        others.union(ours).union([vaccine]).union(careTasks).union(wakeChecks))
     }
   }
 
   /// Handles our actions; false = not ours (let the plugins have it).
   static func handle(_ response: UNNotificationResponse, completion: @escaping () -> Void) -> Bool {
     let content = response.notification.request.content
+    if (content.categoryIdentifier == wakeCheckCategory || content.categoryIdentifier == wakeCheckLastCategory)
+      && (response.actionIdentifier == wakeUp || response.actionIdentifier == wakePick)
+    {
+      // When it was tapped: "Dậy rồi" ends the sleep then, not when the app is ready.
+      wakeAction = [
+        "action": response.actionIdentifier,
+        "payload": content.userInfo["payload"] as? String ?? "",
+        "at": Int(Date().timeIntervalSince1970 * 1000),
+      ]
+      channel?.invokeMethod("wakeAction", arguments: nil)
+      completion()
+      return true
+    }
     if content.categoryIdentifier == vaccineCategory {
       return handleVaccine(response, completion: completion)
     }
@@ -286,6 +321,9 @@ enum RuleNotifications {
       case "takeLaunchAction":
         result(launchAction)
         launchAction = nil
+      case "takeWakeAction":
+        result(wakeAction)
+        wakeAction = nil
       case "takeTappedPush":
         result(tappedPush)
         tappedPush = nil

@@ -184,6 +184,72 @@ void main() {
       },
     );
 
+    testWidgets('L6 "Dậy rồi": the sleep ends when the button was tapped', (
+      tester,
+    ) async {
+      final repo = FakeCareRepository();
+      final tapped = careNow.subtract(const Duration(minutes: 4));
+      final (visits, _) = await pumpRouted(
+        tester,
+        TimerScreen(
+          type: TimerType.sleep,
+          wakeSession: 'a' * 32,
+          endAt: tapped,
+        ),
+        overrides: careOverrides(
+          repo: repo,
+          timers: {TimerType.sleep: sleepTimer()},
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(repo.ended.single.$2.endedAt, tapped);
+      expect(visits.single.location, '/today');
+    });
+
+    testWidgets('L6: a button for an earlier sleep only shows the timer', (
+      tester,
+    ) async {
+      final repo = FakeCareRepository();
+      await pumpRouted(
+        tester,
+        TimerScreen(
+          type: TimerType.sleep,
+          wakeSession: 'f' * 32,
+          endAt: careNow,
+        ),
+        overrides: careOverrides(
+          repo: repo,
+          timers: {TimerType.sleep: sleepTimer()},
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(repo.ended, isEmpty);
+      expect(find.text('Kết thúc giấc ngủ'), findsOneWidget);
+    });
+
+    testWidgets('L6 "Dậy lúc…": the wake time first, then the sleep ends', (
+      tester,
+    ) async {
+      final repo = FakeCareRepository();
+      await pumpRouted(
+        tester,
+        TimerScreen(
+          type: TimerType.sleep,
+          wakeSession: 'a' * 32,
+          pickEnd: true,
+        ),
+        overrides: careOverrides(
+          repo: repo,
+          timers: {TimerType.sleep: sleepTimer()},
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(repo.ended, isEmpty);
+      await tester.tap(find.text('Xong'));
+      await tester.pumpAndSettle();
+      expect(repo.ended.single.$2.endedAt, careNow);
+    });
+
     testWidgets(
       'widget "Ngủ" on a cold start: the chooser\'s "Bấm giờ" opens the timer',
       (tester) async {

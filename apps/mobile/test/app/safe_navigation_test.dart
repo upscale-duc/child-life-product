@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:child_life/app/environment.dart';
 import 'package:child_life/app/navigation.dart';
@@ -36,6 +37,9 @@ import 'package:child_life/features/notifications/notification_repository.dart';
 import 'package:child_life/features/premium/billing_models.dart';
 import 'package:child_life/features/premium/purchase_resume.dart';
 import 'package:child_life/features/reminders/reminder_notifications.dart';
+import 'package:child_life/features/care/timer_models.dart' show TimerType;
+import 'package:child_life/features/care/timer_screens.dart' show TimerScreen;
+import 'package:child_life/features/rhythm/wake_check.dart' show wakeCheckUp;
 import 'package:child_life/features/reminders/reminder_screens.dart';
 import 'package:child_life/features/rhythm/week_screen.dart';
 import 'package:child_life/features/today/today_screen.dart';
@@ -241,13 +245,16 @@ Future<void> _opensOnOpener(
 class _Notifications extends FakeReminderNotifications {
   _Notifications({this.launch});
   final String? launch;
-  void Function(String? payload)? tap;
+  void Function(String? payload, String? action)? tap;
 
   @override
-  Future<void> init(void Function(String? payload) onTap) async => tap = onTap;
+  Future<void> init(
+    void Function(String? payload, String? action) onTap,
+  ) async => tap = onTap;
 
   @override
-  Future<String?> launchPayload() async => launch;
+  Future<({String? payload, String? action})?> launchResponse() async =>
+      launch == null ? null : (payload: launch, action: null);
 }
 
 /// A one-time reminder's notification: its payload and the location it opens.
@@ -496,13 +503,45 @@ void main() {
         router,
         opener: GrowthScreen,
         open: () async {
-          notifications.tap!(tap.payload);
+          notifications.tap!(tap.payload, null);
           await tester.pumpAndSettle();
         },
         location: tap.location,
         target: find.byType(ReminderDetailScreen),
         how: _Back.system,
       );
+      await _end(tester, container);
+    });
+
+    testWidgets('L6 "Dậy rồi" opens that sleep\'s timer with the tap time', (
+      tester,
+    ) async {
+      final notifications = _Notifications();
+      final (router, container) = await _app(
+        tester,
+        _base(notifications: notifications),
+        wrap: (app) => ReminderNotificationSync(child: app),
+      );
+      final payload = jsonEncode({
+        'k': 'wake_check',
+        'b': teddyId,
+        's': 'a' * 32,
+        'st': 0,
+        'at': 0,
+        'g': 30,
+      });
+      final before = DateTime.now().millisecondsSinceEpoch;
+      notifications.tap!(payload, wakeCheckUp);
+      await tester.pumpAndSettle();
+      final screen = tester.widget<TimerScreen>(find.byType(TimerScreen));
+      expect(screen.type, TimerType.sleep);
+      expect(screen.wakeSession, 'a' * 32);
+      expect(
+        screen.endAt!.millisecondsSinceEpoch,
+        greaterThanOrEqualTo(before),
+      );
+      expect(screen.pickEnd, isFalse);
+      await tester.pump(const Duration(seconds: 4));
       await _end(tester, container);
     });
 

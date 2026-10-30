@@ -8,6 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart' as tz;
 
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../app/locale.dart' show resolveLocale, supportedLocales;
 import '../../app/navigation.dart' show SafePush;
 import '../../app/route_guard.dart';
 import '../../app/router.dart';
@@ -42,6 +45,7 @@ import '../rhythm/rhythm_local.dart'
 import 'device_identity.dart';
 import 'reminder_models.dart';
 import 'reminder_repository.dart';
+import 'rule_notifications.dart' show RuleNotificationChannel;
 import '../me/me_repository.dart';
 import '../notifications/notification_destinations.dart' show untilInApp;
 
@@ -54,6 +58,7 @@ class LocalReminder {
     required this.title,
     required this.body,
     required this.payload,
+    this.buttons = NotificationButtons.none,
   });
 
   final int id;
@@ -63,6 +68,20 @@ class LocalReminder {
 
   /// Identifies the reminder for a tap and carries the content, so any edit reschedules.
   final String payload;
+
+  final NotificationButtons buttons;
+}
+
+/// The buttons a local notification offers. On iOS they are categories registered with the
+/// rule reminders' (RuleNotifications.swift), since the plugin would replace those.
+enum NotificationButtons {
+  none,
+
+  /// L6 "Bé dậy chưa?": Dậy rồi · Dậy lúc… · Vẫn ngủ.
+  wakeCheck,
+
+  /// Its second ask, without "Vẫn ngủ".
+  wakeCheckLast,
 }
 
 /// Stable notification id from the reminder id (28 bits of its UUID).
@@ -100,10 +119,11 @@ String reminderPayload(
 
 /// The OS side of reminders: permission and the pending local notifications (R-091, R-092).
 abstract class ReminderNotifications {
-  Future<void> init(void Function(String? payload) onTap);
+  /// [onTap] gets the button's id when a button was tapped rather than the notification.
+  Future<void> init(void Function(String? payload, String? action) onTap);
 
-  /// The payload of the notification that launched the app, if any.
-  Future<String?> launchPayload();
+  /// The notification (and its button) that launched the app, if any.
+  Future<({String? payload, String? action})?> launchResponse();
 
   Future<bool> enabled();
 
@@ -140,7 +160,9 @@ class PluginReminderNotifications implements ReminderNotifications {
   }
 
   @override
-  Future<void> init(void Function(String? payload) onTap) async {
+  Future<void> init(
+    void Function(String? payload, String? action) onTap,
+  ) async {
     if (_ready) return;
     _ready = true;
     // No permission prompt here: it comes after the first save (R-092).
@@ -154,15 +176,17 @@ class PluginReminderNotifications implements ReminderNotifications {
         android: AndroidInitializationSettings(AndroidChannels.icon),
         iOS: darwin,
       ),
-      onDidReceiveNotificationResponse: (r) => onTap(r.payload),
+      onDidReceiveNotificationResponse: (r) => onTap(r.payload, r.actionId),
+      onDidReceiveBackgroundNotificationResponse: notificationBackgroundAction,
     );
   }
 
   @override
-  Future<String?> launchPayload() async {
+  Future<({String? payload, String? action})?> launchResponse() async {
     final details = await _plugin.getNotificationAppLaunchDetails();
-    return details?.didNotificationLaunchApp == true
-        ? details!.notificationResponse?.payload
+    final r = details?.notificationResponse;
+    return details?.didNotificationLaunchApp == true && r != null
+        ? (payload: r.payload, action: r.actionId)
         : null;
   }
 
@@ -208,30 +232,85 @@ class PluginReminderNotifications implements ReminderNotifications {
         await _plugin.cancel(id: p.id);
       }
     }
-    final details = NotificationDetails(
+    final now = DateTime.now();
+    for (final d in desired) {
+      if (kept.contains(d.id) || !d.fireAt.isAfter(now)) continue;
+      await schedule(d, l10n);
+    }
+  }
+
+  /// One notification, also from the background handler ("Vẫn ngủ" asks again).
+  Future<void> schedule(
+    LocalReminder d,
+    AppLocalizations l10n,
+  ) => _plugin.zonedSchedule(
+    id: d.id,
+    scheduledDate: tz.TZDateTime.from(d.fireAt, tz.UTC),
+    notificationDetails: NotificationDetails(
       android: AndroidNotificationDetails(
         AndroidChannels.reminders,
         l10n.notifChannel,
         channelDescription: l10n.notifChannelDescription,
         importance: Importance.high,
         priority: Priority.high,
+        actions: switch (d.buttons) {
+          NotificationButtons.none => null,
+          NotificationButtons.wakeCheck ||
+          NotificationButtons.wakeCheckLast => [
+            AndroidNotificationAction(
+              wakeCheckUp,
+              l10n.wcAwake,
+              showsUserInterface: true,
+            ),
+            AndroidNotificationAction(
+              wakeCheckPick,
+              l10n.wcWokeAt,
+              showsUserInterface: true,
+            ),
+            if (d.buttons == NotificationButtons.wakeCheck)
+              AndroidNotificationAction(wakeCheckAgain, l10n.wcStillAsleep),
+          ],
+        },
       ),
-      iOS: const DarwinNotificationDetails(),
-    );
-    final now = DateTime.now();
-    for (final d in desired) {
-      if (kept.contains(d.id) || !d.fireAt.isAfter(now)) continue;
-      await _plugin.zonedSchedule(
-        id: d.id,
-        scheduledDate: tz.TZDateTime.from(d.fireAt, tz.UTC),
-        notificationDetails: details,
-        // No exact-alarm permission: a few minutes' slack is fine for "Báo trước".
-        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-        title: d.title,
-        body: d.body,
-        payload: d.payload,
-      );
-    }
+      iOS: DarwinNotificationDetails(
+        categoryIdentifier: switch (d.buttons) {
+          NotificationButtons.none => null,
+          NotificationButtons.wakeCheck => 'CL_WAKE_CHECK',
+          NotificationButtons.wakeCheckLast => 'CL_WAKE_CHECK_LAST',
+        },
+      ),
+    ),
+    // No exact-alarm permission: a few minutes' slack is fine for "Báo trước".
+    androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+    title: d.title,
+    body: d.body,
+    payload: d.payload,
+  );
+}
+
+/// A notification button answered without opening the app, in a background isolate: only
+/// "Vẫn ngủ" (L6), which schedules the one second ask. Best effort, like all scheduling.
+@pragma('vm:entry-point')
+Future<void> notificationBackgroundAction(NotificationResponse r) async {
+  if (r.actionId != wakeCheckAgain) return;
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
+    final prefs = await SharedPreferences.getInstance();
+    final at = await wakeCheckSnooze(prefs, r.payload, DateTime.now());
+    if (at == null) return;
+    final plan = wakeCheckSecondPlan(r.payload, at);
+    if (plan == null) return;
+    // The app's language (G-081), else the device's, as the app itself resolves it.
+    final code = prefs.getString('app.locale');
+    final locale =
+        supportedLocales.where((l) => l.languageCode == code).firstOrNull ??
+        resolveLocale(WidgetsBinding.instance.platformDispatcher.locales);
+    final l10n = lookupAppLocalizations(locale);
+    final notifications = PluginReminderNotifications();
+    await notifications.init((_, _) {});
+    await notifications.schedule(wakeCheckNotification(l10n, plan), l10n);
+  } on Object {
+    // Nothing asks again; the timer is still there to stop.
   }
 }
 
@@ -435,12 +514,22 @@ class _ReminderNotificationSyncState
     final notifications = ref.read(reminderNotificationsProvider);
     unawaited(
       notifications
-          .init((payload) => unawaited(_open(payload)))
+          .init((payload, action) => unawaited(_open(payload, action: action)))
           .then((_) async {
-            await _open(await notifications.launchPayload());
+            final launch = await notifications.launchResponse();
+            await _open(launch?.payload, action: launch?.action);
+            await _takeWakeAction();
           })
           .catchError((Object _) {}),
     );
+    RuleNotificationChannel.onWakeAction = () => unawaited(_takeWakeAction());
+  }
+
+  /// iOS answers the "Bé dậy chưa?" buttons natively (the plugin would replace the rule
+  /// reminders' categories) and keeps the one that opened the app here.
+  Future<void> _takeWakeAction() async {
+    final a = await const RuleNotificationChannel().takeWakeAction();
+    if (a != null) await _open(a.payload, action: a.action, at: a.at);
   }
 
   @override
@@ -454,10 +543,24 @@ class _ReminderNotificationSyncState
     // Back from Settings (8d "Cài đặt").
     if (state == AppLifecycleState.resumed) {
       unawaited(ref.read(notificationsEnabledProvider.notifier).refresh());
+      unawaited(_takeWakeAction());
+      // "Vẫn ngủ" may have been answered in the background meanwhile. Only here: a reload
+      // while the app writes its preferences could drop a write still on its way.
+      unawaited(_reloadWakeCheck());
     }
   }
 
-  Future<void> _open(String? payload) async {
+  Future<void> _reloadWakeCheck() async {
+    try {
+      await ref.read(sharedPreferencesProvider).reload();
+      if (mounted) ref.invalidate(wakeCheckAgainProvider);
+    } on Object {
+      // Tests without preferences.
+    }
+  }
+
+  /// [at] is when a button was tapped, if it was not just now (iOS hands it over natively).
+  Future<void> _open(String? payload, {String? action, DateTime? at}) async {
     if (payload == null) return;
     // A cold start: the session and the tabs first, else the checks below find no membership
     // yet and the tap was dropped.
@@ -472,11 +575,19 @@ class _ReminderNotificationSyncState
         return;
       }
       ref.read(selectedBabyIdProvider.notifier).select(wakeBaby);
+      // "Dậy rồi" ends that sleep when it was tapped; "Dậy lúc…" asks the time first.
+      final sleep = wakeCheckSessionOfPayload(payload);
+      final query = switch (action) {
+        wakeCheckUp when sleep != null =>
+          '?session=$sleep&end=${(at ?? DateTime.now()).millisecondsSinceEpoch}',
+        wakeCheckPick when sleep != null => '?session=$sleep&pick=1',
+        _ => '',
+      };
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           ref
               .read(routerProvider)
-              .pushSafe('${Routes.timer}/${TimerType.sleep.name}');
+              .pushSafe('${Routes.timer}/${TimerType.sleep.name}$query');
         }
       });
       return;

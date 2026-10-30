@@ -23894,6 +23894,15 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
+  String get wcAwake => 'Dậy rồi';
+
+  @override
+  String get wcWokeAt => 'Dậy lúc…';
+
+  @override
+  String get wcStillAsleep => 'Vẫn ngủ';
+
+  @override
   String get ntWakeCheck => 'Hỏi khi đếm giấc ngủ còn chạy';
 
   @override

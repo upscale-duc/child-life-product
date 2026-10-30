@@ -315,6 +315,25 @@ DateTime? wakeCheckAt({
   required String zone,
   String? quietFrom,
   String? quietTo,
+}) => wakeCheckTimes(
+  records: records,
+  start: start,
+  now: now,
+  zone: zone,
+  quietFrom: quietFrom,
+  quietTo: quietTo,
+)?.ask;
+
+/// [wakeCheckAt] with what "Vẫn ngủ" needs (lumi-plan §7.1): it asks once more after half the
+/// expected length (at least 30 min), and only before [until], the first moment from [ask] in
+/// the night window or the quiet hours (or the timer's 18-hour limit).
+({DateTime ask, int againMinutes, DateTime until})? wakeCheckTimes({
+  required List<CareRecord> records,
+  required DateTime start,
+  required DateTime now,
+  required String zone,
+  String? quietFrom,
+  String? quietTo,
 }) {
   final night = _isNight(zone, start);
   final same = [
@@ -334,8 +353,10 @@ DateTime? wakeCheckAt({
   }
 
   DateTime ask;
+  // A night with few sleeps to go by is asked in the morning: 30 min later is enough.
+  final expected = same.length >= 5 ? _median(same) : (night ? 60 : 150);
   if (same.length >= 5) {
-    final med = _median(same);
+    final med = expected;
     final wait = (med * 1.3).round() > med + 20
         ? (med * 1.3).round()
         : med + 20;
@@ -356,6 +377,17 @@ DateTime? wakeCheckAt({
     if (_isNight(zone, ask)) ask = nextMorning(ask);
   }
   // The timer's own 18-hour review takes over beyond that (lumi-plan §7.1).
-  if (ask.difference(start) > const Duration(hours: 18)) return null;
-  return ask.isAfter(now) ? ask : null;
+  final limit = start.add(const Duration(hours: 18));
+  if (ask.isAfter(limit) || !ask.isAfter(now)) return null;
+  var until = ask;
+  while (until.isBefore(limit) &&
+      !_isNight(zone, until) &&
+      !_inQuiet(zone, until, qFrom, qTo)) {
+    until = until.add(const Duration(minutes: 5));
+  }
+  return (
+    ask: ask,
+    againMinutes: expected ~/ 2 < 30 ? 30 : expected ~/ 2,
+    until: until.isAfter(limit) ? limit : until,
+  );
 }

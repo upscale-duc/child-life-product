@@ -228,6 +228,61 @@ void main() {
       );
     });
 
+    test('"Vẫn ngủ" waits half the usual sleep, at least 30 min', () {
+      // Median nap 120 min → 60; no naps → 150 / 2 = 75; a night → 30.
+      expect(
+        wakeCheckTimes(
+          records: naps(20, 24, length: 120),
+          start: vn(25, 9),
+          now: vn(25, 9),
+          zone: zone,
+        )!.againMinutes,
+        60,
+      );
+      expect(
+        wakeCheckTimes(
+          records: const [],
+          start: vn(25, 9),
+          now: vn(25, 9),
+          zone: zone,
+        )!.againMinutes,
+        75,
+      );
+      expect(
+        wakeCheckTimes(
+          records: const [],
+          start: vn(25, 21),
+          now: vn(25, 21),
+          zone: zone,
+        )!.againMinutes,
+        30,
+      );
+    });
+
+    test('the second ask stops before quiet hours or the night window', () {
+      expect(
+        wakeCheckTimes(
+          records: const [],
+          start: vn(25, 9),
+          now: vn(25, 9),
+          zone: zone,
+          quietFrom: '12:00',
+          quietTo: '13:30',
+        )!.until,
+        vn(25, 12),
+      );
+      // Asked 15:30 for a 13:00 nap: no second ask after 19:00.
+      expect(
+        wakeCheckTimes(
+          records: const [],
+          start: vn(25, 13),
+          now: vn(25, 13),
+          zone: zone,
+        )!.until,
+        vn(25, 19),
+      );
+    });
+
     test('already past: nothing to schedule', () {
       expect(
         wakeCheckAt(

@@ -39768,6 +39768,24 @@ abstract class AppLocalizations {
   /// **'Bé đã ngủ {duration}. Nếu bé dậy rồi, chạm để ghi giờ dậy nhé.'**
   String wcBody(String duration);
 
+  /// L6 notification button (Android; iOS has the same title in RuleNotifications.swift): ends the sleep timer at the moment it is tapped and opens the app on the saved toast. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dậy rồi'**
+  String get wcAwake;
+
+  /// L6 notification button: opens the sleep timer with the wake-time picker, then ends the sleep at the picked time. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dậy lúc…'**
+  String get wcWokeAt;
+
+  /// L6 notification button, without opening the app: asks once more after half the usual sleep (at least 30 min), never at night or in quiet hours; the second ask has no such button. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vẫn ngủ'**
+  String get wcStillAsleep;
+
   /// EN07 Cài đặt thông báo: the L6 "Bé dậy chưa?" switch, on by default, this phone only. EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:

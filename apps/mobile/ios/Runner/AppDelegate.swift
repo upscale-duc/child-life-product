@@ -1,6 +1,8 @@
 import Flutter
 import UIKit
 import UserNotifications
+import flutter_local_notifications
+import shared_preferences_foundation
 
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
@@ -12,6 +14,16 @@ import UserNotifications
     UNUserNotificationCenter.current().delegate = self
     // v1.0 1f: lock-screen actions for rule reminders.
     RuleNotifications.registerCategories()
+    // L6 "Vẫn ngủ" is answered in a background isolate: it reads the preferences and schedules
+    // the second ask, so only those two plugins.
+    FlutterLocalNotificationsPlugin.setPluginRegistrantCallback { registry in
+      if let r = registry.registrar(forPlugin: "FlutterLocalNotificationsPlugin") {
+        FlutterLocalNotificationsPlugin.register(with: r)
+      }
+      if let r = registry.registrar(forPlugin: "SharedPreferencesPlugin") {
+        SharedPreferencesPlugin.register(with: r)
+      }
+    }
     // 10j: reconnect to background uploads that finished or kept going while the app was gone.
     BackgroundUploads.shared.resume()
     // Tự lưu (D-066, AR03): checks iOS runs while the app is in the background or closed.

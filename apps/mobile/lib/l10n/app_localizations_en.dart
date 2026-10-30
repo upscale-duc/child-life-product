@@ -25272,6 +25272,15 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get wcAwake => 'Awake now';
+
+  @override
+  String get wcWokeAt => 'Woke at…';
+
+  @override
+  String get wcStillAsleep => 'Still asleep';
+
+  @override
   String get ntWakeCheck => 'Ask when a sleep timer is still running';
 
   @override

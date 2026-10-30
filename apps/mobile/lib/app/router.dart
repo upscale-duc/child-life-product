@@ -838,6 +838,12 @@ final routerProvider = Provider<GoRouter>((ref) {
           type:
               TimerType.values.asNameMap()[s.pathParameters['type']] ??
               TimerType.sleep,
+          wakeSession: s.uri.queryParameters['session'],
+          endAt: switch (int.tryParse(s.uri.queryParameters['end'] ?? '')) {
+            final ms? => DateTime.fromMillisecondsSinceEpoch(ms),
+            null => null,
+          },
+          pickEnd: s.uri.queryParameters['pick'] == '1',
         ),
       ),
       _route(

@@ -42,6 +42,15 @@
 | Model thật (live eval)                                                                 | **Chưa chạy**: cần anh/chị đồng ý chi phí (khoảng 4–6 lượt cho các ca mới)                                              |
 | Máy thật iOS/Android                                                                   | **Chưa chạy**                                                                                                           |
 
+## L6 phần hai: nút trên thông báo (30/10)
+
+- **Dậy rồi**: mở app, lưu giấc ngủ kết thúc **đúng lúc chạm nút** (không phải lúc app mở xong), hiện thông báo "Đã lưu" có Hoàn tác.
+- **Dậy lúc…**: mở màn đếm giờ, hỏi giờ dậy (không sớm hơn giờ bắt đầu), rồi lưu.
+- **Vẫn ngủ**: không mở app. Hỏi lại **một lần** sau nửa thời lượng giấc thường của bé (ít nhất 30 phút), và chỉ khi lần đó vẫn chưa sang ban đêm hay giờ yên lặng. Lần hỏi thứ hai không có nút "Vẫn ngủ".
+- Nút chỉ tác động lên đúng giấc đã hỏi. Nếu giấc đó đã kết thúc hoặc đã bắt đầu giấc khác, app chỉ mở màn đếm giờ.
+- **iOS**: các nút được đăng ký cùng chỗ với nút nhắc theo quy tắc (`RuleNotifications.swift`), vì plugin thông báo sẽ xoá các nút đó nếu tự đăng ký. "Vẫn ngủ" chạy trong nền với hai plugin (thông báo, bộ nhớ máy).
+- **Chưa làm**: lần hỏi đầu nhắc rằng có thể tắt trong Cài đặt thông báo; không kêu, không rung khi đang bật Chăm đêm. Chưa thử trên máy thật.
+
 ## Ghi chú
 
 - **23 ca e2e cũ đã cập nhật.**

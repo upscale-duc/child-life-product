@@ -153,10 +153,12 @@ class FakeReminderNotifications implements ReminderNotifications {
   List<LocalReminder> scheduled = const [];
 
   @override
-  Future<void> init(void Function(String? payload) onTap) async {}
+  Future<void> init(
+    void Function(String? payload, String? action) onTap,
+  ) async {}
 
   @override
-  Future<String?> launchPayload() async => null;
+  Future<({String? payload, String? action})?> launchResponse() async => null;
 
   @override
   Future<bool> enabled() async => on;

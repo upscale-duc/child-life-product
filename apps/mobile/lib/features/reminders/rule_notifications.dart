@@ -42,11 +42,16 @@ class RuleNotificationChannel {
     }
   }
 
+  /// Runs when a "Bé dậy chưa?" button opened the running app (then [takeWakeAction]); set by
+  /// the notification sync, which may start after [listen].
+  static void Function()? onWakeAction;
+
   /// [onTapped] runs when a push is tapped while the app runs (then [takeTappedPush]).
   void listen(void Function() onTapped) {
     try {
       _channel.setMethodCallHandler((call) async {
         if (call.method == 'tapped') onTapped();
+        if (call.method == 'wakeAction') onWakeAction?.call();
       });
     } on Object {
       // Tests.
@@ -59,6 +64,26 @@ class RuleNotificationChannel {
         'takeLaunchAction',
       );
       return r?['action'] as String?;
+    } on Object {
+      return null; // Android, tests.
+    }
+  }
+
+  /// L6: "Dậy rồi" or "Dậy lúc…" tapped on iOS (answered natively), with the notification's
+  /// payload and when it was tapped; taken once.
+  Future<({String action, String? payload, DateTime at})?>
+  takeWakeAction() async {
+    try {
+      final r = await _channel.invokeMapMethod<String, Object?>(
+        'takeWakeAction',
+      );
+      final action = r?['action'], at = r?['at'];
+      if (action is! String || at is! int) return null;
+      return (
+        action: action,
+        payload: r?['payload'] as String?,
+        at: DateTime.fromMillisecondsSinceEpoch(at),
+      );
     } on Object {
       return null; // Android, tests.
     }

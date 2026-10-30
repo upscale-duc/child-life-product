@@ -86,8 +86,21 @@ void openOrStartTimer(
 /// sleep ring "breathes" (Motion spec P10 272:368, static with Reduce Motion). Live Activities
 /// are a later slice (SP-1).
 class TimerScreen extends ConsumerStatefulWidget {
-  const TimerScreen({required this.type, super.key});
+  const TimerScreen({
+    required this.type,
+    this.wakeSession,
+    this.endAt,
+    this.pickEnd = false,
+    super.key,
+  });
   final TimerType type;
+
+  /// L6 "Bé dậy chưa?" buttons, for the sleep of timer session [wakeSession] only: "Dậy rồi"
+  /// ends it at [endAt] (when it was tapped); "Dậy lúc…" ([pickEnd]) asks the wake time first.
+  /// A sleep that already ended or restarted just shows the timer.
+  final String? wakeSession;
+  final DateTime? endAt;
+  final bool pickEnd;
 
   @override
   ConsumerState<TimerScreen> createState() => _TimerScreenState();
@@ -98,6 +111,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
   Timer? _gone;
   String? _sessionSeen;
   bool _leaving = false;
+  bool _woke = false;
 
   @override
   void initState() {
@@ -148,7 +162,22 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
     if (me != null) _repo.updateTimer(next, me.uid, onError: _failed);
   }
 
-  Future<void> _end(CareTimer timer) async {
+  /// The "Bé dậy chưa?" button that opened this screen, once.
+  Future<void> _wake(CareTimer timer) async {
+    _woke = true;
+    if (widget.pickEnd) {
+      final picked = await pickCareTime(
+        context,
+        initial: _now(),
+        earliest: timer.startedAt,
+      );
+      if (picked != null && mounted) await _end(timer, at: picked);
+    } else if (widget.endAt case final at?) {
+      await _end(timer, at: at);
+    }
+  }
+
+  Future<void> _end(CareTimer timer, {DateTime? at}) async {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context).toLanguageTag();
     if (widget.type == TimerType.pump) {
@@ -163,8 +192,9 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
     }
     final me = ref.read(selectedMembershipProvider);
     if (me == null) return;
+    final now = _now();
     final record = timer.toRecord(
-      _now(),
+      at != null && at.isAfter(timer.startedAt) && !at.isAfter(now) ? at : now,
       by: (uid: me.uid, author: CareAuthor.of(me)),
     );
     final toaster = ClToaster.of(context);
@@ -282,6 +312,14 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
       });
     }
     _sessionSeen = timer.sessionId;
+    if (!_woke &&
+        widget.wakeSession == timer.sessionId &&
+        (widget.pickEnd || widget.endAt != null)) {
+      _woke = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) unawaited(_wake(timer));
+      });
+    }
 
     final now = _now();
     final who = authorLabel(
