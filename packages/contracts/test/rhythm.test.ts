@@ -16,6 +16,7 @@ import {
   type Activity,
   type RankFlags,
   type ReferenceStage,
+  cardAgeDays,
 } from '../src/index.js';
 import pack from './vectors/premium-v2.json' with { type: 'json' };
 
@@ -280,5 +281,17 @@ describe('recommend (H02, PS01, AC02 → PS02)', () => {
     expect(recommend({ ...base, activities: [act('act_a', { regions: ['SG'] })] }).kind).toBe(
       'none',
     );
+  });
+});
+
+describe('cardAgeDays (expert review 2026-10-30, D3; same cases as the app)', () => {
+  it('preterm (6 weeks early): the corrected age', () => {
+    expect(cardAgeDays('2026-01-01', '2026-02-12', '2026-04-01')).toBe(90 - 42);
+    expect(cardAgeDays('2026-01-01', '2026-02-12', '2026-01-20')).toBe(0);
+  });
+  it('2 weeks early, no due date, or past 24 months: the actual age', () => {
+    expect(cardAgeDays('2026-01-01', '2026-01-15', '2026-04-01')).toBe(90);
+    expect(cardAgeDays('2026-01-01', null, '2026-04-01')).toBe(90);
+    expect(cardAgeDays('2026-01-01', '2026-02-12', '2028-01-02')).toBe(731);
   });
 });

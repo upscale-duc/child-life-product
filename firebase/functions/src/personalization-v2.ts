@@ -4,6 +4,7 @@ import {
   activeAt,
   addDaysIso,
   ageCardFor,
+  cardAgeDays,
   dailyContexts,
   dayBoundsIn,
   daysBetweenIso,
@@ -759,7 +760,12 @@ export async function personalizedDay(
           : ranked.reasonCode
         : null,
     ageCardId:
-      content && ageDays !== null ? (ageCardFor(content.ageCards, ageDays)?.id ?? null) : null,
+      content && dob && ageDays !== null
+        ? (ageCardFor(
+            content.ageCards,
+            cardAgeDays(dob, (profile.get('dueDate.date') as string | undefined) ?? null, today),
+          )?.id ?? null)
+        : null,
     work,
     lastRecords,
     acknowledgedAt: state.acknowledgedAt ?? null,

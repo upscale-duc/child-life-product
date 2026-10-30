@@ -162,7 +162,10 @@ class ForYouSection extends ConsumerWidget {
     final ageCard = content == null
         ? null
         : dob != null
-        ? ageCardFor(content.ageCards, ageInDays(dob, todayDate))
+        ? ageCardFor(
+            content.ageCards,
+            cardAgeDays(dob, profile?.dueDate?.date, todayDate),
+          )
         : home?.ageCardId == null
         ? null
         : content.ageCard(home!.ageCardId!);

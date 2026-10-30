@@ -22532,11 +22532,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2CardLumiEyebrow => 'LUMI EVERY MONTH';
 
   @override
-  String get pv2CardLumiTitle => 'Ask Lumi about your baby’s logs';
+  String get pv2CardLumiTitle => 'Say it once, Lumi logs it';
 
   @override
   String get pv2CardLumiBody =>
-      'Get log summaries and drafts to review before saving.';
+      'Log feeds and sleep in your own words, and ask about the log any time.';
 
   @override
   String pv2CardLumiLimit(int n) {
@@ -22562,11 +22562,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pv2CardRhythmEyebrow => 'YOUR CHILD\'S RHYTHM';
 
   @override
-  String get pv2CardRhythmTitle => 'Personal suggestions & advanced rhythms';
+  String get pv2CardRhythmTitle => 'Know the next feed and nap';
 
   @override
   String get pv2CardRhythmBody =>
-      'Suggestions for your baby’s needs and feeding and sleep patterns from your logs.';
+      'From your baby’s own rhythm, with a summary to take to the doctor.';
 
   @override
   String pv2CardRhythmLimit(int n) {
@@ -25360,4 +25360,101 @@ class AppLocalizationsEn extends AppLocalizations {
   String cpHeartA11y(String who) {
     return 'Send $who a heart';
   }
+
+  @override
+  String get vrTitle => 'Doctor visit summary';
+
+  @override
+  String get vrTileSub => 'A summary for the doctor';
+
+  @override
+  String vrCorrectedAge(String age) {
+    return 'Corrected age $age';
+  }
+
+  @override
+  String vrMadeOn(String date) {
+    return 'Made on $date';
+  }
+
+  @override
+  String get vrGrowth => 'Growth';
+
+  @override
+  String get vrWeight => 'Weight';
+
+  @override
+  String get vrLength => 'Length';
+
+  @override
+  String get vrHead => 'Head';
+
+  @override
+  String vrMeasuredOn(String date) {
+    return 'Measured $date';
+  }
+
+  @override
+  String get vrNoGrowth => 'No measurements yet';
+
+  @override
+  String get vrCare => 'Feeds, sleep, diapers · daily average';
+
+  @override
+  String vrBefore(String value) {
+    return 'Week before: $value';
+  }
+
+  @override
+  String vrFeedsMl(String count, String ml) {
+    return '$count feeds · $ml ml';
+  }
+
+  @override
+  String vrFeedsMin(String count, String minutes) {
+    return '$count feeds · $minutes min';
+  }
+
+  @override
+  String vrDiapers(String wet, String dirty) {
+    return 'Wet $wet · Dirty $dirty';
+  }
+
+  @override
+  String get vrSleepSparse => 'Not enough complete days';
+
+  @override
+  String get vrVaccines => 'Vaccines';
+
+  @override
+  String vrVaccinesGiven(int given, int total) {
+    return '$given of $total doses due so far given';
+  }
+
+  @override
+  String get vrVaccineNext => 'Next doses';
+
+  @override
+  String get vrVaccineOverdue => 'Overdue';
+
+  @override
+  String get vrQuestions => 'Questions for the doctor';
+
+  @override
+  String get vrQuestionHint => 'Add something to ask…';
+
+  @override
+  String get vrQuestionAdd => 'Add';
+
+  @override
+  String vrQuestionRemove(String question) {
+    return 'Remove “$question”';
+  }
+
+  @override
+  String get vrDisclaimer =>
+      'From the family\'s log in Child Life. Not a substitute for a doctor\'s examination or advice.';
+
+  @override
+  String get vrShare => 'Send to the doctor';
 }

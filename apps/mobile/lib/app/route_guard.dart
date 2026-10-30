@@ -53,6 +53,9 @@ abstract final class Routes {
   static const ruleDetail = '/care/reminders/rules';
   static const ruleNew = '/care/reminders/rules/new';
 
+  /// U1 "Chuẩn bị đi khám" (sprint Premium, owner 2026-10-30): a summary for the doctor.
+  static const visitReport = '/care/visit';
+
   /// Sổ tiêm chủng (VX 0 – VX 9a): the book, setup, a milestone, a dose, a vaccine.
   static const vaccines = '/care/vaccines';
   static const vaccineSetup = '/care/vaccines/setup';

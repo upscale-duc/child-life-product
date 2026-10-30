@@ -31128,11 +31128,11 @@
   "@pv2CardLumiEyebrow": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card eyebrow."
   },
-  "pv2CardLumiTitle": "Hỏi Lumi về nhật ký của con",
+  "pv2CardLumiTitle": "Nói một câu, Lumi ghi giúp",
   "@pv2CardLumiTitle": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card title."
   },
-  "pv2CardLumiBody": "Lumi tóm tắt nhật ký, soạn bản ghi để bạn xem lại rồi lưu.",
+  "pv2CardLumiBody": "Ghi cữ bú, giấc ngủ bằng lời, hỏi lại nhật ký bất cứ lúc nào.",
   "@pv2CardLumiBody": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card benefit."
   },
@@ -31161,11 +31161,11 @@
   "@pv2CardRhythmEyebrow": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card eyebrow."
   },
-  "pv2CardRhythmTitle": "Gợi ý cá nhân & nhịp nâng cao",
+  "pv2CardRhythmTitle": "Biết trước cữ bú, giấc ngủ",
   "@pv2CardRhythmTitle": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card title."
   },
-  "pv2CardRhythmBody": "Gợi ý theo nhu cầu của bé, nhìn lại nhịp bú, ngủ từ nhật ký.",
+  "pv2CardRhythmBody": "Theo nhịp riêng của con, kèm bản tóm tắt mang đi khám.",
   "@pv2CardRhythmBody": {
     "description": "Premium v2 (Figma 958:13863, D-101). Feature card benefit."
   },
@@ -35123,5 +35123,166 @@
         "type": "String"
       }
     }
+  },
+  "vrTitle": "Chuẩn bị đi khám",
+  "@vrTitle": {
+    "description": "U1 Chuẩn bị đi khám: page title and the Chăm sóc tile. EN is an engineering draft for owner review."
+  },
+  "vrTileSub": "Tóm tắt cho bác sĩ",
+  "@vrTileSub": {
+    "description": "U1 Chuẩn bị đi khám: under the Chăm sóc tile. EN is an engineering draft for owner review."
+  },
+  "vrCorrectedAge": "Tuổi hiệu chỉnh {age}",
+  "@vrCorrectedAge": {
+    "description": "U1 Chuẩn bị đi khám: a preterm baby's corrected age (D3, expert review 2026-10-30). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "vrMadeOn": "Lập ngày {date}",
+  "@vrMadeOn": {
+    "description": "U1 Chuẩn bị đi khám: the date of the summary. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "vrGrowth": "Tăng trưởng",
+  "@vrGrowth": {
+    "description": "U1 Chuẩn bị đi khám: section. EN is an engineering draft for owner review."
+  },
+  "vrWeight": "Cân nặng",
+  "@vrWeight": {
+    "description": "U1 Chuẩn bị đi khám: growth row. EN is an engineering draft for owner review."
+  },
+  "vrLength": "Chiều dài",
+  "@vrLength": {
+    "description": "U1 Chuẩn bị đi khám: growth row. EN is an engineering draft for owner review."
+  },
+  "vrHead": "Vòng đầu",
+  "@vrHead": {
+    "description": "U1 Chuẩn bị đi khám: growth row. EN is an engineering draft for owner review."
+  },
+  "vrMeasuredOn": "Đo ngày {date}",
+  "@vrMeasuredOn": {
+    "description": "U1 Chuẩn bị đi khám: when the latest measurement was taken. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "vrNoGrowth": "Chưa có số đo nào",
+  "@vrNoGrowth": {
+    "description": "U1 Chuẩn bị đi khám: growth section, nothing logged. EN is an engineering draft for owner review."
+  },
+  "vrCare": "Ăn, ngủ, thay tã · trung bình mỗi ngày",
+  "@vrCare": {
+    "description": "U1 Chuẩn bị đi khám: section: each row is the last 7 complete days, the line under it the 7 days before. EN is an engineering draft for owner review."
+  },
+  "vrBefore": "Tuần trước: {value}",
+  "@vrBefore": {
+    "description": "U1 Chuẩn bị đi khám: the same row for the 7 days before. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "vrFeedsMl": "{count} cữ · {ml} ml",
+  "@vrFeedsMl": {
+    "description": "U1 Chuẩn bị đi khám: bottle feeds and millilitres per day. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "ml": {
+        "type": "String"
+      }
+    }
+  },
+  "vrFeedsMin": "{count} cữ · {minutes} phút",
+  "@vrFeedsMin": {
+    "description": "U1 Chuẩn bị đi khám: breastfeeds and minutes per day. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "vrDiapers": "Ướt {wet} · Bẩn {dirty}",
+  "@vrDiapers": {
+    "description": "U1 Chuẩn bị đi khám: diapers per day. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "wet": {
+        "type": "String"
+      },
+      "dirty": {
+        "type": "String"
+      }
+    }
+  },
+  "vrSleepSparse": "Chưa đủ ngày ghi đủ",
+  "@vrSleepSparse": {
+    "description": "U1 Chuẩn bị đi khám: sleep average needs enough complete days; missing is never zero. EN is an engineering draft for owner review."
+  },
+  "vrVaccines": "Tiêm chủng",
+  "@vrVaccines": {
+    "description": "U1 Chuẩn bị đi khám: section. EN is an engineering draft for owner review."
+  },
+  "vrVaccinesGiven": "Đã tiêm {given}/{total} mũi đến hạn",
+  "@vrVaccinesGiven": {
+    "description": "U1 Chuẩn bị đi khám: vaccine progress: doses due by today only (a newborn is never \"0/30\"). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "given": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "vrVaccineNext": "Mũi tiếp theo",
+  "@vrVaccineNext": {
+    "description": "U1 Chuẩn bị đi khám: vaccine row label. EN is an engineering draft for owner review."
+  },
+  "vrVaccineOverdue": "Quá hẹn",
+  "@vrVaccineOverdue": {
+    "description": "U1 Chuẩn bị đi khám: vaccine row label. EN is an engineering draft for owner review."
+  },
+  "vrQuestions": "Câu hỏi cho bác sĩ",
+  "@vrQuestions": {
+    "description": "U1 Chuẩn bị đi khám: section. EN is an engineering draft for owner review."
+  },
+  "vrQuestionHint": "Thêm điều bạn muốn hỏi…",
+  "@vrQuestionHint": {
+    "description": "U1 Chuẩn bị đi khám: the question field. EN is an engineering draft for owner review."
+  },
+  "vrQuestionAdd": "Thêm",
+  "@vrQuestionAdd": {
+    "description": "U1 Chuẩn bị đi khám: adds the question. EN is an engineering draft for owner review."
+  },
+  "vrQuestionRemove": "Xoá câu hỏi “{question}”",
+  "@vrQuestionRemove": {
+    "description": "U1 Chuẩn bị đi khám: accessibility label of × on a question. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "question": {
+        "type": "String"
+      }
+    }
+  },
+  "vrDisclaimer": "Từ nhật ký gia đình ghi trên Child Life. Không thay cho khám và tư vấn của bác sĩ.",
+  "@vrDisclaimer": {
+    "description": "U1 Chuẩn bị đi khám: footer; also ends the shared text. EN is an engineering draft for owner review."
+  },
+  "vrShare": "Gửi cho bác sĩ",
+  "@vrShare": {
+    "description": "U1 Chuẩn bị đi khám: primary action: shares the summary as text. EN is an engineering draft for owner review."
   }
 }

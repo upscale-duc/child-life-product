@@ -8,6 +8,7 @@ import {
 import {
   addDaysIso,
   ageCardFor,
+  cardAgeDays,
   checkInSchema,
   checkInState,
   composeHomeRequestSchema,
@@ -99,6 +100,8 @@ interface RhythmInputs {
   today: string;
   /** Actual age (from the date of birth, never corrected); null without a date of birth. */
   ageDays: number | null;
+  /** The age "Tuần này của {bé}" is chosen by: corrected for a preterm baby (D3). */
+  cardAgeDays: number | null;
   babyState: string;
   content: RhythmContent | null;
   rules: RhythmRules;
@@ -132,6 +135,10 @@ async function rhythmInputs(db: Firestore, babyId: string, now: Date): Promise<R
     zone,
     today,
     ageDays: dob && dob <= today ? daysBetweenIso(dob, today) : null,
+    cardAgeDays:
+      dob && dob <= today
+        ? cardAgeDays(dob, (profile.get('dueDate.date') as string | undefined) ?? null, today)
+        : null,
     babyState: (baby.get('state') as string | undefined) ?? 'active',
     content,
     rules,
@@ -466,8 +473,8 @@ export async function nextAction(
   )
     return { state: 'health', ...none };
   const ageCard =
-    inputs.content && inputs.ageDays !== null
-      ? ageCardFor(inputs.content.ageCards, inputs.ageDays)
+    inputs.content && inputs.cardAgeDays !== null
+      ? ageCardFor(inputs.content.ageCards, inputs.cardAgeDays)
       : null;
   const groupA = checkCapability(ctx, 'personalization.cross_module', now);
   const advanced = checkCapability(ctx, 'rhythm.advanced', now).allowed;
@@ -589,8 +596,8 @@ export async function composeHome(
   if (!familyCan(ctx.member, 'history.read')) throw gateError('ROLE_DENIED');
   const inputs = await rhythmInputs(db, req.babyId, now);
   const ageCardId =
-    inputs.content && inputs.ageDays !== null
-      ? (ageCardFor(inputs.content.ageCards, inputs.ageDays)?.id ?? null)
+    inputs.content && inputs.cardAgeDays !== null
+      ? (ageCardFor(inputs.content.ageCards, inputs.cardAgeDays)?.id ?? null)
       : null;
   const empty = (state: ComposeHomeAnswer['state'], gate: string | null): ComposeHomeAnswer => ({
     state,

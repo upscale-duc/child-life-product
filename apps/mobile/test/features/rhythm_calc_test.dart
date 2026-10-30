@@ -396,4 +396,20 @@ void main() {
       },
     );
   });
+
+  group(
+    'cardAgeDays (expert review 2026-10-30, D3; same cases as contracts)',
+    () {
+      final dob = DateTime(2026, 1, 1);
+      test('preterm (6 weeks early): the corrected age', () {
+        expect(cardAgeDays(dob, '2026-02-12', DateTime(2026, 4, 1)), 90 - 42);
+        expect(cardAgeDays(dob, '2026-02-12', DateTime(2026, 1, 20)), 0);
+      });
+      test('2 weeks early, no due date, or past 24 months: the actual age', () {
+        expect(cardAgeDays(dob, '2026-01-15', DateTime(2026, 4, 1)), 90);
+        expect(cardAgeDays(dob, null, DateTime(2026, 4, 1)), 90);
+        expect(cardAgeDays(dob, '2026-02-12', DateTime(2028, 1, 2)), 731);
+      });
+    },
+  );
 }

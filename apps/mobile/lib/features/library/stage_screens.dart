@@ -11,8 +11,9 @@ import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../l10n/app_localizations.dart';
 import '../premium/premium_repository.dart';
-import '../rhythm/rhythm_calc.dart' show ageCardFor, ageInDays;
-import '../rhythm/rhythm_repository.dart' show rhythmContentProvider;
+import '../rhythm/rhythm_calc.dart' show ageCardFor, cardAgeDays;
+import '../rhythm/rhythm_repository.dart'
+    show rhythmContentProvider, rhythmProfileProvider;
 import '../care/care_repository.dart' show onlineProvider;
 import 'content_calc.dart';
 import 'content_models.dart';
@@ -370,7 +371,18 @@ class StageDetailScreen extends ConsumerWidget {
       final content = ref.watch(rhythmContentProvider).value;
       weekCard = content == null
           ? null
-          : ageCardFor(content.ageCards, ageInDays(dob!, baby!.today))?.id;
+          : ageCardFor(
+              content.ageCards,
+              cardAgeDays(
+                dob!,
+                ref
+                    .watch(rhythmProfileProvider(baby!.babyId))
+                    .value
+                    ?.dueDate
+                    ?.date,
+                baby.today,
+              ),
+            )?.id;
     }
 
     final doing = stage.doing.pick(locale);

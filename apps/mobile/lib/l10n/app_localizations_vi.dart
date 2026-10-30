@@ -21271,11 +21271,11 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2CardLumiEyebrow => 'LUMI MỖI THÁNG';
 
   @override
-  String get pv2CardLumiTitle => 'Hỏi Lumi về nhật ký của con';
+  String get pv2CardLumiTitle => 'Nói một câu, Lumi ghi giúp';
 
   @override
   String get pv2CardLumiBody =>
-      'Lumi tóm tắt nhật ký, soạn bản ghi để bạn xem lại rồi lưu.';
+      'Ghi cữ bú, giấc ngủ bằng lời, hỏi lại nhật ký bất cứ lúc nào.';
 
   @override
   String pv2CardLumiLimit(int n) {
@@ -21295,11 +21295,11 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2CardRhythmEyebrow => 'HIỂU NHỊP CON';
 
   @override
-  String get pv2CardRhythmTitle => 'Gợi ý cá nhân & nhịp nâng cao';
+  String get pv2CardRhythmTitle => 'Biết trước cữ bú, giấc ngủ';
 
   @override
   String get pv2CardRhythmBody =>
-      'Gợi ý theo nhu cầu của bé, nhìn lại nhịp bú, ngủ từ nhật ký.';
+      'Theo nhịp riêng của con, kèm bản tóm tắt mang đi khám.';
 
   @override
   String pv2CardRhythmLimit(int n) {
@@ -23982,4 +23982,101 @@ class AppLocalizationsVi extends AppLocalizations {
   String cpHeartA11y(String who) {
     return 'Thả tim cho $who';
   }
+
+  @override
+  String get vrTitle => 'Chuẩn bị đi khám';
+
+  @override
+  String get vrTileSub => 'Tóm tắt cho bác sĩ';
+
+  @override
+  String vrCorrectedAge(String age) {
+    return 'Tuổi hiệu chỉnh $age';
+  }
+
+  @override
+  String vrMadeOn(String date) {
+    return 'Lập ngày $date';
+  }
+
+  @override
+  String get vrGrowth => 'Tăng trưởng';
+
+  @override
+  String get vrWeight => 'Cân nặng';
+
+  @override
+  String get vrLength => 'Chiều dài';
+
+  @override
+  String get vrHead => 'Vòng đầu';
+
+  @override
+  String vrMeasuredOn(String date) {
+    return 'Đo ngày $date';
+  }
+
+  @override
+  String get vrNoGrowth => 'Chưa có số đo nào';
+
+  @override
+  String get vrCare => 'Ăn, ngủ, thay tã · trung bình mỗi ngày';
+
+  @override
+  String vrBefore(String value) {
+    return 'Tuần trước: $value';
+  }
+
+  @override
+  String vrFeedsMl(String count, String ml) {
+    return '$count cữ · $ml ml';
+  }
+
+  @override
+  String vrFeedsMin(String count, String minutes) {
+    return '$count cữ · $minutes phút';
+  }
+
+  @override
+  String vrDiapers(String wet, String dirty) {
+    return 'Ướt $wet · Bẩn $dirty';
+  }
+
+  @override
+  String get vrSleepSparse => 'Chưa đủ ngày ghi đủ';
+
+  @override
+  String get vrVaccines => 'Tiêm chủng';
+
+  @override
+  String vrVaccinesGiven(int given, int total) {
+    return 'Đã tiêm $given/$total mũi đến hạn';
+  }
+
+  @override
+  String get vrVaccineNext => 'Mũi tiếp theo';
+
+  @override
+  String get vrVaccineOverdue => 'Quá hẹn';
+
+  @override
+  String get vrQuestions => 'Câu hỏi cho bác sĩ';
+
+  @override
+  String get vrQuestionHint => 'Thêm điều bạn muốn hỏi…';
+
+  @override
+  String get vrQuestionAdd => 'Thêm';
+
+  @override
+  String vrQuestionRemove(String question) {
+    return 'Xoá câu hỏi “$question”';
+  }
+
+  @override
+  String get vrDisclaimer =>
+      'Từ nhật ký gia đình ghi trên Child Life. Không thay cho khám và tư vấn của bác sĩ.';
+
+  @override
+  String get vrShare => 'Gửi cho bác sĩ';
 }

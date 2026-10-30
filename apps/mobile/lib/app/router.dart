@@ -17,6 +17,7 @@ import '../features/auth/email_link.dart';
 import '../features/auto_save/auto_save_home.dart';
 import '../features/auto_save/auto_save_review.dart';
 import '../features/auto_save/auto_save_setup.dart';
+import '../features/care/visit_report.dart' show VisitReportScreen;
 import '../features/care/care_models.dart';
 import '../features/care/care_hub_screen.dart';
 import '../features/care/care_screens.dart';
@@ -518,6 +519,10 @@ final routerProvider = Provider<GoRouter>((ref) {
                   _route(
                     path: 'stats/sleep',
                     builder: (_, _) => const SleepStatsScreen(),
+                  ),
+                  _route(
+                    path: 'visit',
+                    builder: (_, _) => const VisitReportScreen(),
                   ),
                   // Sổ tiêm chủng (VX 0 – VX 9a).
                   _route(

@@ -147,6 +147,25 @@ int ageInDays(DateTime dateOfBirth, DateTime today) =>
         )
         .inDays;
 
+/// A baby born at least this many days before the due date (under 37 weeks) is preterm.
+const correctedAgeMinEarlyDays = 21;
+
+/// Corrected age applies until 24 months of actual age.
+const correctedAgeUntilDays = 730;
+
+/// The age "Tuần này của {bé}" is chosen by (expert review 2026-10-30, D3; contracts
+/// `cardAgeDays`): the corrected age for a preterm baby with a due date (`YYYY-MM-DD`), until
+/// 24 months of actual age; otherwise the actual age.
+int cardAgeDays(DateTime dateOfBirth, String? dueDate, DateTime today) {
+  final actual = ageInDays(dateOfBirth, today);
+  final due = dueDate == null ? null : DateTime.tryParse(dueDate);
+  if (due == null || actual >= correctedAgeUntilDays) return actual;
+  final early = ageInDays(dateOfBirth, due);
+  return early >= correctedAgeMinEarlyDays
+      ? (actual - early).clamp(0, actual)
+      : actual;
+}
+
 /// `ageCardFor`: the narrowest published range holding [ageDays].
 AgeCard? ageCardFor(List<AgeCard> cards, int ageDays) {
   final fit =

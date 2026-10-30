@@ -15,7 +15,7 @@
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
 | `reference.seed.json`              | `ref_20261015_01`, label "Wonder Weeks", stages counted from the **due date**                                                                           | 10 stages    |
 | `content.seed.json` → `activities` | `act_*`, all `published`, v1, `locales: [vi, en]`, `regions: []`                                                                                        | 37           |
-| `content.seed.json` → `ageCards`   | "Tuần này của {bé}": weekly for weeks 1–13 (days 0–90), then monthly from 3 to 24 months (days 91–760). Uses actual age from birth, never corrected age | 35 (13 + 22) |
+| `content.seed.json` → `ageCards`   | "Tuần này của {bé}": weekly for weeks 1–13 (days 0–90), then monthly from 3 to 24 months (days 91–760). Chosen by actual age, except a preterm baby (born ≥ 21 days before the due date) gets the corrected age until 24 months (D-141, expert review 2026-10-30) | 35 (13 + 22) |
 | `content.seed.json` → `health`     | 8 signs (ids = `healthSigns`), 5 "Trong lúc chờ" steps, disclaimer, 12 region numbers                                                                   | —            |
 
 `version` is `rc_20261015_01`. `publishedAt` is `null` in both files.

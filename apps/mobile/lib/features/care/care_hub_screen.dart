@@ -22,6 +22,7 @@ import '../nutrition/nutrition_routes.dart';
 import '../nutrition/nutrition_format.dart' show nuAgeLabel;
 import '../nutrition/nutrition_state.dart';
 import '../premium/premium_repository.dart';
+import 'visit_report.dart' show visitReportAllowed;
 import '../reminders/reminder_repository.dart';
 import '../reminders/rule_repository.dart';
 import '../solids/solids_format.dart' show sdTileLine;
@@ -232,6 +233,16 @@ List<Widget> careHubSections(
         onTap: () => context.push(
           '${Routes.history}?filter=${HistoryFilter.growth.name}',
         ),
+      ),
+    // U1 "Chuẩn bị đi khám" (sprint Premium): only where it can be shown in full.
+    if (visitReportAllowed(me, ref.watch(selectedCapabilitiesProvider)))
+      _Tile(
+        key: const Key('careVisit'),
+        icon: ClIcons.journal,
+        tint: cl.colors.mintSoft,
+        title: l10n.vrTitle,
+        subtitle: l10n.vrTileSub,
+        onTap: () => context.push(Routes.visitReport),
       ),
     // Ăn dặm (D-085, plan §5): "Từ 6 tháng" · "Sắp đến lúc ăn dặm" · "Bắt đầu theo dõi" ·
     // "Hôm nay · N bữa"; the age as Dinh dưỡng reads it (caregivers: the vaccine plan, P-133).

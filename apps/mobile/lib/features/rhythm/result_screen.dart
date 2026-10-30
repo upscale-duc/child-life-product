@@ -245,13 +245,17 @@ class _Answer extends ConsumerWidget {
     }
     final me = ref.watch(selectedMembershipProvider);
     if (me == null || !me.canViewBabyInfo) return null;
-    final dob = ref.watch(rhythmProfileProvider(me.babyId)).value?.dateOfBirth;
+    final profile = ref.watch(rhythmProfileProvider(me.babyId)).value;
+    final dob = profile?.dateOfBirth;
     if (dob == null) return null;
     final zone =
         ref.watch(babyProvider(me.babyId)).value?.timeZone.zone ??
         'Asia/Ho_Chi_Minh';
     final now = ref.watch(careClockProvider).value ?? DateTime.now();
-    return ageCardFor(content.ageCards, ageInDays(dob, babyToday(zone, now)));
+    return ageCardFor(
+      content.ageCards,
+      cardAgeDays(dob, profile?.dueDate?.date, babyToday(zone, now)),
+    );
   }
 }
 

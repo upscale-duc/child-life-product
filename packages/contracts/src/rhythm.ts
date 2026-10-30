@@ -23,6 +23,22 @@ export function daysBetweenIso(from: string, to: string): number {
   return Math.round((ms(to) - ms(from)) / 86_400_000);
 }
 
+/** A baby born at least this many days before the due date (under 37 weeks) is preterm. */
+export const correctedAgeMinEarlyDays = 21;
+/** Corrected age applies until 24 months of actual age. */
+export const correctedAgeUntilDays = 730;
+
+/**
+ * The age "Tuần này của {bé}" is chosen by (expert review 2026-10-30, D3): the corrected age for a
+ * preterm baby with a due date, until 24 months of actual age; otherwise the actual age.
+ */
+export function cardAgeDays(dob: string, dueDate: string | null, today: string): number {
+  const actual = daysBetweenIso(dob, today);
+  if (!dueDate || actual >= correctedAgeUntilDays) return actual;
+  const early = daysBetweenIso(dob, dueDate);
+  return early >= correctedAgeMinEarlyDays ? Math.max(0, actual - early) : actual;
+}
+
 const isoDate = z.iso.date();
 const localized = z.object({ vi: z.string().min(1).max(2000), en: z.string().min(1).max(2000) });
 const localizedList = z.object({

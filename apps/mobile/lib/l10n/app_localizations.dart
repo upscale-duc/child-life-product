@@ -35565,13 +35565,13 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Feature card title.
   ///
   /// In vi, this message translates to:
-  /// **'Hỏi Lumi về nhật ký của con'**
+  /// **'Nói một câu, Lumi ghi giúp'**
   String get pv2CardLumiTitle;
 
   /// Premium v2 (Figma 958:13863, D-101). Feature card benefit.
   ///
   /// In vi, this message translates to:
-  /// **'Lumi tóm tắt nhật ký, soạn bản ghi để bạn xem lại rồi lưu.'**
+  /// **'Ghi cữ bú, giấc ngủ bằng lời, hỏi lại nhật ký bất cứ lúc nào.'**
   String get pv2CardLumiBody;
 
   /// Approved Figma Premium details, config-driven allowances.
@@ -35607,13 +35607,13 @@ abstract class AppLocalizations {
   /// Premium v2 (Figma 958:13863, D-101). Feature card title.
   ///
   /// In vi, this message translates to:
-  /// **'Gợi ý cá nhân & nhịp nâng cao'**
+  /// **'Biết trước cữ bú, giấc ngủ'**
   String get pv2CardRhythmTitle;
 
   /// Premium v2 (Figma 958:13863, D-101). Feature card benefit.
   ///
   /// In vi, this message translates to:
-  /// **'Gợi ý theo nhu cầu của bé, nhìn lại nhịp bú, ngủ từ nhật ký.'**
+  /// **'Theo nhịp riêng của con, kèm bản tóm tắt mang đi khám.'**
   String get pv2CardRhythmBody;
 
   /// Premium v2 (Figma 958:13863, D-101). Feature card limit line.
@@ -39863,6 +39863,162 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Thả tim cho {who}'**
   String cpHeartA11y(String who);
+
+  /// U1 Chuẩn bị đi khám: page title and the Chăm sóc tile. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chuẩn bị đi khám'**
+  String get vrTitle;
+
+  /// U1 Chuẩn bị đi khám: under the Chăm sóc tile. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tóm tắt cho bác sĩ'**
+  String get vrTileSub;
+
+  /// U1 Chuẩn bị đi khám: a preterm baby's corrected age (D3, expert review 2026-10-30). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuổi hiệu chỉnh {age}'**
+  String vrCorrectedAge(String age);
+
+  /// U1 Chuẩn bị đi khám: the date of the summary. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lập ngày {date}'**
+  String vrMadeOn(String date);
+
+  /// U1 Chuẩn bị đi khám: section. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tăng trưởng'**
+  String get vrGrowth;
+
+  /// U1 Chuẩn bị đi khám: growth row. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cân nặng'**
+  String get vrWeight;
+
+  /// U1 Chuẩn bị đi khám: growth row. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chiều dài'**
+  String get vrLength;
+
+  /// U1 Chuẩn bị đi khám: growth row. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vòng đầu'**
+  String get vrHead;
+
+  /// U1 Chuẩn bị đi khám: when the latest measurement was taken. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đo ngày {date}'**
+  String vrMeasuredOn(String date);
+
+  /// U1 Chuẩn bị đi khám: growth section, nothing logged. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có số đo nào'**
+  String get vrNoGrowth;
+
+  /// U1 Chuẩn bị đi khám: section: each row is the last 7 complete days, the line under it the 7 days before. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ăn, ngủ, thay tã · trung bình mỗi ngày'**
+  String get vrCare;
+
+  /// U1 Chuẩn bị đi khám: the same row for the 7 days before. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần trước: {value}'**
+  String vrBefore(String value);
+
+  /// U1 Chuẩn bị đi khám: bottle feeds and millilitres per day. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} cữ · {ml} ml'**
+  String vrFeedsMl(String count, String ml);
+
+  /// U1 Chuẩn bị đi khám: breastfeeds and minutes per day. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} cữ · {minutes} phút'**
+  String vrFeedsMin(String count, String minutes);
+
+  /// U1 Chuẩn bị đi khám: diapers per day. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ướt {wet} · Bẩn {dirty}'**
+  String vrDiapers(String wet, String dirty);
+
+  /// U1 Chuẩn bị đi khám: sleep average needs enough complete days; missing is never zero. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đủ ngày ghi đủ'**
+  String get vrSleepSparse;
+
+  /// U1 Chuẩn bị đi khám: section. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiêm chủng'**
+  String get vrVaccines;
+
+  /// U1 Chuẩn bị đi khám: vaccine progress: doses due by today only (a newborn is never "0/30"). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã tiêm {given}/{total} mũi đến hạn'**
+  String vrVaccinesGiven(int given, int total);
+
+  /// U1 Chuẩn bị đi khám: vaccine row label. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mũi tiếp theo'**
+  String get vrVaccineNext;
+
+  /// U1 Chuẩn bị đi khám: vaccine row label. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quá hẹn'**
+  String get vrVaccineOverdue;
+
+  /// U1 Chuẩn bị đi khám: section. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Câu hỏi cho bác sĩ'**
+  String get vrQuestions;
+
+  /// U1 Chuẩn bị đi khám: the question field. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm điều bạn muốn hỏi…'**
+  String get vrQuestionHint;
+
+  /// U1 Chuẩn bị đi khám: adds the question. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm'**
+  String get vrQuestionAdd;
+
+  /// U1 Chuẩn bị đi khám: accessibility label of × on a question. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xoá câu hỏi “{question}”'**
+  String vrQuestionRemove(String question);
+
+  /// U1 Chuẩn bị đi khám: footer; also ends the shared text. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ nhật ký gia đình ghi trên Child Life. Không thay cho khám và tư vấn của bác sĩ.'**
+  String get vrDisclaimer;
+
+  /// U1 Chuẩn bị đi khám: primary action: shares the summary as text. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi cho bác sĩ'**
+  String get vrShare;
 }
 
 class _AppLocalizationsDelegate
