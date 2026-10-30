@@ -46,6 +46,9 @@ abstract final class Routes {
   /// 11 Cùng nhau chăm: who cared how much, by week, month or year, and badges.
   static const carePlanReport = '/care/together/report';
 
+  /// 10 Vừa xong (`?date=&item=`): thả tim, cảm ơn for a task someone else did (N2).
+  static const carePlanDone = '/care/together/done';
+
   /// Rule reminders (v1.0 1a–1h): `/new`, `/{id}`, `/{id}/edit`.
   static const ruleDetail = '/care/reminders/rules';
   static const ruleNew = '/care/reminders/rules/new';

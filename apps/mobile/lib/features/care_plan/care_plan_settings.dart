@@ -168,6 +168,15 @@ class _CarePlanSettingsScreenState
                 onChanged: (v) =>
                     unawaited(_save(uid, prefs.copyWith(quietHours: v))),
               ),
+            // N2 / N3: someone else finished a task, someone sent me a heart.
+            _ToggleRow(
+              key: const Key('cp_team'),
+              icon: ClIcons.heart,
+              tint: c.peachSoft,
+              label: l10n.cpTeamTitle,
+              value: prefs.team,
+              onChanged: (v) => unawaited(_save(uid, prefs.copyWith(team: v))),
+            ),
           ]),
           section(l10n.cpPlanSection),
           card([

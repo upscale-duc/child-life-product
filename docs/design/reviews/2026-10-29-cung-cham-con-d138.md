@@ -120,3 +120,30 @@ Figma `1353:22588` (4 thông báo N1–N4). Chủ sản phẩm báo: việc sắ
 - **Icon việc trong thông báo** (ảnh nhỏ bên trái): cần Notification Service Extension (iOS) và ảnh lớn trên Android. Hiện thông báo chỉ có chữ.
 - **N4** đã có từ bước 3. Câu chữ hiện là "Cô Lan vừa bàn giao cho cả nhà"; Figma ghi "gửi lời bàn giao". Phần này để cho đợt sửa câu chữ thông báo đang chạy song song.
 - **Widget `1356:23340`:** chưa đọc được frame vì Figma đang chặn quyền MCP.
+
+## N2, N3 và màn 10 Vừa xong (30/10/2026, chủ sản phẩm: "Làm N2/N3 luôn")
+
+Màn 10 dựng theo cấu trúc frame `1353:22683` đã lưu (MCP Figma đang bị chặn nên không render được frame), câu chữ theo analysis 28/10 §6.1.
+
+- **N2 "Teddy no bụng rồi, nhờ có Mẹ đó!" / "Bú bình · Cảm ơn Mẹ nhé!":**
+  - Gửi khi một việc hôm nay thành "xong", bất kể đánh dấu từ đâu: lịch, Hôm nay, nút trên thông báo, hay ghi ở Chăm sóc. Trigger `onCarePlanItemWrite`.
+  - Người nhận: những người cùng chăm khác (Cùng nuôi, Người chăm sóc). Không gửi cho người vừa làm, không gửi người thân.
+  - Không ghi số ml (D-135 Q7).
+  - Tên bé theo "Hiện tên bé" của từng người (D-094). Thông báo tôn trọng giờ yên lặng.
+  - Việc của ngày cũ thì không báo.
+  - Nút **Thả tim** gửi tim ngay, không cần mở app (iOS `CL_CARE_DONE`, Android tự vẽ).
+- **Màn 10:**
+  - Có hình việc trong vòng tròn, avatar người làm và các trái tim, rồi tới dòng "Ba vừa tắm cho Teddy" và giờ làm.
+  - Ba nút: tim (kèm số tim), Cảm ơn, Tuyệt. Ba lời nhanh: "Cảm ơn Ba!", "Ba giỏi quá", "Thương Ba".
+  - Nút chính "Gửi cho Ba".
+  - Tim đã gửi thì không rút lại. Người làm mở màn này thì chỉ thấy "2 tim từ cả nhà".
+- **N3 "Mẹ thả tim cho Ba ❤️" / “Cảm ơn Ba đã tắm cho Teddy nha!”:**
+  - Gửi cho người đã làm. Nhiều tim cho cùng một việc gộp thành một thông báo trên màn khoá.
+  - Chạm vào thì mở lịch của ngày đó.
+- **Công tắc "Khi người khác làm xong"** ở Cài đặt › Nhắc việc, của từng người, mặc định bật. Công tắc này tắt cả N2 lẫn N3.
+- **Báo cáo:** ô "tim" giờ đếm tim thật trong khoảng đang xem. Lịch sử thay đổi (20) không liệt kê lượt thả tim.
+
+Khác Figma:
+- Bỏ "sớm 5 phút" dưới giờ làm, vì lịch không chấm giờ giấc (D-135 Q8).
+- Nhãn nút chính không có trong metadata, nên tôi đặt là "Gửi cho Ba".
+- Lời nhắn là các câu chọn sẵn, không có ô gõ tự do. Nhờ vậy thông báo chỉ trích câu của app.

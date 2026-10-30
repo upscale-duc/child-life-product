@@ -1061,6 +1061,9 @@ const rows: Row[] = [
   ['ntf.kind.careTaskDue', 'Việc chăm bé sắp đến giờ', 'Care task coming up'],
   // D-136 N5
   ['ntf.kind.carePlanReady', 'Lịch trong ngày đã sẵn', 'The day’s plan is ready'],
+  // Cùng Chăm Con N2 / N3
+  ['ntf.kind.careTaskDone', 'Người khác vừa làm xong việc', 'Someone finished a task'],
+  ['ntf.kind.careThanks', 'Thả tim, lời cảm ơn', 'A heart or thanks'],
   ['ntf.producer.care.plan', 'Cùng Chăm Con', 'Shared care plan'],
 
   // D-092: UI review — tab purposes, badges, health, quick links

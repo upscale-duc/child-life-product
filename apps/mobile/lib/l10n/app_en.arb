@@ -8897,5 +8897,18 @@
   "wcBody": "Asleep for {duration}. If your baby’s awake, tap to log the wake time.",
   "ntWakeCheck": "Ask when a sleep timer is still running",
   "ntWakeCheckHint": "Only on this phone, never in quiet hours",
-  "asNextFeedReminder": "Remind me next feed"
+  "asNextFeedReminder": "Remind me next feed",
+  "cpDidLine": "{who} just {task, select, bottle{gave {baby} a bottle} breast{breastfed {baby}} pump{pumped milk for {baby}} solids{fed {baby} solids} water{gave {baby} some water} sleep{put {baby} to sleep} diaper{changed {baby}’s diaper} bath{gave {baby} a bath} tummy{did tummy time with {baby}} read{read to {baby}} walk{took {baby} for a walk} vitamin{gave {baby} vitamins} medicine{gave {baby} medicine} temperature{checked {baby}’s temperature} teeth{brushed {baby}’s teeth} potty{helped {baby} on the potty} other{did a task for {baby}}}",
+  "cpReactThanks": "Thanks",
+  "cpReactGreat": "Great",
+  "cpReactHeart": "Send a heart",
+  "cpThanksName": "Thank you, {who}!",
+  "cpThanksProud": "You’re amazing, {who}",
+  "cpThanksLove": "Love you, {who}",
+  "cpSendTo": "Send to {who}",
+  "cpSentTo": "Sent to {who}",
+  "cpDoneMissing": "This task is no longer marked done",
+  "cpHeartsFrom": "{count, plural, =0{No hearts yet} =1{1 heart from the family} other{{count} hearts from the family}}",
+  "cpTeamTitle": "When someone else finishes",
+  "cpHeartA11y": "Send {who} a heart"
 }

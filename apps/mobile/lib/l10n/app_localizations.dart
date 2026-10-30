@@ -39785,6 +39785,84 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Nhắc cữ tiếp'**
   String get asNextFeedReminder;
+
+  /// Cùng Chăm Con 10: the title, who did what for the baby (mirrors carePlanDidPhrases in contracts). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} vừa {task, select, bottle{cho {baby} bú bình} breast{cho {baby} bú mẹ} pump{hút sữa cho {baby}} solids{cho {baby} ăn dặm} water{cho {baby} uống nước} sleep{ru {baby} ngủ} diaper{thay tã cho {baby}} bath{tắm cho {baby}} tummy{cho {baby} nằm sấp} read{đọc sách cho {baby}} walk{đưa {baby} đi dạo} vitamin{cho {baby} uống vitamin} medicine{cho {baby} uống thuốc} temperature{đo nhiệt độ cho {baby}} teeth{đánh răng cho {baby}} potty{cho {baby} ngồi bô} other{xong một việc cho {baby}}}'**
+  String cpDidLine(String who, String task, String baby);
+
+  /// Cùng Chăm Con 10: the star reaction. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cảm ơn'**
+  String get cpReactThanks;
+
+  /// Cùng Chăm Con 10: the spark reaction. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuyệt'**
+  String get cpReactGreat;
+
+  /// Cùng Chăm Con 10 / N2: the heart reaction (also the push button). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thả tim'**
+  String get cpReactHeart;
+
+  /// Cùng Chăm Con 10: quick line. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cảm ơn {who}!'**
+  String cpThanksName(String who);
+
+  /// Cùng Chăm Con 10: quick line. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{who} giỏi quá'**
+  String cpThanksProud(String who);
+
+  /// Cùng Chăm Con 10: quick line. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thương {who}'**
+  String cpThanksLove(String who);
+
+  /// Cùng Chăm Con 10: the main action; the one who did it gets a push (N3). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gửi cho {who}'**
+  String cpSendTo(String who);
+
+  /// Cùng Chăm Con 10: toast after sending. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã gửi cho {who}'**
+  String cpSentTo(String who);
+
+  /// Cùng Chăm Con 10: the task was un-ticked or deleted since the push. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Việc này không còn đánh dấu xong'**
+  String get cpDoneMissing;
+
+  /// Cùng Chăm Con 10: what the one who did it sees. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count, plural, =0{Chưa có tim nào} other{{count} tim từ cả nhà}}'**
+  String cpHeartsFrom(int count);
+
+  /// Cùng Chăm Con 13: switch for N2 and N3 (per person, on by default). EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khi người khác làm xong'**
+  String get cpTeamTitle;
+
+  /// Cùng Chăm Con 10: heart button label for screen readers. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thả tim cho {who}'**
+  String cpHeartA11y(String who);
 }
 
 class _AppLocalizationsDelegate

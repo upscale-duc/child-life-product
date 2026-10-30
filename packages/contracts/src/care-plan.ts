@@ -200,6 +200,8 @@ export const carePlanPrefsDocSchema = z
     leadMinutes: z.union(carePlanReminderLeads.map((m) => z.literal(m))).optional(),
     /** "Nhắc cả trong giờ yên lặng" (D-135 Q5): on by default. */
     quietHours: z.boolean().optional(),
+    /** "Khi người khác làm xong" (N2) and their hearts / thanks (N3): on by default. */
+    team: z.boolean().optional(),
     updatedAt: z.unknown().optional(),
   })
   .strict();
@@ -207,9 +209,10 @@ export const carePlanPrefsDocSchema = z
 export interface CarePlanPrefs {
   leadMinutes: CarePlanReminderLead;
   quietHours: boolean;
+  team: boolean;
 }
 
-export const defaultCarePlanPrefs: CarePlanPrefs = { leadMinutes: 5, quietHours: true };
+export const defaultCarePlanPrefs: CarePlanPrefs = { leadMinutes: 5, quietHours: true, team: true };
 
 /** The stored prefs with defaults; anything malformed takes its default. */
 export function carePlanPrefsOf(doc: Record<string, unknown> | null | undefined): CarePlanPrefs {
@@ -220,8 +223,57 @@ export function carePlanPrefsOf(doc: Record<string, unknown> | null | undefined)
       : defaultCarePlanPrefs.leadMinutes,
     quietHours:
       typeof doc?.quietHours === 'boolean' ? doc.quietHours : defaultCarePlanPrefs.quietHours,
+    team: typeof doc?.team === 'boolean' ? doc.team : defaultCarePlanPrefs.team,
   };
 }
+
+// ---------- 10 Vừa xong: hearts and thanks (N2, N3) ----------
+
+/**
+ * The thanks 10 offers (Figma 1353:22683): "Cảm ơn", "Tuyệt" and the quick lines "Cảm ơn Ba!",
+ * "Ba giỏi quá", "Thương Ba". Kept as keys, never typed text, so a push quotes only our copy.
+ */
+export const carePlanThanks = ['thanks', 'great', 'thanksName', 'proud', 'love'] as const;
+export type CarePlanThanks = (typeof carePlanThanks)[number];
+
+/** 10: a heart and / or a thanks for a task someone else did. Hearts stay once sent. */
+export const reactCarePlanItemSchema = z
+  .object({
+    babyId,
+    date: carePlanDateSchema,
+    itemId: carePlanItemIdSchema,
+    heart: z.boolean(),
+    // Lock-screen "Thả tim" may leave it out (Android drops null keys).
+    thanks: z.enum(carePlanThanks).nullable().default(null),
+  })
+  .strict()
+  .refine((r) => r.heart || r.thanks !== null);
+export type ReactCarePlanItemRequest = z.infer<typeof reactCarePlanItemSchema>;
+
+/**
+ * What someone did for the baby, for N2 / N3 and 10 ("Ba vừa tắm cho Teddy", "Cảm ơn Ba đã tắm
+ * cho Teddy nha!"); `{baby}` is the baby's name or "bé". A custom task stays generic (its typed
+ * title never reaches a lock screen). Mirrors the app's `cpDidTask`.
+ */
+export const carePlanDidPhrases: Record<CarePlanTask, { vi: string; en: string }> = {
+  bottle: { vi: 'cho {baby} bú bình', en: 'gave {baby} a bottle' },
+  breast: { vi: 'cho {baby} bú mẹ', en: 'breastfed {baby}' },
+  pump: { vi: 'hút sữa cho {baby}', en: 'pumped milk for {baby}' },
+  solids: { vi: 'cho {baby} ăn dặm', en: 'fed {baby} solids' },
+  water: { vi: 'cho {baby} uống nước', en: 'gave {baby} some water' },
+  sleep: { vi: 'ru {baby} ngủ', en: 'put {baby} to sleep' },
+  diaper: { vi: 'thay tã cho {baby}', en: 'changed {baby}’s diaper' },
+  bath: { vi: 'tắm cho {baby}', en: 'gave {baby} a bath' },
+  tummy: { vi: 'cho {baby} nằm sấp', en: 'did tummy time with {baby}' },
+  read: { vi: 'đọc sách cho {baby}', en: 'read to {baby}' },
+  walk: { vi: 'đưa {baby} đi dạo', en: 'took {baby} for a walk' },
+  vitamin: { vi: 'cho {baby} uống vitamin', en: 'gave {baby} vitamins' },
+  medicine: { vi: 'cho {baby} uống thuốc', en: 'gave {baby} medicine' },
+  temperature: { vi: 'đo nhiệt độ cho {baby}', en: 'checked {baby}’s temperature' },
+  teeth: { vi: 'đánh răng cho {baby}', en: 'brushed {baby}’s teeth' },
+  potty: { vi: 'cho {baby} ngồi bô', en: 'helped {baby} on the potty' },
+  custom: { vi: 'xong một việc cho {baby}', en: 'did a task for {baby}' },
+};
 
 /**
  * A task's name in a push (mirrors the app's `cpTask*` strings). A custom task's own title is

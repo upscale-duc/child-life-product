@@ -204,10 +204,11 @@ service cloud.firestore {
     // Cùng Chăm Con N1 (D-135 Q5): "Nhắc trước" and "Nhắc cả trong giờ yên lặng"; mirrors
     // `carePlanPrefsDocSchema`.
     function validCarePlanPrefs(d) {
-      return d.keys().hasOnly(['leadMinutes', 'quietHours', 'updatedAt']) &&
+      return d.keys().hasOnly(['leadMinutes', 'quietHours', 'team', 'updatedAt']) &&
         d.updatedAt == request.time &&
         (!('leadMinutes' in d) || d.leadMinutes in [0, 5, 10, 15]) &&
-        (!('quietHours' in d) || d.quietHours is bool);
+        (!('quietHours' in d) || d.quietHours is bool) &&
+        (!('team' in d) || d.team is bool);
     }
 
     // Nhịp lớn lên EN01 / EN02 / EN05 (per person, free): mirrors `userPreferencesSchema`.

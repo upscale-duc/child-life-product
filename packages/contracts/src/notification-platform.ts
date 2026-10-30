@@ -48,6 +48,7 @@ export const notificationDestinationIds = [
   'CARE_HANDOVER',
   'CARE_TASK_DUE',
   'CARE_PLAN_READY',
+  'CARE_TASK_DONE',
   'LUMI_INSIGHT',
   'INBOX',
 ] as const;
@@ -262,6 +263,20 @@ export const notificationDestinations: Record<NotificationDestinationId, Notific
       permission: 'care_read',
       fallback: 'INBOX',
       completion: t('Xem và dùng lịch hôm nay', 'Review and use today’s plan'),
+    },
+    // Cùng Chăm Con N2: 10 Vừa xong for that task (thả tim, cảm ơn).
+    CARE_TASK_DONE: {
+      id: 'CARE_TASK_DONE',
+      screen: t('Vừa xong (Cùng Chăm Con)', 'Just done (Shared care)'),
+      path: '/care/together/done',
+      params: [
+        babyId,
+        { key: 'date', pattern: /^\d{4}-\d{2}-\d{2}$/, required: true },
+        { key: 'item', pattern: /^pi_[a-f0-9]{32}$/, required: true },
+      ],
+      permission: 'care_read',
+      fallback: 'INBOX',
+      completion: t('Thả tim hoặc cảm ơn', 'Send a heart or thanks'),
     },
     FAMILY_MESSAGES: {
       id: 'FAMILY_MESSAGES',
@@ -901,7 +916,57 @@ export const notificationTypes: Record<NotificationKind, NotificationTypeDef> = 
     action: 'none',
     engagement: [],
     status: 'live',
+  },  careTaskDone: {
+    kind: 'careTaskDone',
+    group: 'care',
+    producer: 'care.plan',
+    trigger: both(
+      'Một việc Cùng Chăm Con hôm nay vừa được đánh dấu xong (trên lịch, Hôm nay, thông báo hay khi ghi ở Chăm sóc)',
+      'A shared-care task today was just marked done (plan, Today, a push, or a Care log)',
+    ),
+    recipients: both(
+      'Những người cùng chăm khác (Cùng nuôi, Người chăm sóc), không gửi người vừa làm; ai tắt “Khi người khác làm xong” thì không nhận',
+      'The other carers (co-parents, caregivers), never the one who did it; not those who turned off “When someone else finishes”',
+    ),
+    priority: 'informational',
+    templates: [],
+    destination: 'CARE_TASK_DONE',
+    setting: null,
+    quietHours: 'held',
+    dedup: both(
+      'Một thông báo mỗi lần việc được đánh dấu xong, mỗi người nhận; thông báo mới của cùng người làm thay thông báo cũ trên màn khoá',
+      'One notice per time a task is marked done, per recipient; a newer one by the same person replaces the older on the lock screen',
+    ),
+    action: 'none',
+    engagement: [],
+    status: 'live',
   },
+  careThanks: {
+    kind: 'careThanks',
+    group: 'care',
+    producer: 'care.plan',
+    trigger: both(
+      'Ai đó thả tim hoặc gửi lời cảm ơn cho một việc người này đã làm',
+      'Someone sends a heart or thanks for a task this person did',
+    ),
+    recipients: both(
+      'Người đã làm việc đó; ai tắt “Khi người khác làm xong” thì không nhận',
+      'The one who did the task; not if they turned off “When someone else finishes”',
+    ),
+    priority: 'informational',
+    templates: [],
+    destination: 'CARE_PLAN_READY',
+    setting: null,
+    quietHours: 'held',
+    dedup: both(
+      'Một thông báo mỗi lần gửi; nhiều tim cho cùng một việc gộp thành một trên màn khoá',
+      'One notice per send; several hearts for one task are one on the lock screen',
+    ),
+    action: 'none',
+    engagement: [],
+    status: 'live',
+  },
+
   test: {
     kind: 'test',
     group: 'other',

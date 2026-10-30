@@ -107,7 +107,8 @@ class _CarePlanHistoryScreenState extends ConsumerState<CarePlanHistoryScreen> {
     };
     final changes = [
       for (final ch in async.value ?? const <CarePlanChange>[])
-        if (!{'done', 'undone'}.contains(ch.action)) ch,
+        // Ticking and thanking are not changes to the plan.
+        if (!{'done', 'undone', 'heart'}.contains(ch.action)) ch,
     ];
     // Only the latest change of a task can be undone.
     final latest = <String>{};

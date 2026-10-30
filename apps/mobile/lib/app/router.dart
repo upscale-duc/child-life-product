@@ -26,6 +26,7 @@ import '../features/care/timer_models.dart';
 import '../features/care/timer_screens.dart';
 import '../features/care_plan/care_plan_history.dart';
 import '../features/care_plan/care_plan_report.dart';
+import '../features/care_plan/care_plan_done.dart';
 import '../features/care_plan/care_plan_screen.dart';
 import '../features/care_plan/care_plan_settings.dart';
 import '../features/diagnostics/diagnostics_screen.dart';
@@ -570,6 +571,13 @@ final routerProvider = Provider<GoRouter>((ref) {
                       _route(
                         path: 'report',
                         builder: (_, _) => const CarePlanReportScreen(),
+                      ),
+                      _route(
+                        path: 'done',
+                        builder: (_, s) => CarePlanDoneScreen(
+                          date: s.uri.queryParameters['date'] ?? '',
+                          itemId: s.uri.queryParameters['item'] ?? '',
+                        ),
                       ),
                     ],
                   ),

@@ -25279,4 +25279,85 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get asNextFeedReminder => 'Remind me next feed';
+
+  @override
+  String cpDidLine(String who, String task, String baby) {
+    String _temp0 = intl.Intl.selectLogic(task, {
+      'bottle': 'gave $baby a bottle',
+      'breast': 'breastfed $baby',
+      'pump': 'pumped milk for $baby',
+      'solids': 'fed $baby solids',
+      'water': 'gave $baby some water',
+      'sleep': 'put $baby to sleep',
+      'diaper': 'changed $baby’s diaper',
+      'bath': 'gave $baby a bath',
+      'tummy': 'did tummy time with $baby',
+      'read': 'read to $baby',
+      'walk': 'took $baby for a walk',
+      'vitamin': 'gave $baby vitamins',
+      'medicine': 'gave $baby medicine',
+      'temperature': 'checked $baby’s temperature',
+      'teeth': 'brushed $baby’s teeth',
+      'potty': 'helped $baby on the potty',
+      'other': 'did a task for $baby',
+    });
+    return '$who just $_temp0';
+  }
+
+  @override
+  String get cpReactThanks => 'Thanks';
+
+  @override
+  String get cpReactGreat => 'Great';
+
+  @override
+  String get cpReactHeart => 'Send a heart';
+
+  @override
+  String cpThanksName(String who) {
+    return 'Thank you, $who!';
+  }
+
+  @override
+  String cpThanksProud(String who) {
+    return 'You’re amazing, $who';
+  }
+
+  @override
+  String cpThanksLove(String who) {
+    return 'Love you, $who';
+  }
+
+  @override
+  String cpSendTo(String who) {
+    return 'Send to $who';
+  }
+
+  @override
+  String cpSentTo(String who) {
+    return 'Sent to $who';
+  }
+
+  @override
+  String get cpDoneMissing => 'This task is no longer marked done';
+
+  @override
+  String cpHeartsFrom(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count hearts from the family',
+      one: '1 heart from the family',
+      zero: 'No hearts yet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cpTeamTitle => 'When someone else finishes';
+
+  @override
+  String cpHeartA11y(String who) {
+    return 'Send $who a heart';
+  }
 }

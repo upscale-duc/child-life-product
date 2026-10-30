@@ -210,6 +210,17 @@ const _registry = <NotificationDestination>[
     permission: DestinationPermission.careRead,
     fallback: 'INBOX',
   ),
+  // Cùng Chăm Con N2: 10 Vừa xong for that task.
+  NotificationDestination(
+    id: 'CARE_TASK_DONE',
+    params: [
+      _babyId,
+      DestinationParam('date', r'^\d{4}-\d{2}-\d{2}$'),
+      DestinationParam('item', r'^pi_[a-f0-9]{32}$'),
+    ],
+    permission: DestinationPermission.careRead,
+    fallback: 'INBOX',
+  ),
   // D-136 N5: the day's plan (a draft to look over and use).
   NotificationDestination(
     id: 'CARE_PLAN_READY',
@@ -310,6 +321,9 @@ const notificationKindGroups = <String, InboxGroup>{
   'careTaskDue': InboxGroup.care,
   // D-136 N5.
   'carePlanReady': InboxGroup.care,
+  // N2 / N3.
+  'careTaskDone': InboxGroup.care,
+  'careThanks': InboxGroup.care,
   'test': InboxGroup.other,
 };
 
@@ -343,6 +357,9 @@ const notificationKindDestinations = <String, String>{
   'handoverSent': 'CARE_HANDOVER',
   'careTaskDue': 'CARE_TASK_DUE',
   'carePlanReady': 'CARE_PLAN_READY',
+  'careTaskDone': 'CARE_TASK_DONE',
+  // N3 opens the day's plan.
+  'careThanks': 'CARE_PLAN_READY',
   'test': 'INBOX',
 };
 
@@ -832,6 +849,11 @@ Future<_Opened> _tryOpen(
     case 'CARE_PLAN_READY':
       select();
       open('${Routes.carePlan}?date=${params['date']}');
+    case 'CARE_TASK_DONE':
+      select();
+      open(
+        '${Routes.carePlanDone}?date=${params['date']}&item=${params['item']}',
+      );
     case 'FAMILY_MEMBERS':
       // Gia đình lives in Tiện ích.
       select();

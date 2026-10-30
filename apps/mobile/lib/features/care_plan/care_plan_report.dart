@@ -61,6 +61,7 @@ class _ReportData {
     required this.meUid,
     required this.today,
     required this.babyName,
+    this.hearts = 0,
   });
 
   final CarePlanRange range;
@@ -71,8 +72,8 @@ class _ReportData {
   final DateTime today;
   final String babyName;
 
-  /// Thanks received (thả tim, step 5): none yet.
-  int get hearts => 0;
+  /// Hearts sent in the range (10 Vừa xong, N3).
+  final int hearts;
 
   Membership? member(String uid) =>
       members.where((m) => m.uid == uid).firstOrNull;
@@ -143,6 +144,11 @@ class _CarePlanReportScreenState extends ConsumerState<CarePlanReportScreen> {
         meUid: me.uid,
         today: today,
         babyName: baby?.nickname ?? '',
+        hearts: async.value!
+            .where(
+              (c) => c.action == 'heart' && c.date.compareTo(key(start)) >= 0,
+            )
+            .length,
       );
       body = [_ReportBody(data: data), const SizedBox(height: ClSpace.s4)];
     }

@@ -24,6 +24,9 @@ enum RuleNotifications {
   static let careTaskAppCategory = "CL_CARE_TASK_APP"
   static let careTaskDone = "CT_DONE"
   static let careTaskSnooze = "CT_SNOOZE10"
+  /// N2 "Teddy no bụng rồi, nhờ có Mẹ đó!": Thả tim, sent from here without opening the app.
+  static let careDoneCategory = "CL_CARE_DONE"
+  static let careDoneHeart = "CD_HEART"
   /// A snoozed task push comes back as a local notification with this id prefix.
   static let careTaskSnoozePrefix = "ctsnooze."
 
@@ -111,12 +114,17 @@ enum RuleNotifications {
           UNNotificationAction(identifier: careTaskDone, title: vi ? "Xong" : "Done", options: [.foreground]), snooze,
         ],
         intentIdentifiers: [], options: []),
+      UNNotificationCategory(
+        identifier: careDoneCategory,
+        actions: [UNNotificationAction(identifier: careDoneHeart, title: vi ? "Thả tim" : "Send a heart", options: [])],
+        intentIdentifiers: [], options: []),
     ]
     let center = UNUserNotificationCenter.current()
     center.getNotificationCategories { existing in
       let others = existing.filter {
         !$0.identifier.hasPrefix(categoryPrefix) && $0.identifier != vaccineCategory
           && $0.identifier != careTaskCategory && $0.identifier != careTaskAppCategory
+          && $0.identifier != careDoneCategory
       }
       center.setNotificationCategories(others.union(ours).union([vaccine]).union(careTasks))
     }
@@ -130,6 +138,20 @@ enum RuleNotifications {
     }
     if content.categoryIdentifier == careTaskCategory || content.categoryIdentifier == careTaskAppCategory {
       return handleCareTask(response, completion: completion)
+    }
+    if content.categoryIdentifier == careDoneCategory && response.actionIdentifier == careDoneHeart {
+      let info = content.userInfo
+      Task {
+        if let babyId = info["babyId"] as? String, let date = info["date"] as? String,
+          let item = info["item"] as? String
+        {
+          await callFunction(
+            "reactCarePlanItem",
+            ["babyId": babyId, "date": date, "itemId": item, "heart": true, "thanks": NSNull()])
+        }
+        completion()
+      }
+      return true
     }
     guard content.categoryIdentifier.hasPrefix(categoryPrefix) else { return false }
     let info = content.userInfo

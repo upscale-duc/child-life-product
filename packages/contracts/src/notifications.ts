@@ -142,6 +142,10 @@ export const notificationKinds = [
   'careTaskDue',
   // D-136 N5: the morning draft of the day's plan is ready (plan managers).
   'carePlanReady',
+  // Cùng Chăm Con N2: someone else finished a task ("Teddy no bụng rồi, nhờ có Mẹ đó!").
+  'careTaskDone',
+  // Cùng Chăm Con N3: a heart or thanks for a task this person did ("Mẹ thả tim cho Ba").
+  'careThanks',
 ] as const;
 export type NotificationKind = (typeof notificationKinds)[number];
 
@@ -178,6 +182,8 @@ export const notificationCategoryOf: Record<NotificationKind, NotificationCatego
   handoverSent: 'family',
   careTaskDue: 'reminders',
   carePlanReady: 'reminders',
+  careTaskDone: 'family',
+  careThanks: 'family',
 };
 
 /**
@@ -217,6 +223,10 @@ export const notificationSettingOf: Record<NotificationKind, NotificationSetting
   careTaskDue: null,
   // The family's "Tự tạo lịch mỗi sáng" (`carePlanSettings/family.autoDraft`) is its switch.
   carePlanReady: null,
+  // "Khi người khác làm xong" in the person's Cùng Chăm Con settings (`settings/carePlan.team`)
+  // is the switch for both: the producer does not send to someone who turned it off.
+  careTaskDone: null,
+  careThanks: null,
 };
 
 /**

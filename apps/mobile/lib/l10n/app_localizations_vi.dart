@@ -23902,4 +23902,84 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get asNextFeedReminder => 'Nhắc cữ tiếp';
+
+  @override
+  String cpDidLine(String who, String task, String baby) {
+    String _temp0 = intl.Intl.selectLogic(task, {
+      'bottle': 'cho $baby bú bình',
+      'breast': 'cho $baby bú mẹ',
+      'pump': 'hút sữa cho $baby',
+      'solids': 'cho $baby ăn dặm',
+      'water': 'cho $baby uống nước',
+      'sleep': 'ru $baby ngủ',
+      'diaper': 'thay tã cho $baby',
+      'bath': 'tắm cho $baby',
+      'tummy': 'cho $baby nằm sấp',
+      'read': 'đọc sách cho $baby',
+      'walk': 'đưa $baby đi dạo',
+      'vitamin': 'cho $baby uống vitamin',
+      'medicine': 'cho $baby uống thuốc',
+      'temperature': 'đo nhiệt độ cho $baby',
+      'teeth': 'đánh răng cho $baby',
+      'potty': 'cho $baby ngồi bô',
+      'other': 'xong một việc cho $baby',
+    });
+    return '$who vừa $_temp0';
+  }
+
+  @override
+  String get cpReactThanks => 'Cảm ơn';
+
+  @override
+  String get cpReactGreat => 'Tuyệt';
+
+  @override
+  String get cpReactHeart => 'Thả tim';
+
+  @override
+  String cpThanksName(String who) {
+    return 'Cảm ơn $who!';
+  }
+
+  @override
+  String cpThanksProud(String who) {
+    return '$who giỏi quá';
+  }
+
+  @override
+  String cpThanksLove(String who) {
+    return 'Thương $who';
+  }
+
+  @override
+  String cpSendTo(String who) {
+    return 'Gửi cho $who';
+  }
+
+  @override
+  String cpSentTo(String who) {
+    return 'Đã gửi cho $who';
+  }
+
+  @override
+  String get cpDoneMissing => 'Việc này không còn đánh dấu xong';
+
+  @override
+  String cpHeartsFrom(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tim từ cả nhà',
+      zero: 'Chưa có tim nào',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get cpTeamTitle => 'Khi người khác làm xong';
+
+  @override
+  String cpHeartA11y(String who) {
+    return 'Thả tim cho $who';
+  }
 }

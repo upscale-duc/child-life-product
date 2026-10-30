@@ -121,6 +121,7 @@ class CarePlanItem {
     this.draft = false,
     this.assignedBy,
     this.amountMl,
+    this.reactions = const {},
   });
 
   final String id;
@@ -142,6 +143,11 @@ class CarePlanItem {
 
   /// D-138: the ml planned for a bottle or pumping; the log opens with it.
   final int? amountMl;
+
+  /// 10 Vừa xong: who sent a heart and / or a thanks (`CarePlanThanks.key`) for it.
+  final Map<String, CarePlanReaction> reactions;
+
+  int get hearts => reactions.values.where((r) => r.heart).length;
 
   bool get done => status == CarePlanStatus.done;
   bool get skipped => status == CarePlanStatus.skipped;
@@ -166,6 +172,7 @@ class CarePlanItem {
         draft: draft,
         assignedBy: assignedBy,
         amountMl: amountMl,
+        reactions: reactions,
       );
 
   static CarePlanItem? fromJson(Map<String, dynamic> d) {
@@ -188,8 +195,37 @@ class CarePlanItem {
       draft: d['draft'] == true,
       assignedBy: d['assignedBy'] as String?,
       amountMl: (d['amountMl'] as num?)?.toInt(),
+      reactions: {
+        for (final e in ((d['reactions'] as Map?) ?? const {}).entries)
+          if (e.key is String && e.value is Map)
+            e.key as String: CarePlanReaction(
+              heart: (e.value as Map)['heart'] == true,
+              thanks: CarePlanThanks.of((e.value as Map)['thanks']),
+            ),
+      },
     );
   }
+}
+
+/// 10 Vừa xong: the thanks lines (mirrors `carePlanThanks`; keys, never typed text).
+enum CarePlanThanks {
+  thanks,
+  great,
+  thanksName,
+  proud,
+  love;
+
+  static CarePlanThanks? of(Object? key) =>
+      values.where((t) => t.name == key).firstOrNull;
+}
+
+/// One person's heart and thanks for a task.
+@immutable
+class CarePlanReaction {
+  const CarePlanReaction({this.heart = false, this.thanks});
+
+  final bool heart;
+  final CarePlanThanks? thanks;
 }
 
 /// The day's tasks in time order (then by id, so two at 07:00 never swap).
@@ -222,13 +258,20 @@ const carePlanReminderLeads = [5, 10, 15, 0];
 /// owner (mirrors `carePlanPrefsOf`).
 @immutable
 class CarePlanPrefs {
-  const CarePlanPrefs({this.leadMinutes = 5, this.quietHours = true});
+  const CarePlanPrefs({
+    this.leadMinutes = 5,
+    this.quietHours = true,
+    this.team = true,
+  });
 
   /// 5 / 10 / 15 minutes before the task; 0 = no reminder.
   final int leadMinutes;
 
   /// "Nhắc cả trong giờ yên lặng": on by default.
   final bool quietHours;
+
+  /// "Khi người khác làm xong" (N2) and the hearts / thanks for mine (N3): on by default.
+  final bool team;
 
   bool get on => leadMinutes > 0;
 
@@ -239,22 +282,26 @@ class CarePlanPrefs {
           ? lead
           : 5,
       quietHours: d?['quietHours'] is bool ? d!['quietHours'] as bool : true,
+      team: d?['team'] is bool ? d!['team'] as bool : true,
     );
   }
 
-  CarePlanPrefs copyWith({int? leadMinutes, bool? quietHours}) => CarePlanPrefs(
-    leadMinutes: leadMinutes ?? this.leadMinutes,
-    quietHours: quietHours ?? this.quietHours,
-  );
+  CarePlanPrefs copyWith({int? leadMinutes, bool? quietHours, bool? team}) =>
+      CarePlanPrefs(
+        leadMinutes: leadMinutes ?? this.leadMinutes,
+        quietHours: quietHours ?? this.quietHours,
+        team: team ?? this.team,
+      );
 
   @override
   bool operator ==(Object other) =>
       other is CarePlanPrefs &&
       other.leadMinutes == leadMinutes &&
-      other.quietHours == quietHours;
+      other.quietHours == quietHours &&
+      other.team == team;
 
   @override
-  int get hashCode => Object.hash(leadMinutes, quietHours);
+  int get hashCode => Object.hash(leadMinutes, quietHours, team);
 }
 
 /// The tasks of [uid] that are open on [items], in time order.

@@ -107,10 +107,20 @@ describe('Cùng Chăm Con reminder settings (users/{uid}/settings/carePlan)', ()
         setDoc(ref('mom'), { leadMinutes, quietHours: false, updatedAt: serverTimestamp() }),
       );
     }
+    // N2 / N3: "Khi người khác làm xong".
+    await assertSucceeds(
+      setDoc(ref('mom'), {
+        leadMinutes: 5,
+        quietHours: true,
+        team: false,
+        updatedAt: serverTimestamp(),
+      }),
+    );
     await assertSucceeds(getDoc(ref('mom')));
   });
 
   it('nothing else, and nobody else', async () => {
+    await assertFails(setDoc(ref('mom'), { team: 'no', updatedAt: serverTimestamp() }));
     await assertFails(setDoc(ref('mom'), { leadMinutes: 7, updatedAt: serverTimestamp() }));
     await assertFails(setDoc(ref('mom'), { quietHours: 'yes', updatedAt: serverTimestamp() }));
     await assertFails(

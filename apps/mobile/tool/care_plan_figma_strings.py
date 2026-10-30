@@ -187,6 +187,25 @@ s('cpShareFailed', 'Chưa chia sẻ được. Thử lại nhé.', 'Couldn\'t sha
 s('cpPushSnooze10', 'Nhắc lại 10 phút', 'Remind me in 10 min',
   'Cùng Chăm Con N1: the task push\'s second button; it rings again in ten minutes (Figma 1353:22588).' + NOTE)
 
+# 10 Vừa xong · N2 / N3 (Figma 1353:22683, 1353:22588)
+s('cpDidLine', '{who} vừa {task, select, bottle{cho {baby} bú bình} breast{cho {baby} bú mẹ} pump{hút sữa cho {baby}} solids{cho {baby} ăn dặm} water{cho {baby} uống nước} sleep{ru {baby} ngủ} diaper{thay tã cho {baby}} bath{tắm cho {baby}} tummy{cho {baby} nằm sấp} read{đọc sách cho {baby}} walk{đưa {baby} đi dạo} vitamin{cho {baby} uống vitamin} medicine{cho {baby} uống thuốc} temperature{đo nhiệt độ cho {baby}} teeth{đánh răng cho {baby}} potty{cho {baby} ngồi bô} other{xong một việc cho {baby}}}', '{who} just {task, select, bottle{gave {baby} a bottle} breast{breastfed {baby}} pump{pumped milk for {baby}} solids{fed {baby} solids} water{gave {baby} some water} sleep{put {baby} to sleep} diaper{changed {baby}’s diaper} bath{gave {baby} a bath} tummy{did tummy time with {baby}} read{read to {baby}} walk{took {baby} for a walk} vitamin{gave {baby} vitamins} medicine{gave {baby} medicine} temperature{checked {baby}’s temperature} teeth{brushed {baby}’s teeth} potty{helped {baby} on the potty} other{did a task for {baby}}}',
+  'Cùng Chăm Con 10: the title, who did what for the baby (mirrors carePlanDidPhrases in contracts).' + NOTE, who='String', task='String', baby='String')
+s('cpReactThanks', 'Cảm ơn', 'Thanks', 'Cùng Chăm Con 10: the star reaction.' + NOTE)
+s('cpReactGreat', 'Tuyệt', 'Great', 'Cùng Chăm Con 10: the spark reaction.' + NOTE)
+s('cpReactHeart', 'Thả tim', 'Send a heart', 'Cùng Chăm Con 10 / N2: the heart reaction (also the push button).' + NOTE)
+s('cpThanksName', 'Cảm ơn {who}!', 'Thank you, {who}!', 'Cùng Chăm Con 10: quick line.' + NOTE, who='String')
+s('cpThanksProud', '{who} giỏi quá', 'You’re amazing, {who}', 'Cùng Chăm Con 10: quick line.' + NOTE, who='String')
+s('cpThanksLove', 'Thương {who}', 'Love you, {who}', 'Cùng Chăm Con 10: quick line.' + NOTE, who='String')
+s('cpSendTo', 'Gửi cho {who}', 'Send to {who}', 'Cùng Chăm Con 10: the main action; the one who did it gets a push (N3).' + NOTE, who='String')
+s('cpSentTo', 'Đã gửi cho {who}', 'Sent to {who}', 'Cùng Chăm Con 10: toast after sending.' + NOTE, who='String')
+s('cpDoneMissing', 'Việc này không còn đánh dấu xong', 'This task is no longer marked done',
+  'Cùng Chăm Con 10: the task was un-ticked or deleted since the push.' + NOTE)
+s('cpHeartsFrom', '{count, plural, =0{Chưa có tim nào} other{{count} tim từ cả nhà}}', '{count, plural, =0{No hearts yet} =1{1 heart from the family} other{{count} hearts from the family}}',
+  'Cùng Chăm Con 10: what the one who did it sees.' + NOTE, count='int')
+s('cpTeamTitle', 'Khi người khác làm xong', 'When someone else finishes',
+  'Cùng Chăm Con 13: switch for N2 and N3 (per person, on by default).' + NOTE)
+s('cpHeartA11y', 'Thả tim cho {who}', 'Send {who} a heart', 'Cùng Chăm Con 10: heart button label for screen readers.' + NOTE, who='String')
+
 # Existing ids whose Vietnamese copy now follows Figma (English unchanged).
 VI = {
     'cpAssignGroup': 'Giao cả ca',

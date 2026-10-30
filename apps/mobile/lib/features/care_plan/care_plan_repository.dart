@@ -41,6 +41,7 @@ class CarePlanRepository {
   Future<void> savePrefs(String uid, CarePlanPrefs prefs) => _prefs(uid).set({
     'leadMinutes': prefs.leadMinutes,
     'quietHours': prefs.quietHours,
+    'team': prefs.team,
     'updatedAt': FieldValue.serverTimestamp(),
   });
 
@@ -90,6 +91,21 @@ class CarePlanRepository {
 
   Future<void> setAutoDraft(String babyId, {required bool on}) =>
       _call('setCarePlanAutoDraft', {'babyId': babyId, 'on': on});
+
+  /// 10 Vừa xong: a heart and / or a thanks for a task someone else did (N3 tells them).
+  Future<void> react(
+    String babyId,
+    String date,
+    String itemId, {
+    required bool heart,
+    CarePlanThanks? thanks,
+  }) => _call('reactCarePlanItem', {
+    'babyId': babyId,
+    'date': date,
+    'itemId': itemId,
+    'heart': heart,
+    'thanks': thanks?.name,
+  });
 
   /// 06 / 06b: create or edit [itemId]; [everyDay] also keeps it for the days to come.
   Future<void> saveItem(

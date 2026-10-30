@@ -100,6 +100,7 @@ Map<String, String> glanceCopy(AppLocalizations l) => {
   'rule.skip': l.ruleSkip,
   'ct.done': l.actionDone,
   'ct.snooze': l.cpPushSnooze10,
+  'cd.heart': l.cpReactHeart,
   'vx.view': l.notifVxView,
   'vx.snooze': l.notifVxSnooze,
   'vx.move': l.vxReschedule,

@@ -119,6 +119,10 @@ object PushNotices {
                     else answer(context, data, "ctDone", base + 1))
                 b.addAction(0, label("ct.snooze", "Nhắc lại 10 phút"), answer(context, data, "ctSnooze", base + 2))
             }
+            "careTaskDone" -> {
+                // Figma N2: "Thả tim" without opening the app.
+                b.addAction(0, label("cd.heart", "Thả tim"), answer(context, data, "cdHeart", base + 1))
+            }
             "vaccine" -> {
                 b.addAction(0, label("vx.view", "Xem lịch tiêm"), open(context, data, "view", base + 1))
                 b.addAction(0, label("vx.snooze", "Nhắc lại sáng mai"), answer(context, data, "vxSnooze", base + 2))
@@ -221,6 +225,9 @@ class PushActionReceiver : BroadcastReceiver() {
                         if (action == "snooze") put("minutes", 15)
                     }
                 }
+                "cdHeart" -> "reactCarePlanItem" to mapOf(
+                    "babyId" to babyId, "date" to (data["date"] ?: return null),
+                    "itemId" to (data["item"] ?: return null), "heart" to true, "thanks" to null)
                 "vxSnooze" -> "snoozeVaccine" to mapOf("babyId" to babyId, "date" to (data["date"] ?: return null))
                 else -> null
             }

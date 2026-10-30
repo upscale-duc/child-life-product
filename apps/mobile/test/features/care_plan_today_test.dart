@@ -302,7 +302,11 @@ void main() {
       expect(find.text(l.cpQuietHours), findsOneWidget);
       await tester.tap(find.byKey(const ValueKey('cp_lead_10')));
       await tester.pumpAndSettle();
-      expect(repo.calls.last.$2, {'leadMinutes': 10, 'quietHours': true});
+      expect(repo.calls.last.$2, {
+        'leadMinutes': 10,
+        'quietHours': true,
+        'team': true,
+      });
       await tester.tap(find.text(l.cpQuietHours));
       await tester.pumpAndSettle();
       await _pump(
@@ -311,6 +315,28 @@ void main() {
         carePrefs: const CarePlanPrefs(leadMinutes: 0),
       );
       expect(find.text(l.cpQuietHours), findsNothing);
+    });
+
+    testWidgets('"Khi người khác làm xong" (N2 / N3) is saved, even with Tắt', (
+      tester,
+    ) async {
+      final (repo, _) = await _pump(
+        tester,
+        const CarePlanSettingsScreen(),
+        carePrefs: const CarePlanPrefs(leadMinutes: 0),
+      );
+      await tester.tap(
+        find.descendant(
+          of: find.byKey(const Key('cp_team')),
+          matching: find.byType(ClToggle),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(repo.calls.last.$2, {
+        'leadMinutes': 0,
+        'quietHours': true,
+        'team': false,
+      });
     });
 
     testWidgets('"Tự tạo lịch mỗi sáng": plan managers only, off by default', (

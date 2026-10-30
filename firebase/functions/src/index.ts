@@ -308,6 +308,10 @@ import {
 import { ringCareTaskReminders as ringCareTaskPushes } from './care-plan-reminders.js';
 import { draftCarePlanMornings as draftCarePlanMorningDays } from './care-plan-morning.js';
 import {
+  onCarePlanItemDone,
+  reactCarePlanItem as runReactCarePlanItem,
+} from './care-plan-thanks.js';
+import {
   VaccineReminderError,
   ringVaccineReminders,
   snoozeVaccineReminder,
@@ -907,6 +911,30 @@ export const assignCarePlanItems = planCall(runAssignCarePlanItems);
 export const setCarePlanItemStatus = planCall(runSetCarePlanItemStatus);
 export const publishCarePlanDay = planCall(runPublishCarePlanDay);
 export const setCarePlanAutoDraft = planCall(runSetCarePlanAutoDraft);
+/** 10 Vừa xong: Thả tim / Cảm ơn, then N3 to the one who did it. */
+export const reactCarePlanItem = planCall((db, uid, data, now) =>
+  runReactCarePlanItem(db, pushSender(), uid, data, now),
+);
+
+/** N2: a plan task marked done tells the other carers. */
+export const onCarePlanItemWrite = onDocumentWritten(
+  'babies/{babyId}/carePlanDays/{date}/items/{itemId}',
+  async (event) => {
+    const change = event.data;
+    if (!change) return;
+    const { sent } = await onCarePlanItemDone(
+      getFirestore(),
+      pushSender(),
+      event.params.babyId,
+      event.params.date,
+      event.params.itemId,
+      change.before.exists ? change.before : null,
+      change.after.exists ? change.after : null,
+      new Date(),
+    );
+    if (sent > 0) logger.debug('care task done told the family', { sent });
+  },
+);
 
 /** Sổ tiêm chủng reminders: 3 days before and the evening before at 19:00 (P-133). */
 export const ringVaccineReminderPush = onSchedule('every 5 minutes', async () => {

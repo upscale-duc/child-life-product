@@ -35025,5 +35025,103 @@
   "asNextFeedReminder": "Nhắc cữ tiếp",
   "@asNextFeedReminder": {
     "description": "Lumi L4 (lumi-plan §7, sprint wow): on a feed just saved through Lumi, opens the \"after the last feed\" reminder with this baby's usual gap (Cùng nuôi only). EN is an engineering draft for owner review."
+  },
+  "cpDidLine": "{who} vừa {task, select, bottle{cho {baby} bú bình} breast{cho {baby} bú mẹ} pump{hút sữa cho {baby}} solids{cho {baby} ăn dặm} water{cho {baby} uống nước} sleep{ru {baby} ngủ} diaper{thay tã cho {baby}} bath{tắm cho {baby}} tummy{cho {baby} nằm sấp} read{đọc sách cho {baby}} walk{đưa {baby} đi dạo} vitamin{cho {baby} uống vitamin} medicine{cho {baby} uống thuốc} temperature{đo nhiệt độ cho {baby}} teeth{đánh răng cho {baby}} potty{cho {baby} ngồi bô} other{xong một việc cho {baby}}}",
+  "@cpDidLine": {
+    "description": "Cùng Chăm Con 10: the title, who did what for the baby (mirrors carePlanDidPhrases in contracts). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      },
+      "task": {
+        "type": "String"
+      },
+      "baby": {
+        "type": "String"
+      }
+    }
+  },
+  "cpReactThanks": "Cảm ơn",
+  "@cpReactThanks": {
+    "description": "Cùng Chăm Con 10: the star reaction. EN is an engineering draft for owner review."
+  },
+  "cpReactGreat": "Tuyệt",
+  "@cpReactGreat": {
+    "description": "Cùng Chăm Con 10: the spark reaction. EN is an engineering draft for owner review."
+  },
+  "cpReactHeart": "Thả tim",
+  "@cpReactHeart": {
+    "description": "Cùng Chăm Con 10 / N2: the heart reaction (also the push button). EN is an engineering draft for owner review."
+  },
+  "cpThanksName": "Cảm ơn {who}!",
+  "@cpThanksName": {
+    "description": "Cùng Chăm Con 10: quick line. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "cpThanksProud": "{who} giỏi quá",
+  "@cpThanksProud": {
+    "description": "Cùng Chăm Con 10: quick line. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "cpThanksLove": "Thương {who}",
+  "@cpThanksLove": {
+    "description": "Cùng Chăm Con 10: quick line. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "cpSendTo": "Gửi cho {who}",
+  "@cpSendTo": {
+    "description": "Cùng Chăm Con 10: the main action; the one who did it gets a push (N3). EN is an engineering draft for owner review.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "cpSentTo": "Đã gửi cho {who}",
+  "@cpSentTo": {
+    "description": "Cùng Chăm Con 10: toast after sending. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
+  },
+  "cpDoneMissing": "Việc này không còn đánh dấu xong",
+  "@cpDoneMissing": {
+    "description": "Cùng Chăm Con 10: the task was un-ticked or deleted since the push. EN is an engineering draft for owner review."
+  },
+  "cpHeartsFrom": "{count, plural, =0{Chưa có tim nào} other{{count} tim từ cả nhà}}",
+  "@cpHeartsFrom": {
+    "description": "Cùng Chăm Con 10: what the one who did it sees. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cpTeamTitle": "Khi người khác làm xong",
+  "@cpTeamTitle": {
+    "description": "Cùng Chăm Con 13: switch for N2 and N3 (per person, on by default). EN is an engineering draft for owner review."
+  },
+  "cpHeartA11y": "Thả tim cho {who}",
+  "@cpHeartA11y": {
+    "description": "Cùng Chăm Con 10: heart button label for screen readers. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "who": {
+        "type": "String"
+      }
+    }
   }
 }

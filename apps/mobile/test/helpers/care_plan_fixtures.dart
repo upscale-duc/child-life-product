@@ -21,6 +21,8 @@ CarePlanItem planItem(
   String? title,
   bool everyDay = false,
   int? amountMl,
+  DateTime? doneAt,
+  Map<String, CarePlanReaction> reactions = const {},
 }) => CarePlanItem(
   id: 'pi_${(++_seq).toRadixString(16).padLeft(32, '0')}',
   task: task,
@@ -31,6 +33,8 @@ CarePlanItem planItem(
   doneBy: doneBy,
   templateId: everyDay ? 'pt_${_seq.toRadixString(16).padLeft(32, '0')}' : null,
   amountMl: amountMl,
+  doneAt: doneAt,
+  reactions: reactions,
 );
 
 /// 04: ten tasks, nothing done yet (Mai = Mẹ, Minh = Ba, Lan = Cô Lan).
@@ -134,7 +138,23 @@ class FakeCarePlanRepository implements CarePlanRepository {
   @override
   Future<void> savePrefs(String uid, CarePlanPrefs prefs) async => calls.add((
     'prefs',
-    {'leadMinutes': prefs.leadMinutes, 'quietHours': prefs.quietHours},
+    {
+      'leadMinutes': prefs.leadMinutes,
+      'quietHours': prefs.quietHours,
+      'team': prefs.team,
+    },
+  ));
+
+  @override
+  Future<void> react(
+    String babyId,
+    String date,
+    String itemId, {
+    required bool heart,
+    CarePlanThanks? thanks,
+  }) async => calls.add((
+    'react',
+    {'itemId': itemId, 'heart': heart, 'thanks': thanks?.name},
   ));
 
   @override
