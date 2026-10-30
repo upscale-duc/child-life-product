@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -21,8 +23,11 @@ import '../me/me_widgets.dart';
 import '../nutrition/nutrition_routes.dart';
 import '../nutrition/nutrition_format.dart' show nuAgeLabel;
 import '../nutrition/nutrition_state.dart';
+import '../premium/billing_models.dart' show PaywallEntry;
+import '../premium/paywall_screen.dart' show openPaywall;
 import '../premium/premium_repository.dart';
-import 'visit_report.dart' show visitReportAllowed;
+import '../premium/premium_v2.dart' show PremiumEntry;
+import 'visit_report.dart' show visitReportAllowed, visitReportInvite;
 import '../reminders/reminder_repository.dart';
 import '../reminders/rule_repository.dart';
 import '../solids/solids_format.dart' show sdTileLine;
@@ -234,7 +239,7 @@ List<Widget> careHubSections(
           '${Routes.history}?filter=${HistoryFilter.growth.name}',
         ),
       ),
-    // U1 "Chuẩn bị đi khám" (sprint Premium): only where it can be shown in full.
+    // U1 "Chuẩn bị đi khám" (sprint Premium); D-147: a Free household sees it as an invite.
     if (visitReportAllowed(me, ref.watch(selectedCapabilitiesProvider)))
       _Tile(
         key: const Key('careVisit'),
@@ -243,6 +248,21 @@ List<Widget> careHubSections(
         title: l10n.vrTitle,
         subtitle: l10n.vrTileSub,
         onTap: () => context.push(Routes.visitReport),
+      )
+    else if (visitReportInvite(me, ref.watch(selectedCapabilitiesProvider)))
+      _Tile(
+        key: const Key('careVisitInvite'),
+        icon: ClIcons.journal,
+        tint: cl.colors.mintSoft,
+        title: l10n.vrTitle,
+        subtitle: l10n.pmInPremium,
+        onTap: () => unawaited(
+          openPaywall(
+            context,
+            entry: PaywallEntry.rhythm,
+            card: PremiumEntry.rhythm,
+          ),
+        ),
       ),
     // Ăn dặm (D-085, plan §5): "Từ 6 tháng" · "Sắp đến lúc ăn dặm" · "Bắt đầu theo dõi" ·
     // "Hôm nay · N bữa"; the age as Dinh dưỡng reads it (caregivers: the vaccine plan, P-133).

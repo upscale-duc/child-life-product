@@ -23865,6 +23865,14 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String cuBasis(int days) {
+  @override
+  String get pmInPremium => 'Có trong Premium';
+
+  @override
+  String cuInvite(String name) {
+    return 'Nhật ký của $name đã đủ để biết trước khoảng giờ cữ bú và giấc ngủ tiếp theo.';
+  }
+
     return 'Theo nhật ký $days ngày gần đây';
   }
 

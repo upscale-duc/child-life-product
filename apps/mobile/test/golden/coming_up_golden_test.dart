@@ -42,6 +42,32 @@ final _cases = {
 
 void main() {
   setUpAll(ensureTimeZones);
+  // D-147: a Free household whose log already gives ranges sees the invite (no times).
+  for (final palette in ClPalette.values) {
+    for (final lang in ['vi', 'en']) {
+      testWidgets('coming up invite ${palette.name} $lang', (tester) async {
+        await pumpRouted(
+          tester,
+          const Scaffold(
+            body: SingleChildScrollView(
+              padding: EdgeInsets.all(16),
+              child: ComingUpInvite(babyName: 'Teddy'),
+            ),
+          ),
+          locale: Locale(lang),
+          palette: palette,
+        );
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+        await expectLater(
+          find.byType(MaterialApp),
+          matchesGoldenFile(
+            'goldens/coming_up/invite_${palette.name}_$lang.png',
+          ),
+        );
+      });
+    }
+  }
   for (final MapEntry(key: name, value: up) in _cases.entries) {
     for (final palette in ClPalette.values) {
       for (final lang in ['vi', 'en']) {

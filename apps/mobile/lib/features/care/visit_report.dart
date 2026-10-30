@@ -48,6 +48,15 @@ bool visitReportAllowed(Membership me, Capabilities? caps) =>
     me.canViewBabyInfo &&
     (caps?.allows(Capability.rhythmAdvanced) ?? false);
 
+/// D-147: a Free household's reader sees the tile as a Premium invite (the app is not live; the
+/// purchase comes later); another gate reason, or a plan not known yet, shows nothing.
+bool visitReportInvite(Membership me, Capabilities? caps) =>
+    familyCan(me, FamilyAction.historyRead) &&
+    me.canViewBabyInfo &&
+    caps != null &&
+    !caps.allows(Capability.rhythmAdvanced) &&
+    caps.reasonFor(Capability.rhythmAdvanced) == GateReason.premiumRequired;
+
 /// The two weeks: the 7 complete days before [today], and the 7 before those.
 ({SummaryWeek recent, SummaryWeek before}) visitWeeks(String today) => (
   recent: SummaryWeek(

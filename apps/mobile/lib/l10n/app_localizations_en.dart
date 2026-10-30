@@ -25243,6 +25243,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cuTitle => 'Coming up';
 
   @override
+  String get pmInPremium => 'Included in Premium';
+
+  @override
+  String cuInvite(String name) {
+    return '$name’s log is already enough to know roughly when the next feed and sleep will be.';
+  }
+
+  @override
   String cuBasis(int days) {
     return 'From the last $days days of the log';
   }

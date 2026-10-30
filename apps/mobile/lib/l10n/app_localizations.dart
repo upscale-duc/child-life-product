@@ -39732,6 +39732,18 @@ abstract class AppLocalizations {
   /// **'Sắp tới'**
   String get cuTitle;
 
+  /// D-147: the line under a Premium part shown to a Free household as an invite (Hôm nay "Sắp tới", Chăm sóc "Chuẩn bị đi khám"); a tap opens Premium. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có trong Premium'**
+  String get pmInPremium;
+
+  /// Hôm nay "Sắp tới" for a Free household (D-147): shown only when this baby's log already allows the ranges; the times themselves are Premium. {name} is the baby. No health claim. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhật ký của {name} đã đủ để biết trước khoảng giờ cữ bú và giấc ngủ tiếp theo.'**
+  String cuInvite(String name);
+
   /// Hôm nay "Sắp tới": under the title, the basis of every range (descriptive, never a schedule). EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:

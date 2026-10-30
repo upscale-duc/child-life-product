@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -11,16 +13,20 @@ import '../baby/baby_repository.dart';
 import '../care/care_repository.dart';
 import '../care/timer_models.dart';
 import '../home/home_shell.dart' show selectedMembershipProvider;
+import '../premium/billing_models.dart' show PaywallEntry;
+import '../premium/paywall_screen.dart' show openPaywall;
 import '../premium/premium_models.dart';
 import '../premium/premium_repository.dart' show selectedCapabilitiesProvider;
+import '../premium/premium_v2.dart' show PremiumEntry;
 import 'coming_up.dart';
 import 'rhythm_access.dart';
 
 /// "Sắp tới" on Hôm nay (sprint wow W1, owner 2026-10-30): the next feed and the next sleep (or
 /// the waking) as clock ranges from this baby's own last 14 days. For those who read care in a
-/// household with `rhythm.advanced`; nothing at all otherwise: no upgrade prompt while the store
-/// purchase is not open (pre-release audit COM-01 / UX-02), and nothing while the plan or the log
-/// is unknown (D-125, SY-1). Read-only; it reuses the records Hôm nay already listens to.
+/// household with `rhythm.advanced`. D-147 (the app is not live, purchase comes later): a Free
+/// household sees the invite instead, only when this baby's log already gives ranges; nothing
+/// while the plan or the log is unknown (D-125, SY-1) or for another gate reason. Read-only; it
+/// reuses the records Hôm nay already listens to.
 class ComingUpCard extends ConsumerWidget {
   const ComingUpCard({super.key});
 
@@ -31,9 +37,12 @@ class ComingUpCard extends ConsumerWidget {
       return const SizedBox.shrink();
     }
     final caps = ref.watch(selectedCapabilitiesProvider);
-    if (!(caps?.allows(Capability.rhythmAdvanced) ?? false)) {
-      return const SizedBox.shrink();
-    }
+    if (caps == null) return const SizedBox.shrink();
+    final advanced = caps.allows(Capability.rhythmAdvanced);
+    final invite =
+        !advanced &&
+        caps.reasonFor(Capability.rhythmAdvanced) == GateReason.premiumRequired;
+    if (!advanced && !invite) return const SizedBox.shrink();
     final records = ref.watch(recentRecordsProvider(me.babyId)).value;
     if (records == null) return const SizedBox.shrink();
     final zone =
@@ -54,7 +63,45 @@ class ComingUpCard extends ConsumerWidget {
       feedTimerRunning: breastTimer != null,
     );
     if (up.isEmpty) return const SizedBox.shrink();
+    if (invite) {
+      return ComingUpInvite(
+        babyName: ref.watch(babyProvider(me.babyId)).value?.nickname ?? '',
+      );
+    }
     return ComingUpView(up: up, zone: zone);
+  }
+}
+
+/// D-147: "Sắp tới" for a Free household whose log already gives ranges: what Premium would
+/// show here, without the times, and the way to Premium.
+class ComingUpInvite extends StatelessWidget {
+  const ComingUpInvite({required this.babyName, super.key});
+
+  final String babyName;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final cl = context.cl;
+    return AxCard(
+      key: const Key('comingUpInvite'),
+      icon: ClIcons.clock,
+      chip: cl.colors.mintSoft,
+      title: l10n.cuTitle,
+      subtitle: l10n.pmInPremium,
+      link: l10n.pv2SeePremium,
+      onLink: () => unawaited(
+        openPaywall(
+          context,
+          entry: PaywallEntry.rhythm,
+          card: PremiumEntry.rhythm,
+        ),
+      ),
+      child: Text(
+        l10n.cuInvite(babyName),
+        style: cl.text.body.copyWith(color: cl.colors.inkMuted),
+      ),
+    );
   }
 }
 

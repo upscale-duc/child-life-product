@@ -8889,6 +8889,8 @@
   "careAtTime": "at {time}",
   "cpPushSnooze10": "Remind me in 10 min",
   "cuTitle": "Coming up",
+  "pmInPremium": "Included in Premium",
+  "cuInvite": "{name}’s log is already enough to know roughly when the next feed and sleep will be.",
   "cuBasis": "From the last {days} days of the log",
   "cuFeed": "Next feed",
   "cuSleep": "Next sleep",
