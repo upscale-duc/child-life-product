@@ -34915,9 +34915,9 @@
   "@cpHistEmptyBody": {
     "description": "Cùng Chăm Con 20: empty state body. EN is an engineering draft for owner review."
   },
-  "careAtTime": "Lúc {time}",
+  "careAtTime": "lúc {time}",
   "@careAtTime": {
-    "description": "Hôm nay Bú bình tile, the line under \"45 phút trước\": the clock time of the last feed. EN is an engineering draft for owner review.",
+    "description": "Hôm nay Bú bình tile, the line under \"45 phút trước\": the clock time of the last feed, lowercase: it continues the line above (owner, 2026-10-30). EN is an engineering draft for owner review.",
     "placeholders": {
       "time": {
         "type": "String"

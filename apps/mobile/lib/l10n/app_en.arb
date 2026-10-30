@@ -8881,5 +8881,5 @@
   "cpShareText": "{headline}: {count} tasks. {people}",
   "cpShareFailed": "Couldn't share. Try again.",
   "cpHistEmptyBody": "Who edits, adds or gives tasks shows here.",
-  "careAtTime": "At {time}"
+  "careAtTime": "at {time}"
 }

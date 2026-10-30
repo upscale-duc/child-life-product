@@ -25215,6 +25215,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String careAtTime(String time) {
-    return 'At $time';
+    return 'at $time';
   }
 }

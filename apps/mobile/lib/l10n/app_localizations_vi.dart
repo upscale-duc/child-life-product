@@ -23837,6 +23837,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String careAtTime(String time) {
-    return 'Lúc $time';
+    return 'lúc $time';
   }
 }

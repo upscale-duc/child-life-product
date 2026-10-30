@@ -39684,10 +39684,10 @@ abstract class AppLocalizations {
   /// **'Ai sửa, thêm hay giao việc sẽ hiện ở đây.'**
   String get cpHistEmptyBody;
 
-  /// Hôm nay Bú bình tile, the line under "45 phút trước": the clock time of the last feed. EN is an engineering draft for owner review.
+  /// Hôm nay Bú bình tile, the line under "45 phút trước": the clock time of the last feed, lowercase: it continues the line above (owner, 2026-10-30). EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Lúc {time}'**
+  /// **'lúc {time}'**
   String careAtTime(String time);
 }
 

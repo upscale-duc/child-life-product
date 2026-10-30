@@ -158,7 +158,7 @@ void main() {
       // The last bottle also says when by the clock; who logged it is not on the tile
       // (owner, 2026-10-30).
       expect(find.text('45 phút trước'), findsOneWidget);
-      expect(find.textContaining('Lúc '), findsWidgets);
+      expect(find.textContaining('lúc '), findsWidgets);
       expect(find.text('Tã ướt'), findsOneWidget);
       expect(find.text('Kết thúc 3 giờ 20 phút trước'), findsOneWidget);
       // The day's totals sit under the reminders card, which lists up to 3 now.

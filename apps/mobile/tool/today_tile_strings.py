@@ -4,8 +4,8 @@
 import json, collections, pathlib
 
 S = collections.OrderedDict()
-S['careAtTime'] = ('Lúc {time}', 'At {time}',
-                  'Hôm nay Bú bình tile, the line under "45 phút trước": the clock time of the last feed. EN is an engineering draft for owner review.',
+S['careAtTime'] = ('lúc {time}', 'at {time}',
+                  'Hôm nay Bú bình tile, the line under "45 phút trước": the clock time of the last feed, lowercase: it continues the line above (owner, 2026-10-30). EN is an engineering draft for owner review.',
                   {'time': 'String'})
 
 root = pathlib.Path(__file__).resolve().parent.parent / 'lib' / 'l10n'
