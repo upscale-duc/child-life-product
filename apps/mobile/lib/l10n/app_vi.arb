@@ -19917,6 +19917,19 @@
   "@asComposerAnswer": {
     "description": "Composer while answering a clarification (\"Tự nhập\"). VI and EN are engineering drafts (no frame draws this state) for owner review."
   },
+  "asComposerAnswering": "Đang trả lời: {question}",
+  "@asComposerAnswering": {
+    "description": "Line above the Lumi composer while my own task waits on a question: what I type answers it. {question} is Lumi's question as shown in the thread (e.g. \"Bé bú lúc mấy giờ?\"). L8 lumi-plan §11.3 #5. EN is an engineering draft for owner review.",
+    "placeholders": {
+      "question": {
+        "type": "String"
+      }
+    }
+  },
+  "asComposerDropQuestion": "Bỏ câu hỏi này",
+  "@asComposerDropQuestion": {
+    "description": "Screen-reader label of the × on the composer's \"Đang trả lời\" line: cancels that task, so the next message is read as a new one. L8 lumi-plan §11.3 #5."
+  },
   "asSend": "Gửi",
   "@asSend": {
     "description": "Composer send button label (a11y) and the kept-input send action."

@@ -1909,6 +1909,8 @@ class AsComposer extends StatelessWidget {
     this.voice,
     this.onMic,
     this.suggestions = const [],
+    this.answering,
+    this.onDropQuestion,
     super.key,
   });
 
@@ -1926,6 +1928,11 @@ class AsComposer extends StatelessWidget {
   final VoiceSession? voice;
   final VoidCallback? onMic;
   final List<AsSuggestion> suggestions;
+
+  /// L8 (lumi-plan §11.3 #5): Lumi's open question that what I type answers, shown above the
+  /// field ("Đang trả lời: …") with × to set it aside ([onDropQuestion]).
+  final String? answering;
+  final VoidCallback? onDropQuestion;
 
   @override
   Widget build(BuildContext context) {
@@ -2191,6 +2198,44 @@ class AsComposer extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           chips,
+          if (answering case final q? when !dictating)
+            Padding(
+              key: const ValueKey('as.answering'),
+              padding: const EdgeInsets.only(left: ClSpace.s4 + ClSpace.s2),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      l10n.asComposerAnswering(q),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: cl.text.caption.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: c.inkMuted,
+                      ),
+                    ),
+                  ),
+                  if (onDropQuestion case final drop?)
+                    ClPressable(
+                      key: const ValueKey('as.answering.drop'),
+                      onPressed: drop,
+                      semanticLabel: l10n.asComposerDropQuestion,
+                      child: SizedBox.square(
+                        dimension: 44,
+                        child: Center(
+                          child: ClIcon(
+                            ClIcons.close,
+                            size: 16,
+                            color: c.inkMuted,
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    const SizedBox(width: ClSpace.s4, height: 44),
+                ],
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: ClSpace.s4),
             child: dictating

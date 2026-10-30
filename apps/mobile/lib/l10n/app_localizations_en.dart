@@ -14327,6 +14327,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asComposerAnswer => 'Type your answer…';
 
   @override
+  @override
+  String asComposerAnswering(String question) {
+    return 'Replying to: $question';
+  }
+
+  @override
+  String get asComposerDropQuestion => 'Drop this question';
+
   String get asSend => 'Send';
 
   @override

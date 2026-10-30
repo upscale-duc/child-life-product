@@ -741,46 +741,31 @@ void main() {
     testWidgets('CH13: weekday ≠ date asks; the chips are the server\'s', (
       tester,
     ) async {
-      final repo = FakeAssistantRepository(
-        tasks: {
-          taskA: photoSnapshot(
-            task: photoTaskJson(
-              state: 'awaiting_clarification',
-              clarification: {
-                'id': 'c2',
-                'field': 'reminder.date.0',
-                'question': {
-                  'vi':
-                      '“Đặt lịch khám 2 tháng” ghi Thứ Hai nhưng 20/10 là Thứ Ba. Bạn muốn nhắc ngày nào?',
-                  'en': 'x',
-                },
-                'choices': [
-                  {
-                    'id': 'written',
-                    'label': {'vi': 'Thứ Ba 20/10', 'en': 'Tue 20/10'},
-                  },
-                  {
-                    'id': 'weekday',
-                    'label': {'vi': 'Thứ Hai 19/10', 'en': 'Mon 19/10'},
-                  },
-                  {
-                    'id': 'later',
-                    'label': {'vi': 'Chọn sau', 'en': 'Pick later'},
-                  },
-                ],
-                'allowText': false,
-              },
-            ),
-          ),
-        },
-      );
+      final repo = FakeAssistantRepository(tasks: {taskA: _weekdayQuestion()});
       await _pump(
         tester,
         repo: repo,
         scope: householdScope,
         prefs: _thread([taskA], householdScope),
       );
-      expect(find.textContaining('20/10 là Thứ Ba'), findsOneWidget);
+      // The bubble, and the composer's "Đang trả lời" line (L8).
+      expect(find.textContaining('20/10 là Thứ Ba'), findsNWidgets(2));
+      expect(find.byKey(const ValueKey('as.answering')), findsOneWidget);
+      await tester.pump(const Duration(seconds: 1));
+      await tester.tap(find.byKey(const ValueKey('as.answering.drop')));
+      await tester.pump();
+      // × sets the question aside: that task is cancelled.
+      expect(repo.named('cancelTask').single.args['taskId'], taskA);
+    });
+
+    testWidgets('CH13: the chips answer the question', (tester) async {
+      final repo = FakeAssistantRepository(tasks: {taskA: _weekdayQuestion()});
+      await _pump(
+        tester,
+        repo: repo,
+        scope: householdScope,
+        prefs: _thread([taskA], householdScope),
+      );
       await _tap(tester, _text('Thứ Hai 19/10'));
       expect(
         repo.named('submitClarification').single.args['choiceId'],
@@ -1616,3 +1601,34 @@ void main() {
     expect(retentionFor(keep: false), AttachmentRetention.deleteAfterRead);
   });
 }
+
+/// CH13: a photo whose weekday and date disagree; Lumi asks which day.
+Map<String, Object?> _weekdayQuestion() => photoSnapshot(
+  task: photoTaskJson(
+    state: 'awaiting_clarification',
+    clarification: {
+      'id': 'c2',
+      'field': 'reminder.date.0',
+      'question': {
+        'vi':
+            '“Đặt lịch khám 2 tháng” ghi Thứ Hai nhưng 20/10 là Thứ Ba. Bạn muốn nhắc ngày nào?',
+        'en': 'x',
+      },
+      'choices': [
+        {
+          'id': 'written',
+          'label': {'vi': 'Thứ Ba 20/10', 'en': 'Tue 20/10'},
+        },
+        {
+          'id': 'weekday',
+          'label': {'vi': 'Thứ Hai 19/10', 'en': 'Mon 19/10'},
+        },
+        {
+          'id': 'later',
+          'label': {'vi': 'Chọn sau', 'en': 'Pick later'},
+        },
+      ],
+      'allowText': false,
+    },
+  ),
+);

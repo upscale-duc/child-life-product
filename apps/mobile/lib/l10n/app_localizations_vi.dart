@@ -13387,6 +13387,14 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asComposerAnswer => 'Trả lời câu hỏi…';
 
   @override
+  @override
+  String asComposerAnswering(String question) {
+    return 'Đang trả lời: $question';
+  }
+
+  @override
+  String get asComposerDropQuestion => 'Bỏ câu hỏi này';
+
   String get asSend => 'Gửi';
 
   @override

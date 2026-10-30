@@ -724,13 +724,22 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
         : ComposerMode.open;
     final session = ref.watch(sessionProvider);
     // L1 (P-167 #3): while my own latest task waits on a question, typing answers it.
-    final answeringAbove =
-        chat.answering != null ||
+    final answeringId =
+        chat.answering ??
         chat.openQuestionFor(
-              session is SessionSignedIn ? session.user.uid : null,
-              now,
-            ) !=
-            null;
+          session is SessionSignedIn ? session.user.uid : null,
+          now,
+        );
+    final answeringAbove = answeringId != null;
+    final question = answeringId == null
+        ? null
+        : chat
+              .thread(answeringId)
+              ?.snapshot
+              ?.task
+              .clarification
+              ?.question
+              .of(Localizations.localeOf(context).languageCode);
     final hint = answeringAbove
         ? l10n.asComposerAnswer
         : switch (mode) {
@@ -967,7 +976,15 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
                   : null,
               voice: voiceOk || (_voice?.active ?? false) ? _voiceFor() : null,
               onMic: voiceOk ? _mic : null,
-              suggestions: chat.empty || chat.answering != null
+              // L8 (§11.3 #5): × cancels that task, so the next words are a new message.
+              answering: question == null || question.isEmpty ? null : question,
+              onDropQuestion: answeringId == null
+                  ? null
+                  : () {
+                      ctl.stopTypingAnswer();
+                      unawaited(ctl.cancelTask(answeringId));
+                    },
+              suggestions: chat.empty || answeringAbove
                   ? const []
                   : _suggestions(l10n, scope, viewer: viewer, onPhoto: onPhoto),
             ),

@@ -613,7 +613,7 @@ LUM-02 live eval on v2) is not repeated here.
 | L2 speed                      | done (`3725ffe`, `ef92d3a`, `4e6b3bb`)            | the optimistic card; output cap is 1 100, not 400                                         |
 | L1b / L7 / L9                 | done on dev                                      | not checked on a phone; prod not deployed                                                 |
 | Phase 2 reads (L3)            | done in `0663bb8` (13 read tools, cards, links)  | e2e `40-reads.json` not extended; no live eval on `assistant-understand-v2`               |
-| L8 composer + now-by-default  | **not started**                                  | "Đang trả lời: …" / "Đang chờ bạn lưu …"; the fast path still asks the time for "bé bú 120ml" |
+| L8 composer + now-by-default  | done (D-140), server on dev 30/10               | not checked on a phone; prod not deployed |
 | L6 "Bé dậy chưa?"             | done (D-140): ask, switch, the three buttons, the second ask, EN07 hint, silent in Night care | the buttons not pressed on a real phone (simulator: categories, hint, cancel checked) |
 | L4 next steps + module entries | **not started**                                 | chips after a save; entries on timer, Lịch sử, Ăn dặm                                     |
 | L5 writes per module          | **not started** (edit/undo partly via L7)        | meals (`meal` still `available: false`), vaccine doses, Mốc, album, recurring reminders  |

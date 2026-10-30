@@ -22260,6 +22260,18 @@ abstract class AppLocalizations {
   /// **'Trả lời câu hỏi…'**
   String get asComposerAnswer;
 
+  /// Line above the Lumi composer while my own task waits on a question: what I type answers it. {question} is Lumi's question as shown in the thread (e.g. "Bé bú lúc mấy giờ?"). L8 lumi-plan §11.3 #5. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang trả lời: {question}'**
+  String asComposerAnswering(String question);
+
+  /// Screen-reader label of the × on the composer's "Đang trả lời" line: cancels that task, so the next message is read as a new one. L8 lumi-plan §11.3 #5.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ câu hỏi này'**
+  String get asComposerDropQuestion;
+
   /// Composer send button label (a11y) and the kept-input send action.
   ///
   /// In vi, this message translates to:

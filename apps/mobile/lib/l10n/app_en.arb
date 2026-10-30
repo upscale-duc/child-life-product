@@ -3704,6 +3704,8 @@
   "asComposerOutFree": "AI help used up this month",
   "asComposerOutPremium": "Out of AI help · direct logging still works",
   "asComposerAnswer": "Type your answer…",
+  "asComposerAnswering": "Replying to: {question}",
+  "asComposerDropQuestion": "Drop this question",
   "asSend": "Send",
   "asAddPhoto": "Photo",
   "asChipLogFeed": "Log a feed",
