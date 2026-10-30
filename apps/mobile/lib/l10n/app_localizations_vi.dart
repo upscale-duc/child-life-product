@@ -11165,6 +11165,11 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
+  String rhReviewedByTeam(String reviewer) {
+    return 'Đã duyệt bởi $reviewer';
+  }
+
+  @override
   String rhJoinTwo(String a, String b) {
     return '$a và $b';
   }

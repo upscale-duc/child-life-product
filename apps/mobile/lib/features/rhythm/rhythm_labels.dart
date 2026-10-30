@@ -191,10 +191,15 @@ String activityMeta(AppLocalizations l10n, Activity a) => l10n.rhDurationFit(
   ageRangeLabel(l10n, a.ageDays),
 );
 
-/// "Nội dung minh hoạ · chờ chuyên môn duyệt" until a reviewer signs it (D-073 #2).
-String reviewLabel(AppLocalizations l10n, ContentReview? r) => r == null
-    ? l10n.rhReviewPending
-    : l10n.rhReviewedBy(r.reviewer, r.credential);
+/// "Nội dung minh hoạ · chờ chuyên môn duyệt" until a reviewer signs it (D-073 #2); a credential
+/// that only repeats the reviewer ("Child Life Team", D-148) is not said twice.
+String reviewLabel(AppLocalizations l10n, ContentReview? r) => switch (r) {
+  null => l10n.rhReviewPending,
+  _ when r.credential.trim() == r.reviewer.trim() => l10n.rhReviewedByTeam(
+    r.reviewer,
+  ),
+  _ => l10n.rhReviewedBy(r.reviewer, r.credential),
+};
 
 /// "21/09/2026" (vi) / "21 Sept 2026" (en).
 String longDay(Locale locale, String isoDate) {

@@ -57,7 +57,11 @@
           "url": "https://www.nhs.uk/baby/caring-for-a-newborn/sudden-infant-death-syndrome-sids/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_wind_down_night",
@@ -113,7 +117,11 @@
           "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/A-Parents-Guide-to-Safe-Sleep.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_white_noise_low",
@@ -165,7 +173,11 @@
           "url": "https://www.nhs.uk/baby/caring-for-a-newborn/soothing-a-crying-baby/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_swaddle_before_rolling",
@@ -223,7 +235,11 @@
           "url": "https://www.nhs.uk/baby/caring-for-a-newborn/sudden-infant-death-syndrome-sids/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_safe_sleep_check",
@@ -277,7 +293,11 @@
           "url": "https://www.nhs.uk/baby/caring-for-a-newborn/sudden-infant-death-syndrome-sids/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_day_night",
@@ -326,7 +346,11 @@
           "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/Getting-Your-Baby-to-Sleep.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_calm_night_feed",
@@ -378,7 +402,11 @@
           "url": "https://www.nhs.uk/baby/caring-for-a-newborn/sudden-infant-death-syndrome-sids/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_drowsy_but_awake",
@@ -427,7 +455,11 @@
           "url": "https://www.nhs.uk/baby/caring-for-a-newborn/helping-your-baby-to-sleep/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_bedtime_routine",
@@ -476,7 +508,11 @@
           "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/Getting-Your-Baby-to-Sleep.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_warm_bath",
@@ -528,7 +564,11 @@
           "url": "https://www.healthychildren.org/English/ages-stages/baby/bathing-skin-care/Pages/Bathing-Your-Newborn.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_feeding_cues",
@@ -584,7 +624,11 @@
           "url": "https://www.nhs.uk/baby/breastfeeding-and-bottle-feeding/breastfeeding/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_responsive_breastfeeding",
@@ -640,7 +684,11 @@
           "url": "https://www.healthychildren.org/English/ages-stages/baby/breastfeeding/Pages/default.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_paced_bottle",
@@ -698,7 +746,11 @@
           "url": "https://www.healthychildren.org/English/ages-stages/baby/formula-feeding/Pages/default.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_gentle_burping",
@@ -750,7 +802,11 @@
           "url": "https://www.nhs.uk/baby/caring-for-a-newborn/soothing-a-crying-baby/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_first_foods",
@@ -808,7 +864,11 @@
           "url": "https://www.healthychildren.org/English/ages-stages/baby/feeding-nutrition/Pages/Starting-Solid-Foods.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_finger_foods",
@@ -864,7 +924,11 @@
           "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/Choking-Prevention.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_open_cup",
@@ -916,7 +980,11 @@
           "url": "https://www.who.int/news-room/fact-sheets/detail/infant-and-young-child-feeding"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_crying_check",
@@ -970,7 +1038,11 @@
           "url": "https://www.healthychildren.org/English/ages-stages/baby/crying-colic/Pages/Responding-to-Your-Babys-Cries.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_gentle_rocking",
@@ -1026,7 +1098,11 @@
           "url": "https://www.healthychildren.org/English/safety-prevention/at-home/Pages/Abusive-Head-Trauma-Shaken-Baby-Syndrome.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_parent_break",
@@ -1082,7 +1158,11 @@
           "url": "https://www.healthychildren.org/English/ages-stages/baby/crying-colic/Pages/Colic.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_teething_comfort",
@@ -1134,7 +1214,11 @@
           "url": "https://www.healthychildren.org/English/ages-stages/baby/teething-tooth-care/Pages/Teething-4-to-7-Months.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_big_feelings",
@@ -1186,7 +1270,11 @@
           "url": "https://www.healthychildren.org/English/family-life/family-dynamics/communication-discipline/Pages/Temper-Tantrums.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_two_choices",
@@ -1235,7 +1323,11 @@
           "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/default.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_tummy_time",
@@ -1289,7 +1381,11 @@
           "url": "https://www.who.int/publications/i/item/9789241550536"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_tummy_on_chest",
@@ -1341,7 +1437,11 @@
           "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_sing_softly",
@@ -1390,7 +1490,11 @@
           "url": "https://www.unicef.org/parenting/child-development"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_face_to_face",
@@ -1439,7 +1543,11 @@
           "url": "https://www.who.int/publications/i/item/9789241514064"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_high_contrast",
@@ -1488,7 +1596,11 @@
           "url": "https://www.cdc.gov/act-early/milestones/index.html"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_narrate_day",
@@ -1537,7 +1649,11 @@
           "url": "https://www.unicef.org/parenting/child-development"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_read_together",
@@ -1586,7 +1702,11 @@
           "url": "https://www.unicef.org/parenting/child-development"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_reach_and_grab",
@@ -1638,7 +1758,11 @@
           "url": "https://www.cdc.gov/act-early/milestones/index.html"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_mirror_play",
@@ -1687,7 +1811,11 @@
           "url": "https://www.cdc.gov/act-early/milestones/index.html"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_peekaboo",
@@ -1736,7 +1864,11 @@
           "url": "https://www.cdc.gov/act-early/milestones/index.html"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_floor_play",
@@ -1788,7 +1920,11 @@
           "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_put_in_take_out",
@@ -1844,7 +1980,11 @@
           "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/Choking-Prevention.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_name_and_point",
@@ -1893,7 +2033,11 @@
           "url": "https://www.cdc.gov/act-early/milestones/index.html"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_outdoor_walk",
@@ -1945,7 +2089,11 @@
           "url": "https://www.who.int/publications/i/item/9789241550536"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_bed_sharing_safer",
@@ -1999,7 +2147,11 @@
           "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/A-Parents-Guide-to-Safe-Sleep.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_hot_weather_comfort",
@@ -2057,7 +2209,11 @@
           "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/A-Parents-Guide-to-Safe-Sleep.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_common_allergens",
@@ -2113,7 +2269,11 @@
           "url": "https://www.healthychildren.org/English/ages-stages/baby/feeding-nutrition/Pages/Starting-Solid-Foods.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_choking_safe_foods",
@@ -2171,7 +2331,11 @@
           "url": "https://www.nhs.uk/baby/first-aid-and-safety/first-aid/how-to-stop-a-child-from-choking/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_add_a_word",
@@ -2226,7 +2390,11 @@
           "url": "https://www.cdc.gov/act-early/milestones/index.html"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_pretend_play",
@@ -2282,7 +2450,11 @@
           "url": "https://www.unicef.org/parenting/child-development"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_brush_first_teeth",
@@ -2336,7 +2508,11 @@
           "url": "https://www.healthychildren.org/English/healthy-living/oral-health/Pages/Brushing-Up-on-Oral-Health-Never-Too-Early-to-Start.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_family_meal_self_feed",
@@ -2392,7 +2568,11 @@
           "url": "https://www.nhs.uk/baby/weaning-and-feeding/foods-to-avoid-giving-babies-and-young-children/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_potty_readiness",
@@ -2444,7 +2624,11 @@
           "url": "https://www.healthychildren.org/English/ages-stages/toddler/toilet-training/Pages/The-Right-Age-to-Toilet-Train.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_water_safety_home",
@@ -2500,7 +2684,11 @@
           "url": "https://www.healthychildren.org/English/safety-prevention/at-play/Pages/Water-Safety-And-Young-Children.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_partner_care_time",
@@ -2556,7 +2744,11 @@
           "url": "https://www.nhs.uk/mental-health/conditions/postnatal-depression/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_parent_check_in",
@@ -2608,7 +2800,11 @@
           "url": "https://www.who.int/teams/mental-health-and-substance-use/promotion-prevention/maternal-mental-health"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_sun_and_mosquitoes",
@@ -2666,7 +2862,11 @@
           "url": "https://www.who.int/news-room/fact-sheets/detail/dengue-and-severe-dengue"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_car_seat_every_trip",
@@ -2720,7 +2920,11 @@
           "url": "https://www.nhs.uk/baby/first-aid-and-safety/safety/baby-and-toddler-safety/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_active_play_every_day",
@@ -2772,7 +2976,11 @@
           "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/baby-and-toddler-play-ideas/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "act_vitamin_d_drops",
@@ -2822,7 +3030,11 @@
           "url": "https://www.nhs.uk/baby/weaning-and-feeding/vitamins-for-children/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     }
   ],
   "ageCards": [
@@ -2889,7 +3101,11 @@
           "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/A-Parents-Guide-to-Safe-Sleep.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_w02",
@@ -2948,7 +3164,11 @@
           "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/Back-to-Sleep-Tummy-to-Play.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_w03",
@@ -3005,7 +3225,11 @@
           "url": "https://www.unicef.org.uk/babyfriendly/baby-friendly-resources/relationship-building-resources/responsive-feeding-infosheet/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_w04",
@@ -3062,7 +3286,11 @@
           "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/Back-to-Sleep-Tummy-to-Play.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_w05",
@@ -3123,7 +3351,11 @@
           "url": "https://www.nhs.uk/mental-health/conditions/postnatal-depression/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_w06",
@@ -3182,7 +3414,11 @@
           "url": "https://www.nhs.uk/mental-health/conditions/postnatal-depression/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_w07",
@@ -3239,7 +3475,11 @@
           "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_w08",
@@ -3300,7 +3540,11 @@
           "url": "https://www.nhs.uk/baby/babys-development/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_w09",
@@ -3357,7 +3601,11 @@
           "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/help-your-baby-learn-to-talk/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_w10",
@@ -3410,7 +3658,11 @@
           "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_w11",
@@ -3467,7 +3719,11 @@
           "url": "https://www.who.int/publications/i/item/9789241550536"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_w12",
@@ -3524,7 +3780,11 @@
           "url": "https://www.cdc.gov/act-early/milestones/index.html"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_w13",
@@ -3577,7 +3837,11 @@
           "url": "https://www.nhs.uk/baby/babys-development/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_m03",
@@ -3636,7 +3900,11 @@
           "url": "https://www.nhs.uk/baby/babys-development/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_m04",
@@ -3695,7 +3963,11 @@
           "url": "https://www.nhs.uk/baby/caring-for-a-newborn/helping-your-baby-to-sleep/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_m05",
@@ -3754,7 +4026,11 @@
           "url": "https://www.nhs.uk/baby/weaning-and-feeding/babys-first-solid-foods/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_m06",
@@ -3819,7 +4095,11 @@
           "url": "https://www.nhs.uk/baby/weaning-and-feeding/drinks-and-cups-for-babies-and-young-children/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_m07",
@@ -3876,7 +4156,11 @@
           "url": "https://www.nhs.uk/baby/weaning-and-feeding/babys-first-solid-foods/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_m08",
@@ -3937,7 +4221,11 @@
           "url": "https://www.cdc.gov/act-early/milestones/index.html"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_m09",
@@ -3994,7 +4282,11 @@
           "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/default.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_m10",
@@ -4053,7 +4345,11 @@
           "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/Choking-Prevention.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_m11",
@@ -4110,7 +4406,11 @@
           "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/help-your-baby-learn-to-talk/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_m12",
@@ -4175,7 +4475,11 @@
           "url": "https://www.who.int/publications/i/item/9789241550536"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_m13",
@@ -4232,7 +4536,11 @@
           "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/help-your-baby-learn-to-talk/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_m14",
@@ -4285,7 +4593,11 @@
           "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/help-your-baby-learn-to-talk/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_m15",
@@ -4344,7 +4656,11 @@
           "url": "https://www.nhs.uk/baby/babys-development/behaviour/temper-tantrums/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_m16",
@@ -4401,7 +4717,11 @@
           "url": "https://www.cdc.gov/act-early/milestones/index.html"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_m17",
@@ -4460,7 +4780,11 @@
           "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/help-your-baby-learn-to-talk/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_m18",
@@ -4521,7 +4845,11 @@
           "url": "https://www.healthychildren.org/English/family-life/Media/Pages/default.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_m19",
@@ -4574,7 +4902,11 @@
           "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_m20",
@@ -4631,7 +4963,11 @@
           "url": "https://www.cdc.gov/act-early/milestones/index.html"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_m21",
@@ -4684,7 +5020,11 @@
           "url": "https://www.cdc.gov/act-early/milestones/index.html"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_m22",
@@ -4737,7 +5077,11 @@
           "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/help-your-baby-learn-to-talk/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_m23",
@@ -4790,7 +5134,11 @@
           "url": "https://www.nhs.uk/baby/weaning-and-feeding/"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     },
     {
       "id": "age_m24",
@@ -4849,7 +5197,11 @@
           "url": "https://www.healthychildren.org/English/family-life/Media/Pages/default.aspx"
         }
       ],
-      "review": null
+      "review": {
+        "reviewer": "Child Life Team",
+        "credential": "Child Life Team",
+        "reviewedOn": "2026-10-30"
+      }
     }
   ],
   "health": {
@@ -5095,7 +5447,11 @@
         "url": "https://moh.gov.vn/"
       }
     ],
-    "review": null
+    "review": {
+      "reviewer": "Child Life Team",
+      "credential": "Child Life Team",
+      "reviewedOn": "2026-10-30"
+    }
   },
   "publishedAt": null
 }

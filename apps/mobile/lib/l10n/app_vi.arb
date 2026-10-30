@@ -16634,6 +16634,15 @@
       }
     }
   },
+  "rhReviewedByTeam": "Đã duyệt bởi {reviewer}",
+  "@rhReviewedByTeam": {
+    "description": "Footnote on reviewed Nhịp content when the credential is the reviewer's own name (D-148: \"Child Life Team\"). {reviewer} is the reviewer as stored.",
+    "placeholders": {
+      "reviewer": {
+        "type": "String"
+      }
+    }
+  },
   "rhJoinTwo": "{a} và {b}",
   "@rhJoinTwo": {
     "description": "Joins the last two names of a list (\"Ba và Cô Lan\").",

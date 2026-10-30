@@ -18535,6 +18535,12 @@ abstract class AppLocalizations {
   /// **'Đã duyệt bởi {reviewer} · {credential}'**
   String rhReviewedBy(String reviewer, String credential);
 
+  /// Footnote on reviewed Nhịp content when the credential is the reviewer's own name (D-148: "Child Life Team"). {reviewer} is the reviewer as stored.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã duyệt bởi {reviewer}'**
+  String rhReviewedByTeam(String reviewer);
+
   /// Joins the last two names of a list ("Ba và Cô Lan").
   ///
   /// In vi, this message translates to:

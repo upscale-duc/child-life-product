@@ -11995,6 +11995,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String rhReviewedBy(String reviewer, String credential) {
     return 'Reviewed by $reviewer · $credential';
   }
+  @override
+  String rhReviewedByTeam(String reviewer) {
+    return 'Reviewed by $reviewer';
+  }
+
 
   @override
   String rhJoinTwo(String a, String b) {

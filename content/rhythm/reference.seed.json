@@ -527,6 +527,10 @@
       "url": "https://www.who.int/tools/child-growth-standards/standards/motor-development-milestones"
     }
   ],
-  "review": null,
+  "review": {
+    "reviewer": "Child Life Team",
+    "credential": "Child Life Team",
+    "reviewedOn": "2026-10-30"
+  },
   "publishedAt": null
 }

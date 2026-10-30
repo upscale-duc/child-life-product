@@ -183,7 +183,8 @@ describe('P-172 toddler editorial pack', () => {
     expect(new Set(activities.map((a) => a.id)).size).toBe(24);
     for (const a of activities) {
       expect(a.status).toBe('draft');
-      expect(a.review).toBeNull();
+      // D-148: reviewed (Child Life Team, 2026-10-30); still a draft until it is published.
+      expect(a.review?.reviewer).toBe('Child Life Team');
       expect(a.ageDays).toEqual({ from: 365, to: 1095 });
       expect(a.durationMin).toBeLessThanOrEqual(5);
       expect(a.sources.length).toBeGreaterThan(0);

@@ -2,11 +2,11 @@
 
 `reference.seed.json` follows `referenceModelSchema` (`packages/contracts/src/rhythm.ts`). `content.seed.json` follows `rhythmContentSchema` (`packages/contracts/src/personalization.ts`). `packages/contracts/test/rhythm-content-seed.test.ts` checks both files. The dev seed script (`scripts/src/seed-rhythm.ts`, plan §7.1) publishes them to `child-life-dev` only.
 
-## 0. Status: engineering draft, not approved
+## 0. Status: reviewed, signed "Child Life Team" (D-148)
 
-- **Who wrote it.** Engineering drafted this content per owner decision **D-073 #2** ("làm nội dung như 1 chuyên môn đi. Người duyệt sau"). It was written from public guidance (WHO, AAP / HealthyChildren.org, CDC, NHS, UNICEF), and every item cites its sources.
-- **Not reviewed.** No clinician, nurse or child-development professional has reviewed any of it. Every item carries `review: null`. The model, each activity, each age card and the health pack all show "Nội dung minh hoạ · chờ chuyên môn duyệt" / "Illustrative content · pending expert review".
-- **Prod.** Prod publishing still requires a signed review (D-058 pattern, `rhythmActSchema`). Nothing here may be described as approved, reviewed or written by experts. B06's preview footnote "Nội dung do đội chuyên môn Child Life soạn và rà soát" must not ship with this seed.
+- **Who wrote it.** Engineering drafted this content per owner decision **D-073 #2** ("làm nội dung như 1 chuyên môn đi. Người duyệt sau") from public guidance (WHO, AAP / HealthyChildren.org, CDC, NHS, UNICEF); every item cites its sources. The 12–36-month pack was rewritten on 2026-10-30 (`docs/product/content-review-2026-10/rhythm-prereview-2026-10-30.md`).
+- **Reviewed.** The owner's expert read and approved the 2026-10-30 version (D-141); by owner decision **D-148** every item is signed `{"reviewer": "Child Life Team", "credential": "Child Life Team", "reviewedOn": "2026-10-30"}` (no individual name or title). The app shows "Đã duyệt bởi Child Life Team" / "Reviewed by Child Life Team" instead of "Nội dung minh hoạ · chờ chuyên môn duyệt".
+- **Prod.** Prod publishing still goes through the portal (PN01–PN04). The "Wonder Weeks" name and model rights check (D-072 #7) is still a release gate.
 - **Language.** Vietnamese is the primary text, written for parents ("ba mẹ", "con", "bé"). English is a parallel draft with the same meaning (D-012). English uses British spelling (favourite, recognise, pyjamas), except "diaper", which matches `app_en.arb`.
 
 ## 1. What the seed contains

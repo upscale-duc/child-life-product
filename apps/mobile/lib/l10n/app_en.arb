@@ -3081,6 +3081,7 @@
   "rhSectionForYouSub": "Suggestions, age content and reference calendar",
   "rhReviewPending": "Written from WHO, AAP and NHS guidance · For reference, not a substitute for a doctor",
   "rhReviewedBy": "Reviewed by {reviewer} · {credential}",
+  "rhReviewedByTeam": "Reviewed by {reviewer}",
   "rhJoinTwo": "{a} and {b}",
   "rhQuoted": "“{text}”",
   "rhWhoYou": "you",

@@ -9,12 +9,19 @@ import referenceSeed from '../../../content/rhythm/reference.seed.json' with { t
 import contentSeed from '../../../content/rhythm/content.seed.json' with { type: 'json' };
 
 /**
- * The Nhịp lớn lên seed (`content/rhythm/*.seed.json`): engineering draft per D-073 #2, so every
- * item stays `review: null` until a qualified reviewer signs it. These checks keep the draft
- * publishable on dev: schema-valid, linked, bilingual, gap-free and never certain about a stage.
+ * The Nhịp lớn lên seed (`content/rhythm/*.seed.json`): drafted by engineering (D-073 #2), reviewed
+ * by the owner's expert and signed "Child Life Team" on 2026-10-30 (D-148). These checks keep it
+ * publishable: schema-valid, linked, bilingual, gap-free and never certain about a stage.
  */
 const reference = referenceModelSchema.parse(referenceSeed);
 const content = rhythmContentSchema.parse(contentSeed);
+
+/** D-148: the owner's expert reviewed the 2026-10-30 version; the team signs it. */
+const signed = {
+  reviewer: 'Child Life Team',
+  credential: 'Child Life Team',
+  reviewedOn: '2026-10-30',
+};
 
 const chars = (s: string) => Array.from(s).length;
 const duplicates = (ids: readonly string[]) => ids.filter((id, i) => ids.indexOf(id) !== i);
@@ -35,7 +42,7 @@ describe('rhythm content seed · reference model', () => {
     expect(reference.version).toMatch(/^ref_\d{8}_\d{2}$/);
     expect(reference.label).toBe('Wonder Weeks');
     expect(reference.publishedAt).toBeNull();
-    expect(reference.review).toBeNull();
+    expect(reference.review).toEqual(signed);
     expect(reference.stages).toHaveLength(10);
   });
 
@@ -103,11 +110,11 @@ describe('rhythm content seed · activities, age cards, health', () => {
     expect(duplicates(content.ageCards.map((c) => c.id))).toEqual([]);
   });
 
-  it('leaves every item unreviewed (D-073 #2: "chờ chuyên môn duyệt")', () => {
-    for (const a of content.activities) expect(a.review, a.id).toBeNull();
-    for (const c of content.ageCards) expect(c.review, c.id).toBeNull();
-    expect(content.health.review).toBeNull();
-    expect(reference.review).toBeNull();
+  it('signs every item "Child Life Team", 2026-10-30 (D-148)', () => {
+    for (const a of content.activities) expect(a.review, a.id).toEqual(signed);
+    for (const c of content.ageCards) expect(c.review, c.id).toEqual(signed);
+    expect(content.health.review).toEqual(signed);
+    expect(reference.review).toEqual(signed);
   });
 
   it('publishes activities in both languages, with steps and at least one source', () => {
