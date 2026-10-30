@@ -19,6 +19,7 @@ import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_rows.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
+import '../assistant/assistant_entry.dart' show AssistantModuleEntry;
 import '../baby/baby_avatar_view.dart';
 import '../baby/baby_models.dart';
 import '../baby/baby_repository.dart';
@@ -303,6 +304,13 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
         ),
       ),
       const SizedBox(height: ClSpace.s4),
+      // L4 (lumi-plan §7): ask or fix today in words; nothing unless Lumi is on for the family.
+      if (isToday && filter != HistoryFilter.growth)
+        AssistantModuleEntry.ask(
+          babyId: babyId,
+          ask: l10n.asHistoryAsk,
+          padding: const EdgeInsets.only(bottom: ClSpace.s4),
+        ),
     ];
 
     if (failed) {

@@ -19958,6 +19958,10 @@
   "@asFabLabel": {
     "description": "Floating assistant button a11y label. EN is an engineering draft for owner review."
   },
+  "asHistoryAsk": "Hỏi Lumi: “hôm nay bé bú mấy cữ?”",
+  "@asHistoryAsk": {
+    "description": "One-line Lumi entry above the Lịch sử chăm sóc timeline (L4, lumi-plan §7): opens Lumi for this baby with an empty composer; the quoted words are an example of what to type. EN is an engineering draft for owner review."
+  },
   "asModuleExpenseTitle": "Chụp hoá đơn hoặc nhắn để ghi",
   "@asModuleExpenseTitle": {
     "description": "CH01b entry in Chi tiêu."

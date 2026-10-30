@@ -22314,6 +22314,12 @@ abstract class AppLocalizations {
   /// **'Mở Lumi'**
   String get asFabLabel;
 
+  /// One-line Lumi entry above the Lịch sử chăm sóc timeline (L4, lumi-plan §7): opens Lumi for this baby with an empty composer; the quoted words are an example of what to type. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi Lumi: “hôm nay bé bú mấy cữ?”'**
+  String get asHistoryAsk;
+
   /// CH01b entry in Chi tiêu.
   ///
   /// In vi, this message translates to:

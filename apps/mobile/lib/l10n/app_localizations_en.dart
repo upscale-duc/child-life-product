@@ -14356,6 +14356,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asFabLabel => 'Open Lumi';
 
   @override
+  @override
+  String get asHistoryAsk => 'Ask Lumi: “How many feeds today?”';
+
   String get asModuleExpenseTitle => 'Snap a receipt or type to log';
 
   @override

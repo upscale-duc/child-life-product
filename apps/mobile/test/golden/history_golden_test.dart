@@ -1,6 +1,7 @@
 @Tags(['golden'])
 library;
 
+import 'package:child_life/features/assistant/assistant_entry.dart';
 import 'package:child_life/app/environment.dart';
 import 'package:child_life/app/providers.dart';
 import 'package:child_life/core/appearance/appearance_providers.dart';
@@ -39,15 +40,22 @@ _Case _history(
   bool loading = false,
   List<CareRecord> Function() growth = mockGrowth,
   Membership? me,
+  bool lumi = false,
   Future<void> Function(WidgetTester tester)? act,
 }) => (
   build: () => HistoryScreen(filter: filter),
-  overrides: () => careOverrides(
-    range: range,
-    rangeLoading: loading,
-    growth: growth(),
-    me: me,
-  ),
+  overrides: () => [
+    ...careOverrides(
+      range: range,
+      rangeLoading: loading,
+      growth: growth(),
+      me: me,
+    ),
+    if (lumi)
+      assistantAccessProvider.overrideWith(
+        (ref, babyId) => const AssistantAccess(),
+      ),
+  ],
   prefs: const {},
   act: act,
 );
@@ -60,6 +68,8 @@ Future<void> _headTab(WidgetTester t) async {
 
 final _cases = <String, _Case>{
   '20_history': _history(HistoryFilter.all),
+  // L4 (lumi-plan §7): the one-line Lumi entry above the timeline, Lumi on for the family.
+  '20k_history_lumi': _history(HistoryFilter.all, lumi: true),
   '20a_history_feed': _history(HistoryFilter.feed),
   '20b_history_sleep': _history(HistoryFilter.sleep),
   '20c_history_diaper': _history(HistoryFilter.diaper),

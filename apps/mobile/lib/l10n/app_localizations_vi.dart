@@ -13416,6 +13416,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asFabLabel => 'Mở Lumi';
 
   @override
+  @override
+  String get asHistoryAsk => 'Hỏi Lumi: “hôm nay bé bú mấy cữ?”';
+
   String get asModuleExpenseTitle => 'Chụp hoá đơn hoặc nhắn để ghi';
 
   @override

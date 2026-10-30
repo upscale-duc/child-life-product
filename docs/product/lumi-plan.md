@@ -615,7 +615,7 @@ LUM-02 live eval on v2) is not repeated here.
 | Phase 2 reads (L3)            | done in `0663bb8` (13 read tools, cards, links)  | e2e `40-reads.json` not extended; no live eval on `assistant-understand-v2`               |
 | L8 composer + now-by-default  | done (D-140), server on dev 30/10               | not checked on a phone; prod not deployed |
 | L6 "Bé dậy chưa?"             | done (D-140): ask, switch, the three buttons, the second ask, EN07 hint, silent in Night care | the buttons not pressed on a real phone (simulator: categories, hint, cancel checked) |
-| L4 next steps + module entries | **not started**                                 | chips after a save; entries on timer, Lịch sử, Ăn dặm                                     |
+| L4 next steps + module entries | done 30/10: "Nhắc cữ tiếp" after a feed; "Hỏi Lumi: …" line above today's Lịch sử; sleep/growth/expense cards already open their day, growth panel and Chi tiêu | timer screen: no entry (its Kết thúc / Sửa giờ bắt đầu and L6 already do what Lumi would; owner may still want it); Ăn dặm entry waits for L5 meal writes |
 | L5 writes per module          | **not started** (edit/undo partly via L7)        | meals (`meal` still `available: false`), vaccine doses, Mốc, album, recurring reminders  |
 | L9b model tier                | **not started**                                  | `OPENAI_MODEL_UNDERSTANDING` exists, unset, unmeasured                                    |
 | L9c remove old readers        | **not started**                                  | `careStatesIn`, `phaseCue`, `timerPlan` guessing, `previousTurnOf`, v7/v8 shims still called |

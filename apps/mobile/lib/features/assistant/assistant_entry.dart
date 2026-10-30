@@ -194,10 +194,23 @@ class AssistantModuleEntry extends ConsumerWidget {
     this.hint = IntentHint.expense,
     this.padding = EdgeInsets.zero,
     super.key,
+  }) : ask = null;
+
+  /// L4 (lumi-plan §7): one composer-look line on a care screen ("Hỏi Lumi: …"), opening Lumi
+  /// for this baby. Quieter than the Chi tiêu card: the screen's own content stays first.
+  const AssistantModuleEntry.ask({
+    required this.babyId,
+    required String this.ask,
+    this.hint = IntentHint.question,
+    this.padding = EdgeInsets.zero,
+    super.key,
   });
 
   final String babyId;
   final IntentHint hint;
+
+  /// The line's words; null = the Chi tiêu card.
+  final String? ask;
 
   /// Around the entry only when it shows (the module's layout is unchanged while the flag is off).
   final EdgeInsets padding;
@@ -208,6 +221,43 @@ class AssistantModuleEntry extends ConsumerWidget {
     if (access == null) return const SizedBox.shrink();
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
+    if (ask case final words?) {
+      return Padding(
+        padding: padding,
+        child: ClPressable(
+          key: const ValueKey('as.module.ask'),
+          onPressed: () =>
+              openAssistant(context, AssistantScope.child(babyId), hint: hint),
+          semanticLabel: words,
+          pressedOpacity: 0.7,
+          child: Container(
+            constraints: const BoxConstraints(minHeight: 48),
+            padding: const EdgeInsets.symmetric(
+              horizontal: ClSpace.s3,
+              vertical: ClSpace.s2,
+            ),
+            decoration: BoxDecoration(
+              color: cl.colors.surface,
+              borderRadius: BorderRadius.circular(ClRadius.pill),
+              border: Border.all(color: cl.colors.controlBorder),
+            ),
+            child: Row(
+              children: [
+                ClIcon(ClIcons.spark, size: 18, color: cl.colors.mintText),
+                const SizedBox(width: ClSpace.s2),
+                Expanded(
+                  child: Text(
+                    words,
+                    style: cl.text.label.copyWith(color: cl.colors.inkMuted),
+                  ),
+                ),
+                ClIcon(ClIcons.arrowRight, size: 16, color: cl.colors.inkMuted),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
     final title = access.images
         ? l10n.asModuleExpenseTitle
         : l10n.asModuleExpenseTextOnly;
