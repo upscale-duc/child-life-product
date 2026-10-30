@@ -1,0 +1,117 @@
+{
+  "group": "care.meal",
+  "note": "Lumi L5 (lumi-plan §5, 2026-10-30): a solids meal said in words is a draft for the Ăn dặm diary while the diary is on; off, Lumi says so and links to it. Milk is never a meal; \"ăn ít\" stays an observation.",
+  "cases": [
+    {
+      "id": "l5-01-meal-with-clock",
+      "title": "\"trưa nay bé ăn cháo bí đỏ lúc 11h30\" with the diary on: a meal at 11:30, saved to the diary",
+      "anchor": "14:20",
+      "world": { "seed": ["solidsOn"] },
+      "turns": [
+        {
+          "say": "trưa nay bé ăn cháo bí đỏ lúc 11h30",
+          "model": {
+            "i": [
+              {
+                "k": "meal",
+                "f": { "title": "cháo bí đỏ", "time": "11:30", "dayOffset": 0 },
+                "ev": { "title": "cháo bí đỏ", "time": "11h30" }
+              }
+            ]
+          }
+        },
+        { "confirm": "all" }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["meal"],
+        "ready": true,
+        "values": { "0.occurredAt": "D0 11:30", "0.title": "cháo bí đỏ" },
+        "saved": 1
+      }
+    },
+    {
+      "id": "l5-02-meal-no-time-is-now",
+      "title": "\"bé vừa ăn chuối\" with no clock: now (L8), no question",
+      "anchor": "15:05",
+      "world": { "seed": ["solidsOn"] },
+      "turns": [
+        {
+          "say": "bé vừa ăn chuối",
+          "model": {
+            "i": [{ "k": "meal", "f": { "title": "chuối" }, "ev": { "title": "chuối" } }]
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "drafts",
+        "kinds": ["meal"],
+        "ready": true,
+        "values": { "0.occurredAt": "D0 15:05", "0.title": "chuối" }
+      }
+    },
+    {
+      "id": "l5-03-diary-off-says-so",
+      "title": "the diary is off: no draft, nothing saved (the notice links to Ăn dặm)",
+      "anchor": "14:20",
+      "turns": [
+        {
+          "say": "bé ăn cháo bí đỏ lúc 11h",
+          "model": {
+            "i": [
+              {
+                "k": "meal",
+                "f": { "title": "cháo bí đỏ", "time": "11:00", "dayOffset": 0 },
+                "ev": { "title": "cháo bí đỏ", "time": "11h" }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": { "kinds": [], "saved": 0, "codes": ["PART_NOT_SAVED"] }
+    },
+    {
+      "id": "l5-04-eats-little-is-observation",
+      "title": "\"hôm nay bé ăn ít\" is a feeding observation, never a meal",
+      "anchor": "18:00",
+      "world": { "seed": ["solidsOn"] },
+      "turns": [
+        {
+          "say": "hôm nay bé ăn ít",
+          "model": {
+            "i": [
+              {
+                "k": "observation",
+                "f": { "observation": "feeding" },
+                "ev": { "observation": "ăn ít" }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": { "kinds": ["observation"] }
+    },
+    {
+      "id": "l5-05-milk-is-not-a-meal",
+      "title": "\"bé ăn cháo rồi bú 90ml lúc 13h\" with the diary on: a meal and a bottle",
+      "anchor": "14:20",
+      "world": { "seed": ["solidsOn"] },
+      "turns": [
+        {
+          "say": "bé ăn cháo rồi bú 90ml lúc 13h",
+          "model": {
+            "i": [
+              { "k": "meal", "f": { "title": "cháo" }, "ev": { "title": "cháo" } },
+              {
+                "k": "bottle",
+                "f": { "amountMl": 90, "time": "13:00", "dayOffset": 0 },
+                "ev": { "amountMl": "90ml", "time": "13h" }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": { "outcome": "drafts", "kinds": ["meal", "bottle"] }
+    }
+  ]
+}

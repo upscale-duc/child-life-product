@@ -169,7 +169,8 @@ const requiredDraftFields = <DraftKind, List<String>>{
   DraftKind.expense: ['totalMinor', 'date', 'currency'],
   DraftKind.reminder: ['title', 'date'],
   DraftKind.observation: ['observation', 'date'],
-  DraftKind.meal: ['title'],
+  // Lumi L5: the diary's meal has a time (its slot comes from it).
+  DraftKind.meal: ['title', 'occurredAt'],
   DraftKind.timer: ['at'],
   // LUMI-01: what each care form cannot save without (a pump's side takes the form's default).
   DraftKind.pump: ['amountMl', 'occurredAt'],

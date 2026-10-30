@@ -2871,7 +2871,8 @@ class _ThreadView {
         d.payload is ExpensePayload ||
         d.payload is PumpPayload ||
         d.payload is DiaperPayload ||
-        d.payload is GrowthPayload;
+        d.payload is GrowthPayload ||
+        d.payload is MealPayload;
     final note = d.payload is ObservationPayload;
     // Lumi L7 (P-168 #2): a change to a record saved minutes ago, or its delete.
     final removes = d.op == DraftOp.delete;

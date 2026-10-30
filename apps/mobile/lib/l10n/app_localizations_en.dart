@@ -17530,6 +17530,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asEditDiaper => 'Edit diaper change';
 
   @override
+  @override
+  String get asEditMeal => 'Edit meal';
+
+  @override
+  String get asHistoryAskMeal =>
+      'Tell Lumi about a meal: “Pumpkin porridge at lunch”';
+
   String get asEditGrowth => 'Edit measurement';
 
   @override

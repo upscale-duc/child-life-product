@@ -27546,6 +27546,18 @@ abstract class AppLocalizations {
   /// **'Sửa thay tã'**
   String get asEditDiaper;
 
+  /// Title of Lumi's draft editor for a solids meal (L5): the dish and its time, saved to the Ăn dặm diary. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sửa bữa ăn'**
+  String get asEditMeal;
+
+  /// One-line Lumi entry on the Ăn dặm diary (L4/L5, lumi-plan §7): opens Lumi with the meal hint; the quoted words are an example of what to type. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kể bữa ăn với Lumi: “trưa nay ăn cháo bí đỏ”'**
+  String get asHistoryAskMeal;
+
   /// Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:

@@ -8,6 +8,7 @@ import '../baby/time_zones.dart' show ensureTimeZones;
 import '../care/care_format.dart' show decimal, durationLabel;
 import '../care/care_repository.dart' show inBabyZone;
 import '../onboarding/setup_screens.dart' show relationLabel;
+import '../solids/solids_routes.dart' show SdRoutes;
 import '../spending/spending_currency.dart' show isSpCurrency;
 import '../spending/spending_format.dart' show categoryName, money;
 import '../spending/spending_models.dart' show builtInCategories;
@@ -386,6 +387,7 @@ String? recordLocation(AssistantDraft d) {
       Routes.reminders,
       Routes.rhythm,
       Routes.history,
+      SdRoutes.home,
     ];
     if (uri != null &&
         !uri.hasScheme &&
@@ -411,6 +413,9 @@ String? recordLocation(AssistantDraft d) {
           : Routes.spending,
     DraftKind.reminder => Routes.reminders,
     DraftKind.observation => Routes.rhythm,
+    // Lumi L5: the meal in the Ăn dặm diary.
+    DraftKind.meal =>
+      id != null && safeId.hasMatch(id) ? SdRoutes.meal(id) : SdRoutes.home,
     _ => null,
   };
 }
@@ -427,11 +432,13 @@ String? moduleLocation(DraftKind? k) => switch (k) {
   DraftKind.expense => Routes.spending,
   DraftKind.reminder => Routes.reminders,
   DraftKind.observation => Routes.rhythm,
+  DraftKind.meal => SdRoutes.home,
   _ => null,
 };
 
 String openModuleLabel(AppLocalizations l10n, DraftKind? k) => switch (k) {
   DraftKind.expense => l10n.asOpenSpending,
+  DraftKind.meal => l10n.asOpenSolids,
   DraftKind.reminder => l10n.asOpenReminders,
   DraftKind.observation => l10n.asOpenRhythm,
   _ => l10n.asOpenLog,

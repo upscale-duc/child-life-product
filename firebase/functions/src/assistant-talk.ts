@@ -156,9 +156,10 @@ const namedNotices: Partial<
   Record<NoticeCode, Partial<Record<DraftKind, { vi: string; en: string }>>>
 > = {
   MODULE_UNAVAILABLE: {
+    // Lumi L5: the Ăn dặm diary is off (the notice links to it).
     meal: L(
-      'Ứng dụng chưa có mục ghi bữa ăn, nên mình chưa ghi được bữa ăn này.',
-      'The app has no meal log yet, so this meal was not saved.',
+      'Nhật ký ăn dặm của bé chưa bật nên mình chưa ghi bữa ăn này. Bạn bật trong mục Ăn dặm rồi nhắn lại nhé.',
+      'The solids diary isn’t on yet, so this meal wasn’t saved. Turn it on in Solids, then send it again.',
     ),
   },
 };
@@ -187,6 +188,11 @@ export function noticePart(
     schemaVersion: 1,
     text: words[locale],
     ...(codes.has(n.code) ? { code: n.code as 'DUPLICATE_SUSPECTED' } : {}),
+    // Lumi L5: a meal while the diary is off is a part not saved, with the way to Ăn dặm (the
+    // app draws its notice card and "Mở mục").
+    ...(n.code === 'MODULE_UNAVAILABLE' && n.kind === 'meal' && n.link
+      ? { code: 'PART_NOT_SAVED' as const }
+      : {}),
     ...(n.link ? { link: n.link } : {}),
   };
 }

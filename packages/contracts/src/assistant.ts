@@ -824,7 +824,8 @@ export const requiredDraftFields: Record<DraftKind, readonly string[]> = {
   expense: ['totalMinor', 'date', 'currency'],
   reminder: ['title', 'date'],
   observation: ['observation', 'date'],
-  meal: ['title'],
+  // Lumi L5: the diary's meal has a time (its slot comes from it).
+  meal: ['title', 'occurredAt'],
   timer: ['at'],
   // LUMI-01: what each care form cannot save without (a pump's side takes the form's default).
   pump: ['amountMl', 'occurredAt'],

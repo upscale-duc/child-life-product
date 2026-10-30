@@ -13,6 +13,7 @@ import {
   defaultEntitlementsConfig,
   defaultFlags,
   draftKinds,
+  isTimedEventKind,
   type AssistantPart,
   type AssistantTaskSnapshot,
   type ConfirmItemResult,
@@ -179,7 +180,7 @@ export function understandingOf(u: FakeUnderstanding): Record<string, unknown> {
     confidence: u.conf ?? 0.9,
     events: (u.e ?? []).map((e) => {
       const kind = pickKind(e.k);
-      const timed = (['bottle', 'breast', 'sleep', 'pump', 'diaper'] as string[]).includes(kind);
+      const timed = isTimedEventKind(kind);
       return {
         kind,
         status: e.st ?? (kind === 'reminder' ? 'planned' : 'finished'),
@@ -518,6 +519,10 @@ async function seedPreset(name: string) {
         deletedAt: null,
         deletedBy: null,
       });
+      return;
+    // Lumi L5: the Ăn dặm diary is on (meals can be saved).
+    case 'solidsOn':
+      await db.doc(`babies/${B}/solids/settings`).set({ enabled: true, method: 'mixed' });
       return;
     default:
       throw new Error(`unknown seed ${name}`);
@@ -890,6 +895,8 @@ export function fixedPayload(
     diaper: { diaper: 'wet', occurredAt: ago(10) },
     // 2026-10-16: the head circumference (optional: filled only when it is the flagged field).
     growth: { weightKg: 6.2, measuredOn: DAY, headCm: 40 },
+    // Lumi L5: the meal editor's dish and time.
+    meal: { title: 'cháo', occurredAt: ago(30) },
   };
   for (const [k, v] of Object.entries(fill[p.kind as string] ?? {})) {
     if (k === 'headCm' && !flagged.has(k)) continue;
@@ -1078,7 +1085,8 @@ export async function confirmNow(
 export async function countRecords() {
   let n = 0;
   // Seeded records are `source: 'app'`; everything else in these collections came from a save.
-  for (const col of ['records', 'expenses', 'reminders', 'checkins', 'timers']) {
+  // Lumi L5: meals in the Ăn dặm diary.
+  for (const col of ['records', 'expenses', 'reminders', 'checkins', 'timers', 'meals']) {
     const s = await db.collection(`babies/${B}/${col}`).get();
     n += s.docs.filter(
       (d) =>

@@ -165,8 +165,23 @@
       }
     },
     "meal": {
-      "editor": false,
-      "fields": {}
+      "editor": true,
+      "fields": {
+        "title": {
+          "control": "sdDish",
+          "words": [
+            "món",
+            "bữa ăn"
+          ]
+        },
+        "occurredAt": {
+          "control": "asFieldWhen",
+          "words": [
+            "giờ",
+            "thời gian"
+          ]
+        }
+      }
     },
     "timer": {
       "editor": false,

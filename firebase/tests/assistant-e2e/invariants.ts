@@ -15,6 +15,7 @@ import {
   careDataSchemas,
   draftProblems,
   expenseSchema,
+  mealSchema,
   looksLikeSpending,
   reminderSchema,
   type AssistantTaskSnapshot,
@@ -401,6 +402,8 @@ function targetOf(kind: string, recordId: string, payload?: Record<string, unkno
   if (kind === 'expense') return { path: `babies/${B}/expenses/${recordId}`, col: 'expenses' };
   if (kind === 'reminder') return { path: `babies/${B}/reminders/${recordId}`, col: 'reminders' };
   if (kind === 'observation') return { path: `babies/${B}/checkins/${recordId}`, col: 'checkins' };
+  // Lumi L5: a meal in the Ăn dặm diary.
+  if (kind === 'meal') return { path: `babies/${B}/meals/${recordId}`, col: 'meals' };
   return { path: `babies/${B}/records/${recordId}`, col: 'records' };
 }
 
@@ -587,6 +590,12 @@ function contractShape(kind: string, data: Record<string, unknown>): string | nu
     return r.success
       ? null
       : `reminderSchema: ${r.error.issues.map((i) => i.path.join('.')).join(',')}`;
+  }
+  if (kind === 'meal') {
+    const r = mealSchema.safeParse(dates(data));
+    return r.success
+      ? null
+      : `mealSchema: ${r.error.issues.map((i) => i.path.join('.') || i.message).join(',')}`;
   }
   // LUMI-01: a care record's data is exactly the care module's (`careDataSchemas`).
   const type = data.type as string | undefined;
@@ -849,7 +858,12 @@ export function checkExpect(
     for (const tool of e.reads)
       if (!tools.has(tool)) {
         out.push(
-          v('EXPECT_READ', 'P1', at, `read card ${tool} missing (got ${[...tools].join(',') || 'none'})`),
+          v(
+            'EXPECT_READ',
+            'P1',
+            at,
+            `read card ${tool} missing (got ${[...tools].join(',') || 'none'})`,
+          ),
         );
       }
   }

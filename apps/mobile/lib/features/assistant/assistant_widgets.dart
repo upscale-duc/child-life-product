@@ -1132,7 +1132,7 @@ class AsLink extends StatelessWidget {
       cl.colors.mintSoft,
       cl.colors.mintText,
     ),
-    DraftKind.meal => (ClIcons.spark, cl.colors.sunshineSoft, cl.colors.ink),
+    DraftKind.meal => (ClIcons.bowl, cl.colors.sunshineSoft, cl.colors.ink),
     DraftKind.timer => (ClIcons.clock, cl.care.sleep.soft, cl.care.sleep.ink),
     // LUMI-01: the care module's own colours (`careColor`).
     DraftKind.pump => (ClIcons.drop, cl.care.pump.soft, cl.care.pump.ink),

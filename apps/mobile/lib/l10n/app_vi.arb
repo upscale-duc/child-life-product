@@ -24315,6 +24315,14 @@
   "@asEditDiaper": {
     "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
   },
+  "asEditMeal": "Sửa bữa ăn",
+  "@asEditMeal": {
+    "description": "Title of Lumi's draft editor for a solids meal (L5): the dish and its time, saved to the Ăn dặm diary. EN is an engineering draft for owner review."
+  },
+  "asHistoryAskMeal": "Kể bữa ăn với Lumi: “trưa nay ăn cháo bí đỏ”",
+  "@asHistoryAskMeal": {
+    "description": "One-line Lumi entry on the Ăn dặm diary (L4/L5, lumi-plan §7): opens Lumi with the meal hint; the quoted words are an example of what to type. EN is an engineering draft for owner review."
+  },
   "asEditGrowth": "Sửa cân đo",
   "@asEditGrowth": {
     "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."

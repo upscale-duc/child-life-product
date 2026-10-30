@@ -5,6 +5,7 @@ import {
   foldVi,
   type ContentFood,
   type ContentRecipe,
+  solidsLimits,
 } from '@child-life/contracts';
 import { toDate } from './assistant-common.js';
 
@@ -107,4 +108,51 @@ export function legacyReactionIngredientIds(context: {
         keys.add(foldVi(name.trim()).replace(/\s+/gu, '_'));
   }
   return [...keys];
+}
+
+const escapeRe = (t: string) => t.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+
+/**
+ * Lumi L5: the catalogue foods a meal's words name ("cháo bí đỏ, cà rốt" → the pumpkin and
+ * carrot ids), longest names first so "bí đỏ" wins over "bí"; at most the meal's food limit.
+ */
+export async function mealFoodIdsIn(db: Firestore, words: string): Promise<string[]> {
+  const docs = await db.collection('contentFoods').where('status', '==', 'published').get();
+  const names: Array<[string, string]> = [];
+  for (const d of docs.docs) {
+    const p = contentFoodSchema.safeParse(d.data());
+    if (!p.success) continue;
+    const f = p.data;
+    for (const name of [f.name.vi, f.name.en, ...f.synonyms.vi, ...f.synonyms.en]) {
+      const n = foldVi(name.trim());
+      if (n.length >= 2) names.push([n, d.id]);
+    }
+  }
+  names.sort((a, b) => b[0].length - a[0].length);
+  let rest = ` ${foldVi(words)} `;
+  const ids: string[] = [];
+  for (const [n, id] of names) {
+    const re = new RegExp(`(?<![\\p{L}\\p{N}])${escapeRe(n)}(?![\\p{L}\\p{N}])`, 'u');
+    if (!re.test(rest)) continue;
+    rest = rest.replace(re, ' ');
+    if (!ids.includes(id)) ids.push(id);
+  }
+  return ids.slice(0, solidsLimits.mealFoods);
+}
+
+/** The diary's slot for a meal at [at] in [zone] (the app's `sdSlotForTime`). */
+export function mealSlotAt(
+  at: Date,
+  zone: string,
+): 'morning' | 'noon' | 'afternoon' | 'evening' | 'snack' {
+  const hour = Number(
+    new Intl.DateTimeFormat('en-GB', { timeZone: zone, hour: '2-digit', hourCycle: 'h23' }).format(
+      at,
+    ),
+  );
+  if (hour >= 5 && hour < 10) return 'morning';
+  if (hour >= 10 && hour < 14) return 'noon';
+  if (hour >= 14 && hour < 17) return 'afternoon';
+  if (hour >= 17 && hour < 21) return 'evening';
+  return 'snack';
 }

@@ -3,7 +3,9 @@ import {
   assistantConsentVersion,
   defaultEntitlementsConfig,
   defaultFlags,
+  contentFoodSchema,
   expenseSchema,
+  mealSchema,
   reminderSchema,
   draftKinds,
   type AssistantPart,
@@ -32,6 +34,7 @@ import {
 } from '../functions/src/assistant-model.js';
 import { privateConversationId } from '../functions/src/assistant-talk.js';
 import { runAssistantTask } from '../functions/src/assistant-worker.js';
+import { foodFixture } from '../functions/test/solids-fixtures.js';
 
 // Lumi rework 2026-10-15 (docs/assistant/api.md "Rework 2026-10-15") against the Firestore
 // emulator with a FAKE model (scripted outputs, no heuristics): typed expenses and reminders,
@@ -254,6 +257,7 @@ beforeEach(async () => {
     'assistantQuotes',
     'assistantExecutions',
     'assistantRequests',
+    'contentFoods',
   ]) {
     await db.recursiveDelete(db.collection(c));
   }
@@ -931,5 +935,76 @@ describe('follow-ups, duplicates, small talk, help — credits per outcome', () 
     expect(health.data.task).toMatchObject({ state: 'ready', credits: 0 });
     // 1 held (the open question); small talk, help, meal fallback and health cost nothing.
     expect(await win()).toMatchObject({ used: 0, reserved: 1 });
+  });
+});
+
+// =====================================================================================
+describe('meals in the Ăn dặm diary (Lumi L5)', () => {
+  const published = {
+    status: 'published',
+    revision: 1,
+    review: { reviewer: 'TEST_ONLY', credential: 'TEST_ONLY', reviewedOn: '2026-10-19' },
+    illustrative: false,
+    reviewDueOn: '2027-10-20',
+    publishedAt: '2026-10-19T00:00:00.000Z',
+    firstPublishedAt: '2026-10-19T00:00:00.000Z',
+  };
+  const porridge = () =>
+    extraction([
+      intent('meal', { title: 'cháo bí đỏ', time: '11:30' }, [
+        { field: 'title', text: 'cháo bí đỏ' },
+        { field: 'time', text: '11h30' },
+      ]),
+    ]);
+  const diaryOn = () =>
+    db.doc(`babies/${B}/solids/settings`).set({ enabled: true, method: 'mixed' });
+
+  it('"trưa nay bé ăn cháo bí đỏ lúc 11h30" → a meal draft; confirm writes a valid diary meal with the food', async () => {
+    await diaryOn();
+    await db
+      .doc('contentFoods/fd_pumpkin')
+      .set(contentFoodSchema.parse({ id: 'fd_pumpkin', ...foodFixture(), ...published }));
+    const { taskId, snap } = await run('trưa nay bé ăn cháo bí đỏ lúc 11h30', [porridge()]);
+    expect(snap.drafts[0]!.payload).toEqual({
+      kind: 'meal',
+      recipeId: null,
+      title: 'cháo bí đỏ',
+      occurredAt: '2026-10-15T04:30:00.000Z',
+    });
+    expect(snap.drafts[0]).toMatchObject({ state: 'draft', uncertainFields: [] });
+    const r = await confirm(taskId, [{ draftId: snap.drafts[0]!.id, revision: 1 }], NANNY);
+    expect(r.data.items[0]).toMatchObject({ status: 'saved' });
+    const id = r.data.items[0]!.recordId!;
+    expect(r.data.items[0]!.recordLink).toBe(`/care/solids/meal/${id}`);
+    const m = (await db.doc(`babies/${B}/meals/${id}`).get()).data()!;
+    const dates = Object.fromEntries(
+      ['occurredAt', 'createdAt', 'clientCreatedAt', 'updatedAt'].map((k) => [
+        k,
+        (m[k] as Timestamp).toDate(),
+      ]),
+    );
+    expect(mealSchema.safeParse({ ...m, ...dates }).success).toBe(true);
+    expect(m).toMatchObject({
+      slot: 'noon',
+      dish: 'cháo bí đỏ',
+      foodIds: ['fd_pumpkin'],
+      createdBy: NANNY,
+      author: { name: 'Cô Hoa', relation: 'nanny', relationCustom: null },
+      deleted: false,
+    });
+    // A second confirm is the same meal (never a second one).
+    const again = await confirm(taskId, [{ draftId: snap.drafts[0]!.id, revision: 1 }], NANNY);
+    expect(again.data.items[0]!.recordId).toBe(id);
+    expect((await db.collection(`babies/${B}/meals`).get()).size).toBe(1);
+  });
+
+  it('with the diary off: no draft, a notice that links to Ăn dặm; nothing written', async () => {
+    const { snap } = await run('trưa nay bé ăn cháo bí đỏ lúc 11h30', [porridge()]);
+    expect(snap.drafts).toEqual([]);
+    const notice = snap.messages
+      .flatMap((m) => m.parts)
+      .find((p) => p.type === 'text' && p.link === '/care/solids');
+    expect(notice).toBeDefined();
+    expect((await db.collection(`babies/${B}/meals`).get()).empty).toBe(true);
   });
 });

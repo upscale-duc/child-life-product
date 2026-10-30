@@ -60,12 +60,13 @@ export const timeSpecSchema = z
   .strict();
 export type TimeSpec = z.infer<typeof timeSpecSchema>;
 
-/** The kinds an understanding event may have (timers are the server's; meal writes through chat remain Phase 3). */
+/** The kinds an understanding event may have (timers are the server's; meals since Lumi L5). */
 export const eventKinds = draftKinds.filter((k) => k !== 'timer') as Exclude<DraftKind, 'timer'>[];
 export type EventKind = (typeof eventKinds)[number];
 
 /** Care logs with a time line: `status` / `started` / `ended` / `durationMin` apply. */
-export const timedEventKinds = ['bottle', 'breast', 'sleep', 'pump', 'diaper'] as const;
+// Lumi L5: a meal is a point log like a diaper change (its clock, "1 tiếng trước", else now).
+export const timedEventKinds = ['bottle', 'breast', 'sleep', 'pump', 'diaper', 'meal'] as const;
 export type TimedEventKind = (typeof timedEventKinds)[number];
 export const isTimedEventKind = (k: string): k is TimedEventKind =>
   (timedEventKinds as readonly string[]).includes(k);

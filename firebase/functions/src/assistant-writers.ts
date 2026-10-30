@@ -13,6 +13,7 @@ import {
   draftProblems,
   localDateIn,
   maxSleepHours,
+  solidsLimits,
   type ActionDraft,
   type AssistantDraftView,
   type AssistantError,
@@ -26,6 +27,7 @@ import {
   checkInIdFor,
   draftRef,
   memberOf,
+  mealIdForDraft,
   recordIdForDraft,
   seqId,
   sha,
@@ -44,6 +46,7 @@ import {
 import type { AttachmentStore } from './assistant-attachments.js';
 import { allDraftProblems } from './assistant-image-rules.js';
 // Lumi timers 2026-10-16: start / end the app's running timers.
+import { mealFoodIdsIn, mealSlotAt } from './assistant-solids.js';
 import { planTimerWrite } from './assistant-timers.js';
 import {
   afterImageConfirm,
@@ -350,9 +353,11 @@ const careTypeOf = (k: DraftPayload['kind']): CareRecordType | null =>
 export const recordLinkFor = (babyId: string, kind: DraftPayload['kind'], id: string) =>
   kind === 'expense' || kind === 'reminder' // Slice A3: the app's own routes.
     ? imageRecordLink(kind, babyId, id)
-    : kind === 'observation'
-      ? `/rhythm/checkins/${babyId}/${id}`
-      : `/care/records/${babyId}/${id}`;
+    : kind === 'meal' // Lumi L5: the app's meal detail (`SdRoutes.meal`).
+      ? `/care/solids/meal/${id}`
+      : kind === 'observation'
+        ? `/rhythm/checkins/${babyId}/${id}`
+        : `/care/records/${babyId}/${id}`;
 
 // ---------- Draft documents ----------
 
@@ -646,6 +651,61 @@ export async function confirmDraftItem(
         linkOverride = plan.link;
         recordOverride = plan.recordId;
       }
+    } else if (p.kind === 'meal') {
+      // ---- Lumi L5 (lumi-plan §5): a meal in the Ăn dặm diary, as the app's 5c sheet writes
+      // it (contracts `mealSchema`, Rules `validNewMeal`): only while the diary is on. ----
+      const settings = await tx.get(db.doc(`babies/${x.babyId}/solids/settings`));
+      if (settings.get('enabled') !== true) {
+        return result(x, 'failed', { errorCode: 'MODULE_UNAVAILABLE' });
+      }
+      const at = p.occurredAt ? new Date(p.occurredAt) : null;
+      if (!at)
+        return result(x, 'failed', { errorCode: 'VALIDATION_FAILED', problems: ['MISSING_TIME'] });
+      const mealId = mealIdForDraft(x.draftId);
+      target = db.doc(`babies/${x.babyId}/meals/${mealId}`);
+      if ((await tx.get(target)).exists) {
+        // Written by this draft before: saved; never overwritten.
+        const link = recordLinkFor(x.babyId, p.kind, mealId);
+        tx.update(dRef, {
+          state: 'saved',
+          recordId: mealId,
+          recordLink: link,
+          errorCode: null,
+          updatedAt: Timestamp.fromDate(x.now),
+        });
+        return result(x, 'saved', { revision: draft.revision, recordId: mealId, recordLink: link });
+      }
+      const dish = p.title.trim().slice(0, solidsLimits.mealDish).trim();
+      const server = FieldValue.serverTimestamp();
+      doc = {
+        id: mealId,
+        babyId: x.babyId,
+        occurredAt: Timestamp.fromDate(at),
+        slot: mealSlotAt(at, x.zone),
+        dish,
+        foodIds: await mealFoodIdsIn(db, p.title),
+        freeFoods: [],
+        amount: null,
+        reaction: null,
+        symptoms: [],
+        note: '',
+        recipeId: p.recipeId,
+        photoPath: null,
+        createdBy: x.uid,
+        author: {
+          name: member.displayName,
+          relation: member.relation,
+          relationCustom: member.relationCustom,
+        },
+        createdAt: server,
+        clientCreatedAt: Timestamp.fromDate(x.now),
+        updatedAt: server,
+        updatedBy: x.uid,
+        deleted: false,
+        deletedAt: null,
+        deletedBy: null,
+      };
+      // ---- end L5 ----
     } else if (p.kind === 'observation') {
       const id = checkInIdFor(x.babyId, x.uid, p.date, p.observation);
       target = db.doc(`babies/${x.babyId}/checkins/${id}`);

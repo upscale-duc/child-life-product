@@ -53,6 +53,17 @@
 - **Chăm đêm: không kêu, không rung** khi lời hỏi đến lúc đang chọn giao diện "Tối" hoặc trong lịch Chăm đêm. Không tính "Tự động" (không biết lúc đó máy sáng hay tối) và không tính việc đồng hồ ngủ đang chạy (lúc nào cũng đang chạy).
 - **Đã kiểm tra trên simulator iOS (30/10):** bản build iOS biên dịch được; ba nút được đăng ký (`CL_WAKE_CHECK`, `CL_WAKE_CHECK_LAST`); lời hỏi đầu được lên lịch kèm câu nhắc và hiện đủ trên màn khoá; huỷ đồng hồ thì lời hỏi cũng bị huỷ. **Chưa bấm được ba nút**: simulator không mở được menu nút của thông báo; cần thử trên máy thật.
 
+## L5 Lumi ghi bữa ăn dặm (30/10)
+
+- **Làm gì:** "trưa nay bé ăn cháo bí đỏ lúc 11h30" thành thẻ "Bữa ăn" (món + giờ); Lưu ghi vào nhật ký Ăn dặm như tờ ghi 5c (id `m_…`, buổi theo giờ, món khớp danh mục thành `foodIds`, người ghi là người bấm Lưu). Không giờ là bây giờ (L8). "Sửa" mở trình sửa món + giờ.
+- **Khi nhật ký Ăn dặm chưa bật:** không có thẻ; Lumi nói "Nhật ký ăn dặm của bé chưa bật…" kèm "Mở mục". Kiểm lại lần nữa lúc Lưu.
+- **Ai ghi được:** như tờ ghi của app (Cùng nuôi, Người chăm sóc); Người thân không.
+- **Lối vào:** dòng "Kể bữa ăn với Lumi: …" trên nhật ký Ăn dặm, cho người ghi được bữa ăn, chỉ khi nhà bật Lumi.
+- **Không đổi:** "ăn ít", "biếng ăn" vẫn là ghi nhận; sữa vẫn là cữ bú. Chưa ghi lượng ăn, phản ứng, ảnh (vẫn trong tờ ghi của app).
+- **Prompt thay đổi:** thêm mô tả `meal` vào câu lệnh hiểu câu (v2) và câu lệnh cũ; `meal` thành loại có mốc giờ. `assistantPromptVersion` giữ nguyên.
+- **Kiểm chứng:** Functions unit 517 đạt (+7 `dishOf`); tích hợp Lumi 202 đạt (+2 ca bữa ăn); e2e model giả 349/350 (chỉ `ga-11` trong baseline, gồm 5 ca L5 mới `21-meals-l5.json`); model thật 12 ca (L5 + các câu có chữ "ăn") rồi 3 ca sau khi sửa tên món: 15 lượt `gpt-4.1-mini`, khoảng 110 000 token vào, 1 700 ra, khoảng 0,05 USD. Ca-02/ca-03 ("con 7 tháng ăn gì được?") trả thêm thẻ Thư viện nên harness đếm là "answer" thay vì "care"; câu trả lời vẫn đúng, không liên quan việc ghi bữa ăn. Ảnh: `as/ch06m_meal`, `as/ch06n_meal_edit` (Light/Night × vi/en).
+- **Đã deploy dev:** `startTask`, `submitClarification`, `runAssistantTask`, `quoteTask`, `patchDraft`, `confirmDrafts`.
+
 ## Ghi chú
 
 - **23 ca e2e cũ đã cập nhật.**

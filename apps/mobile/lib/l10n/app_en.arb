@@ -4585,6 +4585,8 @@
   "asGapMeasuredOnUnsure": "Measured on {date} — is that right?",
   "asEditPump": "Edit pumping",
   "asEditDiaper": "Edit diaper change",
+  "asEditMeal": "Edit meal",
+  "asHistoryAskMeal": "Tell Lumi about a meal: “Pumpkin porridge at lunch”",
   "asEditGrowth": "Edit measurement",
   "asFieldWeight": "Weight",
   "asFieldLength": "Length · optional",

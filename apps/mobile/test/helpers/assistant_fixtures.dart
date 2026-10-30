@@ -1552,6 +1552,24 @@ Map<String, Object?> diaperDraftJson({
   recordId: recordId,
 );
 
+/// Lumi L5: "trưa nay bé ăn cháo bí đỏ lúc 11h30".
+Map<String, Object?> mealDraftJson({
+  String taskId = taskA,
+  int index = 0,
+  String title = 'cháo bí đỏ',
+  String? at = '2026-10-15T04:30:00.000Z',
+  String state = 'draft',
+  int revision = 1,
+  String? recordId,
+}) => _careLogDraft(
+  {'kind': 'meal', 'recipeId': null, 'title': title, 'occurredAt': at},
+  taskId: taskId,
+  index: index,
+  state: state,
+  revision: revision,
+  recordId: recordId,
+);
+
 /// "bé nặng 5,2kg dài 62cm".
 Map<String, Object?> growthDraftJson({
   String taskId = taskA,

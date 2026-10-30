@@ -18,6 +18,8 @@ import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_segmented.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
+import '../assistant/assistant_entry.dart' show AssistantModuleEntry;
+import '../assistant/assistant_models.dart' show IntentHint;
 import '../baby/baby_models.dart';
 import '../care/care_repository.dart' show onlineProvider;
 import '../library/content_models.dart';
@@ -100,6 +102,15 @@ class _SolidsScreenState extends ConsumerState<SolidsScreen> {
           onChanged: (lib) => setState(() => _library = lib),
         ),
         const SizedBox(height: ClSpace.s3),
+        // Lumi L5 (lumi-plan §7): a meal in words, for whoever logs meals; nothing unless Lumi is
+        // on for the family. The "+" stays the diary's own way in.
+        if (!_library && s.me.sdLogs)
+          AssistantModuleEntry.ask(
+            babyId: s.baby.babyId,
+            ask: l10n.asHistoryAskMeal,
+            hint: IntentHint.meal,
+            padding: const EdgeInsets.only(bottom: ClSpace.s3),
+          ),
         if (_library) const SdLibraryBody() else const _DiaryBody(),
       ],
     );

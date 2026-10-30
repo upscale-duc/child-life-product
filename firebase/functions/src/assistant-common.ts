@@ -91,6 +91,8 @@ export function taskIdOfDraft(draftId: string): string | null {
 }
 /** Care record id of a draft (`r_` + 32 hex, Rules `^r_[a-f0-9]{32}$`): one record per draft. */
 export const recordIdForDraft = (draftId: string) => `r_${hex32(`record|${draftId}`)}`;
+/** Lumi L5: the diary's meal id for a draft (contracts `mealIdSchema`). */
+export const mealIdForDraft = (draftId: string) => `m_${hex32(`meal|${draftId}`)}`;
 /** The app's check-in id (`rhythm_repository.dart`): one per author, observation and day. */
 export const checkInIdFor = (babyId: string, uid: string, date: string, observation: string) =>
   `ci_${hex32(`${babyId}|${uid}|${date}|${observation}`)}`;

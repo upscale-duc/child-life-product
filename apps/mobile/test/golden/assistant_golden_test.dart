@@ -169,6 +169,35 @@ final _cases = <String, _Case>{
       await tester.pumpAndSettle();
     },
   ),
+  // Lumi L5: a solids meal for the Ăn dặm diary, and its editor (the dish and its time).
+  'ch06m_meal': _c(
+    repo: () => _repo(
+      tasks: {
+        taskA: snapshotWith(
+          task: taskJson(),
+          drafts: [mealDraftJson()],
+          messages: [userMessage('trưa nay bé ăn cháo bí đỏ lúc 11h30')],
+        ),
+      },
+    ),
+    prefs: () => _thread([taskA]),
+  ),
+  'ch06n_meal_edit': _c(
+    repo: () => _repo(
+      tasks: {
+        taskA: snapshotWith(
+          task: taskJson(),
+          drafts: [mealDraftJson()],
+          messages: [userMessage('trưa nay bé ăn cháo bí đỏ lúc 11h30')],
+        ),
+      },
+    ),
+    prefs: () => _thread([taskA]),
+    act: (tester) async {
+      await tester.tap(find.byWidgetPredicate(_editAction).first);
+      await tester.pumpAndSettle();
+    },
+  ),
   'ch07_partial': _c(
     height: 900,
     repo: () => _repo(

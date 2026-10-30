@@ -56,7 +56,10 @@ Future<void> showDraftEditor(
       draft: draft,
       babyName: babyName,
     ),
-    PumpPayload() || DiaperPayload() || GrowthPayload() => _CareLogEditor(
+    PumpPayload() ||
+    DiaperPayload() ||
+    GrowthPayload() ||
+    MealPayload() => _CareLogEditor(
       scopeKey: scopeKey,
       draft: draft,
       babyName: babyName,
@@ -1595,6 +1598,9 @@ class _CareLogEditorState extends ConsumerState<_CareLogEditor> {
 
   /// A measurement's head circumference (cm, owner 2026-10-16).
   final _third = TextEditingController();
+
+  /// Lumi L5: a meal's dish.
+  final _dish = TextEditingController();
   var _filled = false;
   var _problems = <DraftProblem>[];
   var _busy = false;
@@ -1621,6 +1627,8 @@ class _CareLogEditorState extends ConsumerState<_CareLogEditor> {
             ? ''
             : decimal(locale, lengthCm.toDouble());
         _third.text = headCm == null ? '' : decimal(locale, headCm.toDouble());
+      case MealPayload(:final title):
+        _dish.text = title;
       default:
         break;
     }
@@ -1631,6 +1639,7 @@ class _CareLogEditorState extends ConsumerState<_CareLogEditor> {
     _first.dispose();
     _second.dispose();
     _third.dispose();
+    _dish.dispose();
     super.dispose();
   }
 
@@ -1661,6 +1670,11 @@ class _CareLogEditorState extends ConsumerState<_CareLogEditor> {
       lengthCm: _decimal(_second),
       measuredOn: p.measuredOn,
       headCm: _decimal(_third),
+    ),
+    final MealPayload p => MealPayload(
+      title: _dish.text.trim(),
+      recipeId: p.recipeId,
+      occurredAt: p.occurredAt,
     ),
     final p => p,
   };
@@ -1721,6 +1735,7 @@ class _CareLogEditorState extends ConsumerState<_CareLogEditor> {
             : l10n.growthHeadRange,
       (GrowthPayload(), DraftProblem.missingDate) => l10n.asGapMeasuredOn,
       (GrowthPayload(), DraftProblem.futureTime) => l10n.asGapMeasuredOnFuture,
+      (MealPayload(), DraftProblem.missingTitle) => l10n.sdNeedDish,
       _ => null,
     };
   }
@@ -1918,6 +1933,22 @@ class _CareLogEditorState extends ConsumerState<_CareLogEditor> {
             unit: 'cm',
           ),
           ..._measuredOn(context, p, now),
+        ],
+      ),
+      // Lumi L5: the dish and its time, as the Ăn dặm diary keeps them.
+      final MealPayload p => (
+        l10n.asEditMeal,
+        <Widget>[
+          _TextRow(label: l10n.sdDish, controller: _dish, max: 60),
+          timeTile(
+            l10n.asFieldWhen,
+            p.occurredAt,
+            (at) => _payload = MealPayload(
+              title: _dish.text.trim(),
+              recipeId: p.recipeId,
+              occurredAt: at,
+            ),
+          ),
         ],
       ),
       _ => (l10n.asEdit, const <Widget>[]),

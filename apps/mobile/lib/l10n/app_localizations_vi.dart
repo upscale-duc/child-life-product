@@ -16440,6 +16440,12 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asEditDiaper => 'Sửa thay tã';
 
   @override
+  @override
+  String get asEditMeal => 'Sửa bữa ăn';
+
+  @override
+  String get asHistoryAskMeal => 'Kể bữa ăn với Lumi: “trưa nay ăn cháo bí đỏ”';
+
   String get asEditGrowth => 'Sửa cân đo';
 
   @override

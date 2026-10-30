@@ -65,8 +65,9 @@ export const moduleRegistry: Record<DraftKind, ModuleEntry> = {
   expense: { available: true, action: null, can: canRecordSpending },
   reminder: { available: true, action: null, can: canCreateReminders },
   // ---- end slice A3 ----
-  // Phase 2 reads the Solids diary; meal writes through chat remain Phase 3.
-  meal: { available: false, action: null },
+  // Lumi L5: a meal in the Ăn dặm diary (Rules `canLog`, like care records; the diary must be
+  // on, checked where the draft is made and again on save).
+  meal: { available: true, action: 'rhythm.checkin' },
   // Lumi timers 2026-10-16: the app's running timers (Rules `canLog`, like care records).
   timer: { available: true, action: 'rhythm.checkin' },
   // Lumi fixes 2026-10-16 (LUMI-01): the care module's other logs (Rules `canLog`).

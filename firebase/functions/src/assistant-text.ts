@@ -97,6 +97,24 @@ export interface PreviousTurn {
   }[];
 }
 
+/**
+ * Lumi L5: the dish of a meal as the diary keeps it — "bé vừa ăn chuối" → "chuối", "trưa nay
+ * bé ăn cháo bí đỏ lúc 11h30" → "cháo bí đỏ" (the model sometimes returns the whole sentence).
+ */
+export function dishOf(words: string): string {
+  const lead =
+    /^(?:(?:(?:sáng|trưa|chiều|tối)\s+nay|hôm qua|bữa\s+(?:sáng|trưa|chiều|tối|phụ)(?:\s+nay)?|vừa xong)\s*,?\s+|(?:bé|con|em bé|baby)\s+|(?:vừa|mới|đã|đang|just)\s+|được\s+|cho\s+(?:bé|con)\s+|(?:ăn thử|ăn|ate|eats|had)\s+)/iu;
+  const tail =
+    /\s*,?\s+(?:lúc\s+\S+(?:\s+(?:sáng|trưa|chiều|tối))?|(?:sáng|trưa|chiều|tối)\s+nay|hôm qua|rồi|xong|nhé|at\s+\S+|this\s+(?:morning|afternoon|evening)|for\s+(?:breakfast|lunch|dinner))$/iu;
+  let t = words.trim();
+  for (let i = 0; i < 8; i++) {
+    const next = t.replace(lead, '').replace(tail, '').trim();
+    if (next === t) break;
+    t = next;
+  }
+  return t || words.trim();
+}
+
 export interface TextContext {
   db: Firestore;
   s: TrustedScope;
@@ -1366,6 +1384,27 @@ export async function planTextIntents(
             : ((x(base, 'measuredOn') as string | null) ?? today));
         if (d && !d.certain) uncertain.add('measuredOn');
         payload = { kind: 'growth', weightKg, lengthCm, measuredOn, headCm };
+        break;
+      }
+      case 'meal': {
+        // Lumi L5: only while the Ăn dặm diary is on; else said, with the way to turn it on.
+        const diary = await ctx.db.doc(`babies/${ctx.s.babyId}/solids/settings`).get();
+        if (diary.get('enabled') !== true) {
+          notices.push({ kind, code: 'MODULE_UNAVAILABLE', link: '/care/solids' });
+          continue;
+        }
+        // The dish as the words say it; the model's own wording only for review.
+        const ev = evidenceOf(intent, 'title');
+        const title = dishOf(ev && grounded(ev) ? ev : (f.title ?? '')).slice(0, 120);
+        if (!title) {
+          notices.push({ kind, code: 'VALIDATION_FAILED' });
+          continue;
+        }
+        if (!(ev && grounded(ev))) uncertain.add('title');
+        const c = clockOf(intent, 'time');
+        if (!c) uncertain.delete('occurredAt');
+        const at = r?.at ? new Date(r.at) : pointTime(c, base);
+        payload = { kind: 'meal', recipeId: null, title, occurredAt: at?.toISOString() ?? null };
         break;
       }
       default:
