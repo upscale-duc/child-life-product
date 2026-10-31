@@ -118,6 +118,23 @@ final _noNudges = <String, Object>{
 
 final _cases = <String, (Widget Function(), List<Override>, Map<String, Object>)>{
   'mm10_choose': (() => const MilestoneCardScreen(), const [], const {}),
+  // MM04: Thiệp · Video with one search, Đã lưu and a bookmark under each template (owner,
+  // 2026-10-30); 100 ngày yêu thương is saved.
+  'mm04_videos': (
+    () => const KeepsakeKindsScreen(video: true),
+    [
+      ...memoryOverrides(
+        keepsakes: (cards: true, videos: true),
+        keepsakeCatalog: seedCatalog(),
+        journal: (memories: _journal.memories, media: _journal.media),
+        keepsakeSaved: const ['video_hundred_days'],
+      ),
+      keepsakeAssetImageProvider.overrideWithValue(
+        (asset) => const StorageImage('keepsake/peach'),
+      ),
+    ],
+    const {},
+  ),
   'mm11_edit': (
     () => MilestoneCardEditScreen(draft: _draft()),
     const [],

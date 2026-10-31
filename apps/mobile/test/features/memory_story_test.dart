@@ -17,6 +17,7 @@ import 'package:child_life/features/memories/memory_models.dart';
 import 'package:child_life/features/memories/push_registration.dart'
     show keepsakeJobPushOf;
 import 'package:child_life/l10n/app_localizations.dart';
+import 'package:flutter/cupertino.dart' show CupertinoTextField;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -37,6 +38,7 @@ void main() {
     FakeKeepsakeJobs? jobs,
     List<MediaItem> extra = const [],
     KeepsakeCatalog? catalog,
+    List<String> saved = const [],
   }) {
     final j = mockJournal();
     return [
@@ -44,6 +46,7 @@ void main() {
       ...memoryOverrides(
         keepsakes: (cards: true, videos: true),
         keepsakeCatalog: catalog ?? seedCatalog(),
+        keepsakeSaved: saved,
         journal: (memories: j.memories, media: [...extra, ...j.media]),
       ),
       keepsakeAssetImageProvider.overrideWithValue(
@@ -121,7 +124,10 @@ void main() {
       expect(find.text('Tháng đầu tiên'), findsOneWidget);
       expect(find.text('Khoảnh khắc nhỏ'), findsOneWidget);
       expect(find.text('100 ngày yêu thương'), findsNothing);
-      expect(find.text('Cần 6–8 ảnh'), findsOneWidget);
+      expect(
+        find.text('Gợi ý · Cần 6–8 ảnh', findRichText: true),
+        findsOneWidget,
+      );
       // The row opened on 1 tháng; Tất cả is back at its start.
       await tester.ensureVisible(find.text('Tất cả'));
       await tester.pumpAndSettle();
@@ -258,6 +264,57 @@ void main() {
     // Its title is in the cover itself; the name stays under it.
     expect(cover.title, isEmpty);
     expect(find.text('Tháng đầu tiên'), findsOneWidget);
+  });
+
+  testWidgets(
+    'search by name or dịp, without marks; nothing found offers Xoá tìm kiếm (owner, 2026-10-30)',
+    (tester) async {
+      await pumpRouted(
+        tester,
+        const MemoryStoryTemplatesScreen(),
+        overrides: on(),
+      );
+      await tester.enterText(find.byType(CupertinoTextField), 'ngay yeu');
+      await tester.pumpAndSettle();
+      expect(find.text('100 ngày yêu thương'), findsOneWidget);
+      expect(find.text('Tháng đầu tiên'), findsNothing);
+      await tester.enterText(find.byType(CupertinoTextField), 'zzz');
+      await tester.pumpAndSettle();
+      expect(find.text('Không có mẫu nào khớp “zzz”'), findsOneWidget);
+      await tester.tap(find.text('Xoá tìm kiếm').last);
+      await tester.pumpAndSettle();
+      expect(find.text('Tháng đầu tiên'), findsOneWidget);
+    },
+  );
+
+  testWidgets('Đã lưu: only the saved templates, a bookmark under each', (
+    tester,
+  ) async {
+    await pumpRouted(
+      tester,
+      const MemoryStoryTemplatesScreen(),
+      overrides: on(saved: const ['video_hundred_days']),
+    );
+    expect(
+      find.bySemanticsLabel('Bỏ lưu mẫu 100 ngày yêu thương'),
+      findsOneWidget,
+    );
+    expect(find.bySemanticsLabel('Lưu mẫu Tháng đầu tiên'), findsOneWidget);
+    await tester.tap(find.text('Đã lưu'));
+    await tester.pumpAndSettle();
+    expect(find.text('100 ngày yêu thương'), findsOneWidget);
+    expect(find.text('Tháng đầu tiên'), findsNothing);
+  });
+
+  testWidgets('Đã lưu with nothing saved says how to save one', (tester) async {
+    await pumpRouted(
+      tester,
+      const MemoryStoryTemplatesScreen(),
+      overrides: on(),
+    );
+    await tester.tap(find.text('Đã lưu'));
+    await tester.pumpAndSettle();
+    expect(find.text('Chưa lưu mẫu nào'), findsOneWidget);
   });
 
   testWidgets(

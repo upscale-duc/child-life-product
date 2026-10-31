@@ -24461,4 +24461,47 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get rhWeekNotifTitle => 'Tuần này của bé thế nào?';
+
+  @override
+  String get ksSearchHint => 'Tìm mẫu theo tên hoặc dịp';
+
+  @override
+  String get ksSavedChip => 'Đã lưu';
+
+  @override
+  String ksSaveTemplate(String name) {
+    return 'Lưu mẫu $name';
+  }
+
+  @override
+  String ksUnsaveTemplate(String name) {
+    return 'Bỏ lưu mẫu $name';
+  }
+
+  @override
+  String get ksSavedToast => 'Đã lưu mẫu, xem lại ở mục Đã lưu nhé';
+
+  @override
+  String get ksUnsavedToast => 'Đã bỏ lưu mẫu';
+
+  @override
+  String get ksSavedEmptyTitle => 'Chưa lưu mẫu nào';
+
+  @override
+  String get ksSavedEmptyBody =>
+      'Chạm biểu tượng lưu dưới mẫu bạn thích để tìm lại nhanh ở đây.';
+
+  @override
+  String ksSearchEmptyTitle(String query) {
+    return 'Không có mẫu nào khớp “$query”';
+  }
+
+  @override
+  String get ksSearchEmptyBody =>
+      'Bạn thử từ khác, hoặc xoá tìm kiếm để xem tất cả mẫu nhé.';
+
+  @override
+  String ksVideoNeedsExact(int n) {
+    return 'Cần $n ảnh';
+  }
 }

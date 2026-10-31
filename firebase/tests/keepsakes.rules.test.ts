@@ -4,7 +4,16 @@ import {
   initializeTestEnvironment,
   type RulesTestEnvironment,
 } from '@firebase/rules-unit-testing';
-import { collection, doc, getDoc, getDocs, query, setDoc, where } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  serverTimestamp,
+  setDoc,
+  where,
+} from 'firebase/firestore';
 import { getBytes, ref } from 'firebase/storage';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -49,6 +58,36 @@ beforeEach(async () => {
 });
 
 describe('Kỷ niệm 2.0 rules', () => {
+  it('saved Thiệp / Video templates: their owner only, a list of at most 100', async () => {
+    const mom = env.authenticatedContext('mom').firestore();
+    const dad = env.authenticatedContext('dad').firestore();
+    const saved = (n: number) => Array.from({ length: n }, (_, i) => `t${i}`);
+    await assertSucceeds(
+      setDoc(doc(mom, 'users/mom/settings/keepsakes'), {
+        saved: saved(100),
+        updatedAt: serverTimestamp(),
+      }),
+    );
+    await assertSucceeds(getDoc(doc(mom, 'users/mom/settings/keepsakes')));
+    await assertFails(getDoc(doc(dad, 'users/mom/settings/keepsakes')));
+    await assertFails(
+      setDoc(doc(dad, 'users/mom/settings/keepsakes'), { saved: [], updatedAt: serverTimestamp() }),
+    );
+    await assertFails(
+      setDoc(doc(mom, 'users/mom/settings/keepsakes'), {
+        saved: saved(101),
+        updatedAt: serverTimestamp(),
+      }),
+    );
+    await assertFails(
+      setDoc(doc(mom, 'users/mom/settings/keepsakes'), {
+        saved: [],
+        babyId: 'b1',
+        updatedAt: serverTimestamp(),
+      }),
+    );
+  });
+
   it('the catalog is readable, never writable from a client', async () => {
     const mom = env.authenticatedContext('mom').firestore();
     await assertSucceeds(getDoc(doc(mom, 'publicConfig/keepsakes')));

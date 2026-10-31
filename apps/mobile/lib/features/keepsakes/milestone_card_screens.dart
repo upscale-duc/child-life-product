@@ -36,6 +36,7 @@ import '../memories/upload_queue.dart';
 import '../premium/premium_gate.dart';
 import '../premium/premium_widgets.dart' show ResumedBanner;
 import '../premium/purchase_resume.dart' show takeJustResumed;
+import '../spending/spending_calc.dart' show foldVietnamese;
 import 'keepsake_access.dart';
 import 'keepsake_card_content.dart';
 import 'keepsake_card_view.dart';
@@ -43,6 +44,7 @@ import 'keepsake_catalog.dart';
 import 'premium_keepsake_editor.dart';
 import 'keepsake_occasions.dart';
 import 'keepsake_resume.dart' show keepCardDraft;
+import 'keepsake_saved.dart';
 import 'memory_story_screens.dart' show MemoryStoryTemplatesScreen;
 
 /// Thiệp cột mốc (D-068; Figma MM10 `530:9515` chọn mẫu, MM11 `530:9663` chỉnh sửa, MM12
@@ -228,12 +230,16 @@ class MilestoneCardScreen extends ConsumerStatefulWidget {
     this.photoIds,
     this.embedded = false,
     this.milestone,
+    this.search,
     super.key,
   });
 
   /// D-076 #14: the family milestone the card is for: its day, its tagged photos first, and the
   /// saved card tagged with it.
   final MilestoneRef? milestone;
+
+  /// The search of [KeepsakeKindsScreen]; null: the page has its own field.
+  final TextEditingController? search;
 
   /// A page of [KeepsakeKindsScreen]: no back button or title of its own.
   final bool embedded;
@@ -256,6 +262,25 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
   /// keeps only its own templates and those made for any day. Opened for a dịp, that one.
   late bool _all = widget.occasion == null && widget.milestone == null;
   var _format = KeepsakeFormat.portrait;
+
+  /// "Đã lưu": only the templates this person saved, whatever the dịp.
+  var _saved = false;
+  late final _search = widget.search ?? TextEditingController();
+
+  void _searched() => setState(() {});
+
+  @override
+  void initState() {
+    super.initState();
+    _search.addListener(_searched);
+  }
+
+  @override
+  void dispose() {
+    _search.removeListener(_searched);
+    if (widget.search == null) _search.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -319,12 +344,17 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
             milestoneId: milestone?.id,
           );
     final catalog = ref.watch(keepsakeCatalogProvider);
+    final saved = ref.watch(keepsakeSavedProvider).value ?? const <String>[];
+    final query = foldVietnamese(_search.text.trim());
     final cards = [
       for (final t in catalog.value?.cards ?? const <KeepsakeTemplate>[])
         if (t.layouts.containsKey(_format) &&
-            (_all ||
-                t.occasions.isEmpty ||
-                t.occasions.contains(occasion.wire)))
+            (_saved
+                ? saved.contains(t.id)
+                : _all ||
+                      t.occasions.isEmpty ||
+                      t.occasions.contains(occasion.wire)) &&
+            keepsakeMatches(t, query, l10n))
           t,
     ];
     final previews = [
@@ -339,6 +369,10 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
       title: l10n.ksCardTitle,
       embedded: widget.embedded,
       children: [
+        if (widget.search == null) ...[
+          ClSearchField(controller: _search, placeholder: l10n.ksSearchHint),
+          const SizedBox(height: ClSpace.s3),
+        ],
         OccasionFilter(
           occasions: Occasion.chipsFor(
             dob,
@@ -349,7 +383,10 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
           selected: _all ? null : occasion,
           suggested: suggested,
           allLabel: l10n.filterAll,
+          saved: _saved,
+          onSaved: () => setState(() => _saved = true),
           onSelect: (o) => setState(() {
+            _saved = false;
             _all = o == null;
             if (o != null) _occasion = o;
           }),
@@ -388,10 +425,11 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
             onAction: () => ref.invalidate(keepsakeCatalogProvider),
           )
         else if (cards.isEmpty)
-          ClEmptyState(
+          KeepsakeListEmpty(
+            query: _search.text.trim(),
+            saved: _saved,
             icon: ClIcons.star,
-            title: l10n.ksNoTemplates,
-            message: l10n.ksNoTemplatesBody,
+            onClear: _search.clear,
           )
         else
           LayoutBuilder(
@@ -399,7 +437,7 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
               final w = (box.maxWidth - ClSpace.s3) / 2;
               return Wrap(
                 spacing: ClSpace.s3,
-                runSpacing: ClSpace.s3,
+                runSpacing: ClSpace.s4,
                 children: [
                   for (final t in cards)
                     () {
@@ -459,7 +497,9 @@ class _MilestoneCardScreenState extends ConsumerState<MilestoneCardScreen> {
 
 /// "Chọn dịp" and its chips in one sideways row, the same on Thiệp and Video (owner,
 /// 2026-10-14: "đồng nhất filter"); the chosen chip is brought into view once it is there. With
-/// [allLabel] "Tất cả" comes first and stands for null (both screens since 2026-10-23).
+/// [allLabel] "Tất cả" comes first and stands for null (both screens since 2026-10-23); with
+/// [onSaved] "Đã lưu" follows it (owner, 2026-10-30). The row needs no "Chọn dịp" caption: the
+/// chips say what they are (D-110).
 class OccasionFilter extends StatefulWidget {
   const OccasionFilter({
     required this.occasions,
@@ -467,6 +507,8 @@ class OccasionFilter extends StatefulWidget {
     required this.suggested,
     required this.onSelect,
     this.allLabel,
+    this.saved = false,
+    this.onSaved,
     super.key,
   });
 
@@ -475,6 +517,10 @@ class OccasionFilter extends StatefulWidget {
   final Occasion? suggested;
   final ValueChanged<Occasion?> onSelect;
   final String? allLabel;
+
+  /// "Đã lưu" is the chosen chip (then no dịp is).
+  final bool saved;
+  final VoidCallback? onSaved;
 
   @override
   State<OccasionFilter> createState() => _OccasionFilterState();
@@ -519,49 +565,47 @@ class _OccasionFilterState extends State<OccasionFilter> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final cl = context.cl;
     final all = widget.allLabel;
+    final saved = widget.saved;
     final chips = [
       if (all != null)
         OccasionChip(
-          key: widget.selected == null ? _chosen : null,
+          key: widget.selected == null && !saved ? _chosen : null,
           label: all,
-          selected: widget.selected == null,
+          selected: widget.selected == null && !saved,
           onTap: () => widget.onSelect(null),
+        ),
+      if (widget.onSaved != null)
+        OccasionChip(
+          key: saved ? _chosen : null,
+          label: l10n.ksSavedChip,
+          icon: saved ? ClIcons.bookmarkFill : ClIcons.bookmark,
+          selected: saved,
+          onTap: widget.onSaved!,
         ),
       for (final o in widget.occasions)
         OccasionChip(
-          key: o == widget.selected ? _chosen : null,
+          key: o == widget.selected && !saved ? _chosen : null,
           label: o.label(l10n),
           icon: o.icon,
-          selected: o == widget.selected,
+          selected: o == widget.selected && !saved,
           suggested: o == widget.suggested,
           onTap: () => widget.onSelect(o),
         ),
     ];
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          l10n.ksChooseOccasion,
-          style: cl.text.label.copyWith(color: cl.colors.inkMuted),
-        ),
-        const SizedBox(height: ClSpace.s3),
-        SingleChildScrollView(
-          key: PageStorageKey('occasionRow.${all != null}'),
-          controller: _row,
-          scrollDirection: Axis.horizontal,
-          clipBehavior: Clip.none,
-          child: Row(
-            children: [
-              for (final (i, chip) in chips.indexed) ...[
-                if (i > 0) const SizedBox(width: ClSpace.s2),
-                chip,
-              ],
-            ],
-          ),
-        ),
-      ],
+    return SingleChildScrollView(
+      key: PageStorageKey('occasionRow.${all != null}'),
+      controller: _row,
+      scrollDirection: Axis.horizontal,
+      clipBehavior: Clip.none,
+      child: Row(
+        children: [
+          for (final (i, chip) in chips.indexed) ...[
+            if (i > 0) const SizedBox(width: ClSpace.s2),
+            chip,
+          ],
+        ],
+      ),
     );
   }
 }
@@ -965,17 +1009,111 @@ class _TemplateTile extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 6),
-            Text(
-              name,
-              style: cl.text.caption.copyWith(
-                color: cl.colors.ink,
-                fontWeight: FontWeight.w600,
-              ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: ClSpace.s2),
+                    child: Text(
+                      name,
+                      style: cl.text.label.copyWith(color: cl.colors.ink),
+                    ),
+                  ),
+                ),
+                KeepsakeSaveButton(id: template.id, name: name),
+              ],
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+/// The bookmark under a template (Thiệp · Video): saves it to "Đã lưu" or takes it out, with a
+/// toast; filled when saved. Its own 44 pt target beside the name, apart from the tile's tap.
+class KeepsakeSaveButton extends ConsumerWidget {
+  const KeepsakeSaveButton({required this.id, required this.name, super.key});
+  final String id;
+  final String name;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final cl = context.cl;
+    final l10n = AppLocalizations.of(context);
+    final saved = (ref.watch(keepsakeSavedProvider).value ?? const []).contains(
+      id,
+    );
+    return ClPressable(
+      semanticLabel: saved
+          ? l10n.ksUnsaveTemplate(name)
+          : l10n.ksSaveTemplate(name),
+      selected: saved,
+      onPressed: () async {
+        final toaster = ClToaster.of(context);
+        try {
+          final now = await toggleKeepsakeSaved(ref, id);
+          toaster.show(message: now ? l10n.ksSavedToast : l10n.ksUnsavedToast);
+        } on Object {
+          toaster.show(message: l10n.toastActionFailed);
+        }
+      },
+      child: SizedBox(
+        width: ClSpace.tapMin,
+        height: ClSpace.tapMin,
+        child: Center(
+          child: ClIcon(
+            saved ? ClIcons.bookmarkFill : ClIcons.bookmark,
+            size: 20,
+            color: saved ? cl.colors.mintDeep : cl.colors.inkMuted,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Nothing to show on Thiệp or Video: nothing saved yet, nothing matching the search (with
+/// "Xoá tìm kiếm"), or no templates for the dịp.
+class KeepsakeListEmpty extends StatelessWidget {
+  const KeepsakeListEmpty({
+    required this.query,
+    required this.saved,
+    required this.icon,
+    required this.onClear,
+    super.key,
+  });
+
+  /// What was typed, as typed (the title quotes it); empty when not searching.
+  final String query;
+  final bool saved;
+  final ClIcons icon;
+  final VoidCallback onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    if (query.isNotEmpty) {
+      return ClEmptyState(
+        icon: ClIcons.search,
+        title: l10n.ksSearchEmptyTitle(query),
+        message: l10n.ksSearchEmptyBody,
+        actionLabel: l10n.lbClearSearch,
+        onAction: onClear,
+      );
+    }
+    if (saved) {
+      return ClEmptyState(
+        icon: ClIcons.bookmark,
+        title: l10n.ksSavedEmptyTitle,
+        message: l10n.ksSavedEmptyBody,
+      );
+    }
+    return ClEmptyState(
+      icon: icon,
+      title: l10n.ksNoTemplates,
+      message: l10n.ksNoTemplatesBody,
     );
   }
 }
@@ -2246,9 +2384,13 @@ class KeepsakeKindsScreen extends ConsumerStatefulWidget {
 class _KindsState extends ConsumerState<KeepsakeKindsScreen> {
   late final _pages = PageController(initialPage: widget.video ? 1 : 0);
 
+  /// One search for both pages, under the Thiệp · Video titles (owner, 2026-10-30).
+  final _search = TextEditingController();
+
   @override
   void dispose() {
     _pages.dispose();
+    _search.dispose();
     super.dispose();
   }
 
@@ -2294,7 +2436,12 @@ class _KindsState extends ConsumerState<KeepsakeKindsScreen> {
                   ),
                   const SizedBox(height: ClSpace.s3),
                   KeepsakeKindTabs(pages: _pages),
-                  const SizedBox(height: ClSpace.s4),
+                  const SizedBox(height: ClSpace.s3),
+                  ClSearchField(
+                    controller: _search,
+                    placeholder: l10n.ksSearchHint,
+                  ),
+                  const SizedBox(height: ClSpace.s3),
                 ],
               ),
             ),
@@ -2307,6 +2454,7 @@ class _KindsState extends ConsumerState<KeepsakeKindsScreen> {
                       occasion: widget.occasion,
                       photoIds: widget.photoIds,
                       milestone: widget.milestone,
+                      search: _search,
                       embedded: true,
                     ),
                   ),
@@ -2314,6 +2462,7 @@ class _KindsState extends ConsumerState<KeepsakeKindsScreen> {
                     child: MemoryStoryTemplatesScreen(
                       occasion: widget.occasion,
                       photoIds: widget.photoIds,
+                      search: _search,
                       embedded: true,
                     ),
                   ),

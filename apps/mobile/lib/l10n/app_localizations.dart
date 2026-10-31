@@ -40607,6 +40607,72 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Tuần này của bé thế nào?'**
   String get rhWeekNotifTitle;
+
+  /// Thiệp · Video search field placeholder.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tìm mẫu theo tên hoặc dịp'**
+  String get ksSearchHint;
+
+  /// Thiệp · Video filter chip: the templates this person saved.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu'**
+  String get ksSavedChip;
+
+  /// Screen reader label of the bookmark under a template; {name} is the template name.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lưu mẫu {name}'**
+  String ksSaveTemplate(String name);
+
+  /// Screen reader label of a filled bookmark; {name} is the template name.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bỏ lưu mẫu {name}'**
+  String ksUnsaveTemplate(String name);
+
+  /// Toast after saving a template.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu mẫu, xem lại ở mục Đã lưu nhé'**
+  String get ksSavedToast;
+
+  /// Toast after unsaving a template.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã bỏ lưu mẫu'**
+  String get ksUnsavedToast;
+
+  /// Đã lưu chip with nothing saved (on this page).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa lưu mẫu nào'**
+  String get ksSavedEmptyTitle;
+
+  /// Đã lưu chip with nothing saved.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chạm biểu tượng lưu dưới mẫu bạn thích để tìm lại nhanh ở đây.'**
+  String get ksSavedEmptyBody;
+
+  /// Search with no result; {query} is what was typed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có mẫu nào khớp “{query}”'**
+  String ksSearchEmptyTitle(String query);
+
+  /// Search with no result.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn thử từ khác, hoặc xoá tìm kiếm để xem tất cả mẫu nhé.'**
+  String get ksSearchEmptyBody;
+
+  /// Template list: a template that needs exactly {n} photos (instead of "Cần 5–5 ảnh").
+  ///
+  /// In vi, this message translates to:
+  /// **'Cần {n} ảnh'**
+  String ksVideoNeedsExact(int n);
 }
 
 class _AppLocalizationsDelegate

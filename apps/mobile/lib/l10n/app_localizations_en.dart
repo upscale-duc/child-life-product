@@ -25840,4 +25840,53 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rhWeekNotifTitle => 'How was your baby’s week?';
+
+  @override
+  String get ksSearchHint => 'Search by name or occasion';
+
+  @override
+  String get ksSavedChip => 'Saved';
+
+  @override
+  String ksSaveTemplate(String name) {
+    return 'Save $name';
+  }
+
+  @override
+  String ksUnsaveTemplate(String name) {
+    return 'Remove $name from Saved';
+  }
+
+  @override
+  String get ksSavedToast => 'Saved. You’ll find it under Saved.';
+
+  @override
+  String get ksUnsavedToast => 'Removed from Saved';
+
+  @override
+  String get ksSavedEmptyTitle => 'No saved templates yet';
+
+  @override
+  String get ksSavedEmptyBody =>
+      'Tap the bookmark under a template you like to find it here later.';
+
+  @override
+  String ksSearchEmptyTitle(String query) {
+    return 'No templates match “$query”';
+  }
+
+  @override
+  String get ksSearchEmptyBody =>
+      'Try another word, or clear the search to see every template.';
+
+  @override
+  String ksVideoNeedsExact(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Needs $n photos',
+      one: 'Needs 1 photo',
+    );
+    return '$_temp0';
+  }
 }

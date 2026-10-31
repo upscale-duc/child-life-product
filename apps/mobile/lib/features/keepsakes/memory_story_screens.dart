@@ -50,11 +50,15 @@ import 'keepsake_live.dart';
 import 'keepsake_occasions.dart';
 import 'keepsake_preview.dart';
 import 'keepsake_resume.dart' show keepVideoDraft;
+import '../spending/spending_calc.dart' show foldVietnamese;
+import 'keepsake_saved.dart';
 import 'milestone_card_screens.dart'
     show
         KeepsakeActionTile,
+        KeepsakeListEmpty,
         KeepsakePage,
         KeepsakeRoundIcon,
+        KeepsakeSaveButton,
         OccasionFilter,
         TierBadge;
 
@@ -297,12 +301,16 @@ class MemoryStoryTemplatesScreen extends ConsumerStatefulWidget {
     this.occasion,
     this.photoIds,
     this.embedded = false,
+    this.search,
     super.key,
   });
 
   /// A page of [KeepsakeKindsScreen]: no back button or title of its own.
   final bool embedded;
   final Occasion? occasion;
+
+  /// The search of [KeepsakeKindsScreen]; null: the page has its own field.
+  final TextEditingController? search;
 
   /// Photos chosen in Kỷ niệm (a selection's "Tạo video kỷ niệm"): they fill the scenes first.
   final List<String>? photoIds;
@@ -314,6 +322,25 @@ class MemoryStoryTemplatesScreen extends ConsumerStatefulWidget {
 class _TemplatesState extends ConsumerState<MemoryStoryTemplatesScreen> {
   /// The dịp chip; null is "Tất cả". Starts on the occasion we came for (MM03, MM12).
   late Occasion? _filter = widget.occasion;
+
+  /// "Đã lưu": only the templates this person saved, whatever the dịp.
+  var _saved = false;
+  late final _search = widget.search ?? TextEditingController();
+
+  void _searched() => setState(() {});
+
+  @override
+  void initState() {
+    super.initState();
+    _search.addListener(_searched);
+  }
+
+  @override
+  void dispose() {
+    _search.removeListener(_searched);
+    if (widget.search == null) _search.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -355,13 +382,18 @@ class _TemplatesState extends ConsumerState<MemoryStoryTemplatesScreen> {
             t.ageDays != null &&
             ageDays >= t.ageDays!.min &&
             ageDays <= t.ageDays!.max);
-    // A dịp shows its own templates, then those made for any day.
+    // A dịp shows its own templates, then those made for any day; "Đã lưu" the saved ones.
+    final saved = ref.watch(keepsakeSavedProvider).value ?? const <String>[];
+    final query = foldVietnamese(_search.text.trim());
     final videos =
         [
           for (final t in catalog.value?.videos ?? const <KeepsakeTemplate>[])
-            if (_filter == null ||
-                t.occasions.isEmpty ||
-                t.occasions.contains(_filter!.wire))
+            if ((_saved
+                    ? saved.contains(t.id)
+                    : _filter == null ||
+                          t.occasions.isEmpty ||
+                          t.occasions.contains(_filter!.wire)) &&
+                keepsakeMatches(t, query, l10n))
               t,
         ]..sort((a, b) {
           final ma = suggested(a) ? 0 : 1;
@@ -374,7 +406,11 @@ class _TemplatesState extends ConsumerState<MemoryStoryTemplatesScreen> {
       title: l10n.ksVideoTitle,
       embedded: widget.embedded,
       children: [
-        // The same "Chọn dịp" row as Thiệp; "Tất cả" first, since here it filters.
+        if (widget.search == null) ...[
+          ClSearchField(controller: _search, placeholder: l10n.ksSearchHint),
+          const SizedBox(height: ClSpace.s3),
+        ],
+        // The same dịp row as Thiệp; "Tất cả" first, since here it filters.
         if (dob != null)
           OccasionFilter(
             occasions: Occasion.chipsFor(
@@ -386,16 +422,22 @@ class _TemplatesState extends ConsumerState<MemoryStoryTemplatesScreen> {
             selected: _filter,
             suggested: near,
             allLabel: l10n.filterAll,
-            onSelect: (o) => setState(() => _filter = o),
+            saved: _saved,
+            onSaved: () => setState(() => _saved = true),
+            onSelect: (o) => setState(() {
+              _saved = false;
+              _filter = o;
+            }),
           ),
         const SizedBox(height: ClSpace.s4),
         if (catalog.isLoading && !catalog.hasValue)
           const ClSkeleton(height: 280)
         else if (videos.isEmpty)
-          ClEmptyState(
+          KeepsakeListEmpty(
+            query: _search.text.trim(),
+            saved: _saved,
             icon: ClIcons.camera,
-            title: l10n.ksNoTemplates,
-            message: l10n.ksNoTemplatesBody,
+            onClear: _search.clear,
           )
         else
           LayoutBuilder(
@@ -487,7 +529,7 @@ Future<void> playVideoTemplate(
             useLabel: t.premium ? l10n.premiumUseTemplate : null,
             title: t.name.of(outputLocale),
             info: [
-              l10n.ksVideoNeeds(t.photosMin, t.photosMax),
+              videoNeeds(l10n, t),
               if (t.durationSec != null) _mmss(t.durationSec! * 1000),
             ].join(' · '),
             onUse: () async {
@@ -530,6 +572,12 @@ Future<void> playVideoTemplate(
         }, locale.languageCode == 'en' ? 'en' : 'vi');
   return ref.read(keepsakePreviewLauncherProvider)(context, localized);
 }
+
+/// "Cần 5 ảnh", or "Cần 5–8 ảnh" when the template takes a range.
+String videoNeeds(AppLocalizations l10n, KeepsakeTemplate t) =>
+    t.photosMin == t.photosMax
+    ? l10n.ksVideoNeedsExact(t.photosMin)
+    : l10n.ksVideoNeeds(t.photosMin, t.photosMax);
 
 class _VideoTemplateTile extends StatelessWidget {
   const _VideoTemplateTile({
@@ -618,20 +666,47 @@ class _VideoTemplateTile extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 6),
-            Text(
-              template.name.of(locale),
-              maxLines: 3,
-              style: cl.text.label.copyWith(color: cl.colors.ink),
-            ),
-            if (suggested)
-              Text(
-                l10n.ksSuggested,
-                style: cl.text.caption.copyWith(color: cl.colors.mintText),
-              ),
-            Text(
-              l10n.ksVideoNeeds(template.photosMin, template.photosMax),
-              style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: ClSpace.s2),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          template.name.of(locale),
+                          maxLines: 3,
+                          style: cl.text.label.copyWith(color: cl.colors.ink),
+                        ),
+                        // "Gợi ý · Cần 5 ảnh" on one line.
+                        Text.rich(
+                          TextSpan(
+                            children: [
+                              if (suggested) ...[
+                                TextSpan(
+                                  text: l10n.ksSuggested,
+                                  style: TextStyle(color: cl.colors.mintText),
+                                ),
+                                const TextSpan(text: ' · '),
+                              ],
+                              TextSpan(text: videoNeeds(l10n, template)),
+                            ],
+                          ),
+                          style: cl.text.caption.copyWith(
+                            color: cl.colors.inkMuted,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                KeepsakeSaveButton(
+                  id: template.id,
+                  name: template.name.of(locale),
+                ),
+              ],
             ),
           ],
         ),

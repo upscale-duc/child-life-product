@@ -509,3 +509,119 @@ class ClTimeRow extends StatelessWidget {
     );
   }
 }
+
+/// Search over a list on the screen (Thiệp · Video): a magnifier, the query and, once something
+/// is typed, a clear button. The same stroke and focus ring as [ClTextField], on a pill.
+class ClSearchField extends StatefulWidget {
+  const ClSearchField({
+    required this.controller,
+    required this.placeholder,
+    super.key,
+  });
+  final TextEditingController controller;
+  final String placeholder;
+
+  @override
+  State<ClSearchField> createState() => _ClSearchFieldState();
+}
+
+class _ClSearchFieldState extends State<ClSearchField> {
+  final _focus = FocusNode();
+
+  void _changed() => setState(() {});
+
+  @override
+  void initState() {
+    super.initState();
+    _focus.addListener(_changed);
+    widget.controller.addListener(_changed);
+  }
+
+  @override
+  void didUpdateWidget(ClSearchField old) {
+    super.didUpdateWidget(old);
+    if (old.controller != widget.controller) {
+      old.controller.removeListener(_changed);
+      widget.controller.addListener(_changed);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_changed);
+    _focus.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    final l10n = AppLocalizations.of(context);
+    final focused = _focus.hasFocus;
+    return AnimatedContainer(
+      duration: context.motion(ClMotion.quick),
+      curve: ClCurves.quick,
+      constraints: const BoxConstraints(minHeight: ClSpace.tapMin),
+      // The 1 px stroke becomes the 2 px ring; the padding gives the extra pixel back.
+      padding: EdgeInsets.only(
+        left: ClSpace.s3 - (focused ? 1 : 0),
+        right: ClSpace.s1 - (focused ? 1 : 0),
+      ),
+      decoration: BoxDecoration(
+        color: cl.colors.surface,
+        borderRadius: BorderRadius.circular(ClRadius.pill),
+        border: focused
+            ? Border.all(color: cl.colors.focusRing, width: 2)
+            : Border.all(color: clInputStroke(cl)),
+      ),
+      child: Row(
+        children: [
+          ClIcon(ClIcons.search, size: 18, color: cl.colors.inkMuted),
+          const SizedBox(width: ClSpace.s2),
+          Expanded(
+            child: CupertinoTextField.borderless(
+              controller: widget.controller,
+              focusNode: _focus,
+              padding: const EdgeInsets.symmetric(vertical: ClSpace.s2 + 2),
+              placeholder: widget.placeholder,
+              placeholderStyle: cl.text.body.copyWith(
+                color: cl.colors.inkMuted,
+              ),
+              style: cl.text.body,
+              cursorColor: cl.colors.mintDeep,
+              textInputAction: TextInputAction.search,
+              onTapOutside: (_) => _focus.unfocus(),
+            ),
+          ),
+          if (widget.controller.text.isNotEmpty)
+            ClPressable(
+              semanticLabel: l10n.lbClearSearch,
+              onPressed: widget.controller.clear,
+              child: SizedBox(
+                width: ClSpace.tapMin,
+                height: ClSpace.tapMin,
+                child: Center(
+                  child: Container(
+                    width: 22,
+                    height: 22,
+                    decoration: BoxDecoration(
+                      color: cl.colors.surface2,
+                      shape: BoxShape.circle,
+                    ),
+                    alignment: Alignment.center,
+                    child: ClIcon(
+                      ClIcons.close,
+                      size: 12,
+                      color: cl.colors.ink,
+                    ),
+                  ),
+                ),
+              ),
+            )
+          else
+            const SizedBox(width: ClSpace.s2),
+        ],
+      ),
+    );
+  }
+}

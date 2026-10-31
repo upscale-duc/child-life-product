@@ -161,6 +161,10 @@ service cloud.firestore {
           validNotificationSettings(request.resource.data)) || (docId == 'firstAid' &&
           request.resource.data.keys().hasOnly(['saved', 'updatedAt']) &&
           request.resource.data.saved is list && request.resource.data.saved.size() <= 40 &&
+          request.resource.data.updatedAt == request.time) || (docId == 'keepsakes' &&
+          // Thiệp / Video templates this person saved (owner, 2026-10-30), newest first.
+          request.resource.data.keys().hasOnly(['saved', 'updatedAt']) &&
+          request.resource.data.saved is list && request.resource.data.saved.size() <= 100 &&
           request.resource.data.updatedAt == request.time) || (docId == 'personalization' &&
           validPersonalization(request.resource.data)) || (docId == 'carePlan' &&
           validCarePlanPrefs(request.resource.data)));

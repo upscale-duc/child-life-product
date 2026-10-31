@@ -6,6 +6,7 @@ import 'package:child_life/features/baby/baby_models.dart';
 import 'package:child_life/features/care/care_models.dart';
 import 'package:child_life/features/keepsakes/keepsake_access.dart';
 import 'package:child_life/features/keepsakes/keepsake_catalog.dart';
+import 'package:child_life/features/keepsakes/keepsake_saved.dart';
 import 'package:child_life/features/memories/album_models.dart';
 import 'package:child_life/features/memories/media_bytes.dart';
 import 'package:child_life/features/memories/memory_models.dart';
@@ -562,6 +563,7 @@ List<Override> memoryOverrides({
   List<ParentMessage> messages = const [],
   KeepsakeAccess keepsakes = (cards: false, videos: false),
   KeepsakeCatalog keepsakeCatalog = const KeepsakeCatalog([]),
+  List<String> keepsakeSaved = const [],
 }) {
   final j = journal ?? mockJournal();
   final a = withAlbums
@@ -627,6 +629,8 @@ List<Override> memoryOverrides({
     keepsakeCatalogProvider.overrideWith(
       (ref) => Stream.value(keepsakeCatalog),
     ),
+    // Saved Thiệp / Video templates: none, without Firestore.
+    keepsakeSavedProvider.overrideWith((ref) => Stream.value(keepsakeSaved)),
   ];
 }
 

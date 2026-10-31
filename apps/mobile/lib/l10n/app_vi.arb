@@ -35885,5 +35885,69 @@
   "rhWeekNotifTitle": "Tuần này của bé thế nào?",
   "@rhWeekNotifTitle": {
     "description": "Title of the weekly summary local notification (the Tuần screen keeps rhWeekTitle)."
+  },
+  "ksSearchHint": "Tìm mẫu theo tên hoặc dịp",
+  "@ksSearchHint": {
+    "description": "Thiệp · Video search field placeholder."
+  },
+  "ksSavedChip": "Đã lưu",
+  "@ksSavedChip": {
+    "description": "Thiệp · Video filter chip: the templates this person saved."
+  },
+  "ksSaveTemplate": "Lưu mẫu {name}",
+  "@ksSaveTemplate": {
+    "description": "Screen reader label of the bookmark under a template; {name} is the template name.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ksUnsaveTemplate": "Bỏ lưu mẫu {name}",
+  "@ksUnsaveTemplate": {
+    "description": "Screen reader label of a filled bookmark; {name} is the template name.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ksSavedToast": "Đã lưu mẫu, xem lại ở mục Đã lưu nhé",
+  "@ksSavedToast": {
+    "description": "Toast after saving a template."
+  },
+  "ksUnsavedToast": "Đã bỏ lưu mẫu",
+  "@ksUnsavedToast": {
+    "description": "Toast after unsaving a template."
+  },
+  "ksSavedEmptyTitle": "Chưa lưu mẫu nào",
+  "@ksSavedEmptyTitle": {
+    "description": "Đã lưu chip with nothing saved (on this page)."
+  },
+  "ksSavedEmptyBody": "Chạm biểu tượng lưu dưới mẫu bạn thích để tìm lại nhanh ở đây.",
+  "@ksSavedEmptyBody": {
+    "description": "Đã lưu chip with nothing saved."
+  },
+  "ksSearchEmptyTitle": "Không có mẫu nào khớp “{query}”",
+  "@ksSearchEmptyTitle": {
+    "description": "Search with no result; {query} is what was typed.",
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "ksSearchEmptyBody": "Bạn thử từ khác, hoặc xoá tìm kiếm để xem tất cả mẫu nhé.",
+  "@ksSearchEmptyBody": {
+    "description": "Search with no result."
+  },
+  "ksVideoNeedsExact": "Cần {n} ảnh",
+  "@ksVideoNeedsExact": {
+    "description": "Template list: a template that needs exactly {n} photos (instead of \"Cần 5–5 ảnh\").",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   }
 }
