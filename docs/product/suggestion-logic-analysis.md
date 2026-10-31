@@ -2,7 +2,7 @@
 
 31/10/2026 · Nguồn: code hiện tại (`packages/contracts/src/personalization.ts`, `firebase/functions/src/personalization-v2.ts`, `firebase/functions/src/rhythm.ts`, `firebase/functions/src/engagement-sources.ts`, `apps/mobile/lib/features/today/today_for_baby.dart`), gói nội dung đã xuất bản trên dev (`rc_20261031_01`, giống `content/rhythm/content.seed.json`) và một mô phỏng chạy đúng hàm `recommend()` hiện tại.
 
-Trạng thái: **P1 xong, đã deploy dev, chưa commit** (31/10/2026). Chủ sản phẩm đã chốt Q1–Q5 (**D-154**): Q1–Q3 và Q5 theo đề xuất; Q4 chọn **giữ lời mời Premium của D-153** cho gói Free, bỏ phương án ý tưởng theo tuổi cho Free. Q5 đã làm và đã deploy dev (`ideasMaxAgeDays`, dòng "Hiện mới có gợi ý cho con đến 3 tuổi."). P2–P4 chưa làm.
+Trạng thái: **P1 xong, đã deploy dev, chưa commit** (31/10/2026). Chủ sản phẩm đã chốt Q1–Q5 (**D-154**): Q1–Q3 và Q5 theo đề xuất; Q4 chọn **giữ lời mời Premium của D-153** cho gói Free, bỏ phương án ý tưởng theo tuổi cho Free. Q5 đã làm và đã deploy dev (`ideasMaxAgeDays`, dòng "Hiện mới có gợi ý cho con đến 3 tuổi."). P2–P4 đã làm và đã xuất bản/deploy dev (31/10): loại nội dung, tín hiệu giai đoạn và nhật ký, thẻ Thư viện xoay theo tuần, 19 hoạt động, 11 thẻ 25–35 tháng và 12 bài thư viện mới, tất cả chờ chuyên môn duyệt. Không cộng điểm theo giờ trong ngày (ý tưởng chốt từ lần mở đầu tiên nên sẽ đẩy mất các ý buổi tối).
 
 P1 gồm:
 - `packages/contracts/src/daily-suggestion.ts`: `pickDailySuggestion`, `rollExposure`, `recordDailyPick`, `exposureAnswer`, `dailyRankingWeights` `rank-v2`.

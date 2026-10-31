@@ -40589,6 +40589,18 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Hiện mới có gợi ý cho con đến {years} tuổi.'**
   String pv2IdeasUpToAge(int years);
+
+  /// D-154 P3: reason line of the idea of the day when the diary picked it (DATA_INSIGHT). A fact from the log, never a cause.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc ngủ gần đây ít hơn thường ngày (từ nhật ký)'**
+  String get pv2BecauseDiary;
+
+  /// D-154 P3: reason line of the idea of the day when it is linked to the reference stage the baby is in (STAGE).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hợp với giai đoạn tham khảo hiện tại'**
+  String get pv2BecauseStage;
 }
 
 class _AppLocalizationsDelegate

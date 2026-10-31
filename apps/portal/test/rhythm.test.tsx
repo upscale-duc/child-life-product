@@ -836,6 +836,8 @@ describe('Nhịp lớn lên: drafts', () => {
     expect(html).toContain('Cần được dỗ');
     expect(html).toContain('Khoảnh khắc');
     expect(html).toContain('Thời điểm phù hợp');
+    // D-154 P2: what the item is (the select's value is not in static markup).
+    expect(html).toContain('Thời điểm phù hợp Loại');
     expect(html).toContain('≈ 0–6 tháng');
     expect(raw).toContain('value="VN"');
     // Sources and ids are folded, with what is inside.

@@ -62,6 +62,9 @@ String reasonLabel(AppLocalizations l, Object? reason) => switch (reason) {
   'WEEKLY_FOCUS' => l.pv2BecauseFocus,
   'PREVIOUS_HELPFUL' => l.pv2BecauseHelpful,
   'INTEREST' => l.pv2BecauseInterest,
+  // D-154 P3: the diary (sleep shorter than usual) or the reference stage chose it.
+  'DATA_INSIGHT' => l.pv2BecauseDiary,
+  'STAGE' => l.pv2BecauseStage,
   _ => l.pv2BecauseAge,
 };
 

@@ -35873,5 +35873,13 @@
         "type": "int"
       }
     }
+  },
+  "pv2BecauseDiary": "Giấc ngủ gần đây ít hơn thường ngày (từ nhật ký)",
+  "@pv2BecauseDiary": {
+    "description": "D-154 P3: reason line of the idea of the day when the diary picked it (DATA_INSIGHT). A fact from the log, never a cause."
+  },
+  "pv2BecauseStage": "Hợp với giai đoạn tham khảo hiện tại",
+  "@pv2BecauseStage": {
+    "description": "D-154 P3: reason line of the idea of the day when it is linked to the reference stage the baby is in (STAGE)."
   }
 }

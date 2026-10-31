@@ -4,6 +4,7 @@ import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import {
   activityKindOf,
+  type Activity,
   defaultEntitlementsConfig,
   defaultFlags,
   defaultUserPreferences,
@@ -19,6 +20,7 @@ import {
 import { readFeedback } from '../functions/src/rhythm.js';
 import { aggregatePersonalizationContent } from '../functions/src/personalization-stats.js';
 import contentSeed from '../../content/rhythm/content.seed.json' with { type: 'json' };
+import referenceSeed from '../../content/rhythm/reference.seed.json' with { type: 'json' };
 
 const app = initializeApp(
   { projectId: 'demo-child-life-personalization-v2' },
@@ -539,6 +541,31 @@ describe('P-172 daily suggestions and truthful aggregates', () => {
       const day = new Date(Date.parse('2026-10-20T03:00:00Z') + d * 86_400_000);
       expect((await read('parent', day)).activityIds[0]).not.toBe(id);
     }
+  });
+
+  it('D-154 P3: an idea linked to the current reference stage leads, as STAGE', async () => {
+    await grantGroupA();
+    await db.doc('publicConfig/rhythm_reference').set(referenceSeed);
+    // A due date that puts 2026-10-20 inside a stage with an idea for a 66-day-old.
+    const age = 66;
+    const lead = (id: string) =>
+      contentSeed.activities.some(
+        (a) =>
+          a.id === id &&
+          activityKindOf(a as Activity) === 'activity' &&
+          a.ageDays.from <= age &&
+          a.ageDays.to >= age,
+      );
+    const stage = referenceSeed.stages.find((st) => st.activityIds.some(lead))!;
+    const due = new Date(
+      Date.parse('2026-10-20T00:00:00Z') - (stage.startOffsetDays + 1) * 86_400_000,
+    );
+    await db
+      .doc('babies/baby/restricted/profile')
+      .set({ dateOfBirth: '2026-08-15', dueDate: { date: due.toISOString().slice(0, 10) } });
+    const day = await read('parent');
+    expect(stage.activityIds).toContain(day.activityIds[0]);
+    expect(day.reason).toBe('STAGE');
   });
 
   it('D-154 Q5: past the last published age, no idea and the age it stops at', async () => {

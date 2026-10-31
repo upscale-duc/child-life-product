@@ -1,5 +1,12 @@
 import { z } from 'zod';
-import type { Activity, FeedbackMemory, Interest, Need, ReasonCode } from './personalization.js';
+import type {
+  Activity,
+  ActivityKind,
+  FeedbackMemory,
+  Interest,
+  Need,
+  ReasonCode,
+} from './personalization.js';
 import { daysBetweenIso, type RhythmRules } from './rhythm.js';
 
 /**
@@ -16,12 +23,9 @@ import { daysBetweenIso, type RhythmRules } from './rhythm.js';
  * Pure: no clock, no randomness; the same input gives the same pick.
  */
 
-export const activityKinds = ['activity', 'check', 'parent'] as const;
-export type ActivityKind = (typeof activityKinds)[number];
-
 /**
- * D-154 P1: until the pack carries a kind (P2), the published items that are a safety check or
- * are for the parents. Everything else is something to do with the child.
+ * D-154 P1: the published items that are a safety check or are for the parents, for packs
+ * published before the `kind` field (P2). A pack's own `kind` always wins.
  */
 const derivedKinds: Readonly<Record<string, ActivityKind>> = {
   act_safe_sleep_check: 'check',
@@ -37,8 +41,10 @@ const derivedKinds: Readonly<Record<string, ActivityKind>> = {
   act_parent_check_in: 'parent',
   act_partner_care_time: 'parent',
 };
-export function activityKindOf(a: Pick<Activity, 'id'>): ActivityKind {
-  return derivedKinds[a.id] ?? 'activity';
+export function activityKindOf(
+  a: Pick<Activity, 'id'> & { kind?: ActivityKind | undefined },
+): ActivityKind {
+  return a.kind ?? derivedKinds[a.id] ?? 'activity';
 }
 
 /** Versioned weights of the daily pick (rank-v2); the rests and gaps are rules (`config/rhythm`). */
@@ -63,7 +69,14 @@ export const dailyRankingWeights = {
   jitter: 0.9,
   /** A check shown for the first time, ahead of the other extras. */
   firstCheck: 1.5,
+  /** P3: linked to the reference stage the baby is in now (`ReferenceStage.activityIds`). */
+  stage: 1,
+  /** P3: what the diary shows (Premium sleep facts), under a need the family reported (3). */
+  diary: 1.5,
 } as const;
+
+/** Why the pick: rank-v1's codes, plus STAGE (P3); DATA_INSIGHT is the diary signal. */
+export type DailyReason = ReasonCode | 'STAGE';
 
 const isoDate = z.iso.date();
 // Every field has a default: answers are merged into an item the pick may not have written yet.
@@ -147,6 +160,10 @@ export interface DailyPickInput {
   rules: DailyRules;
   /** Published pack minus what this person or the family excluded or put off today. */
   activities: readonly Activity[];
+  /** P3: ids linked to the current reference stage(s); empty without a due date. */
+  stageActivityIds?: readonly string[];
+  /** P3: a need the diary shows (sleep shorter than usual), never a reported one. */
+  diaryNeed?: Need | null;
 }
 
 export type DailyPickOutcome =
@@ -157,7 +174,7 @@ export type DailyPickOutcome =
       primary: Activity;
       secondary: Activity[];
       extra: Activity | null;
-      reasonCode: ReasonCode;
+      reasonCode: DailyReason;
       /** True when today's stored pick was reused as is. */
       reused: boolean;
     };
@@ -215,14 +232,21 @@ export function pickDailySuggestion(x: DailyPickInput): DailyPickOutcome {
   const lastTried = (id: string) => later(item(id).lastTried, x.memory.startedOn?.get(id));
   const lastHelpful = (id: string) => later(item(id).lastHelpful, x.memory.helpfulOn?.get(id));
   const helpful = (id: string) => x.memory.helpful.has(id) || item(id).lastHelpful !== null;
-  const reasonOf = (a: Activity): ReasonCode =>
+  const stageMatch = (a: Activity) => x.stageActivityIds?.includes(a.id) ?? false;
+  const diaryMatch = (a: Activity) =>
+    x.need === null && x.diaryNeed != null && a.needs.includes(x.diaryNeed);
+  const reasonOf = (a: Activity): DailyReason =>
     helpful(a.id) && since(lastHelpful(a.id)) >= r.helpfulRestDays
       ? 'PREVIOUS_HELPFUL'
       : x.need
         ? 'SELF_REPORTED_NEED'
-        : interestMatch(a)
-          ? 'INTEREST'
-          : 'AGE_CONTENT';
+        : diaryMatch(a)
+          ? 'DATA_INSIGHT'
+          : stageMatch(a)
+            ? 'STAGE'
+            : interestMatch(a)
+              ? 'INTEREST'
+              : 'AGE_CONTENT';
 
   // The household's pick for today stands while it is still eligible for this person and was made
   // for the same need (a day context only narrows `activities`).
@@ -249,6 +273,8 @@ export function pickDailySuggestion(x: DailyPickInput): DailyPickOutcome {
     return (
       w.need * +needMatch(a) +
       w.interest * +interestMatch(a) +
+      w.stage * +stageMatch(a) +
+      w.diary * +diaryMatch(a) +
       w.helpfulAgain * +helpful(a.id) +
       w.newForAge * +(x.ageDays - a.ageDays.from < w.newForAgeDays) +
       w.narrowWindow * +(a.ageDays.to - a.ageDays.from <= w.narrowWindowDays) +

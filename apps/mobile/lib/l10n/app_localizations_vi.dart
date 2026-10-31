@@ -24449,4 +24449,11 @@ class AppLocalizationsVi extends AppLocalizations {
   String pv2IdeasUpToAge(int years) {
     return 'Hiện mới có gợi ý cho con đến $years tuổi.';
   }
+
+  @override
+  String get pv2BecauseDiary =>
+      'Giấc ngủ gần đây ít hơn thường ngày (từ nhật ký)';
+
+  @override
+  String get pv2BecauseStage => 'Hợp với giai đoạn tham khảo hiện tại';
 }

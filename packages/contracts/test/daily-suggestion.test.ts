@@ -317,3 +317,52 @@ describe('exposure documents written in parts', () => {
     expect(e.day).toBeNull();
   });
 });
+
+describe('activity kinds (D-154 P2)', () => {
+  it('the pack says what each item is; its own kind wins over the older table', () => {
+    expect(activityKindOf({ id: 'act_bed_sharing_safer', kind: 'activity' })).toBe('activity');
+    expect(activityKindOf({ id: 'act_new_thing', kind: 'parent' })).toBe('parent');
+    expect(activityKindOf({ id: 'act_bed_sharing_safer' })).toBe('check');
+    const kinds = Object.fromEntries(
+      pack.filter((a) => a.kind !== undefined).map((a) => [a.id, a.kind]),
+    );
+    expect(Object.values(kinds).filter((k) => k === 'check')).toHaveLength(9);
+    expect(Object.values(kinds).filter((k) => k === 'parent')).toHaveLength(3);
+    for (const [id, kind] of Object.entries(kinds)) expect(activityKindOf({ id }), id).toBe(kind);
+  });
+});
+
+describe('P3 signals (D-154)', () => {
+  const activities = [act('act_a'), act('act_b'), act('act_c', { needs: ['sleep'] }), act('act_d')];
+  const pick = (over: Partial<DailyPickInput>) => {
+    const out = pickDailySuggestion({ ...base, interests: [], activities, ...over });
+    if (out.kind !== 'suggestion') throw new Error('no pick');
+    return out;
+  };
+
+  it('an idea linked to the current reference stage leads, and says so', () => {
+    expect(pick({ stageActivityIds: ['act_d'] })).toMatchObject({
+      primary: { id: 'act_d' },
+      reasonCode: 'STAGE',
+    });
+  });
+
+  it('the diary (sleep shorter than usual) lifts sleep ideas, as DATA_INSIGHT', () => {
+    expect(pick({ diaryNeed: 'sleep' })).toMatchObject({
+      primary: { id: 'act_c' },
+      reasonCode: 'DATA_INSIGHT',
+    });
+  });
+
+  it('what the family reported wins over the diary and the stage', () => {
+    const out = pickDailySuggestion({
+      ...base,
+      interests: [],
+      activities: [...activities, act('act_e', { needs: ['soothing'] })],
+      need: 'soothing',
+      diaryNeed: 'sleep',
+      stageActivityIds: ['act_d'],
+    });
+    expect(out).toMatchObject({ primary: { id: 'act_e' }, reasonCode: 'SELF_REPORTED_NEED' });
+  });
+});

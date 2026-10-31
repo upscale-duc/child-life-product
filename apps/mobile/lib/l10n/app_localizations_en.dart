@@ -25829,4 +25829,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String pv2IdeasUpToAge(int years) {
     return 'Ideas are only available up to age $years for now.';
   }
+
+  @override
+  String get pv2BecauseDiary =>
+      'Sleep has been shorter than usual lately (from the diary)';
+
+  @override
+  String get pv2BecauseStage => 'Fits the current reference stage';
 }

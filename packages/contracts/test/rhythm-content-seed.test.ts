@@ -7,6 +7,7 @@ import {
 } from '../src/index.js';
 import referenceSeed from '../../../content/rhythm/reference.seed.json' with { type: 'json' };
 import contentSeed from '../../../content/rhythm/content.seed.json' with { type: 'json' };
+import p4Draft from '../../../content/rhythm/d154-p4.draft.json' with { type: 'json' };
 
 /**
  * The Nhịp lớn lên seed (`content/rhythm/*.seed.json`): drafted by engineering (D-073 #2), reviewed
@@ -111,8 +112,11 @@ describe('rhythm content seed · activities, age cards, health', () => {
   });
 
   it('signs every item "Child Life Team", 2026-10-30 (D-148)', () => {
-    for (const a of content.activities) expect(a.review, a.id).toEqual(signed);
-    for (const c of content.ageCards) expect(c.review, c.id).toEqual(signed);
+    // D-154 P4: items drafted after that review wait for one (shown as "chờ chuyên môn duyệt").
+    const p4 = new Set([...p4Draft.activities, ...p4Draft.ageCards].map((x) => x.id));
+    for (const a of content.activities)
+      expect(a.review, a.id).toEqual(p4.has(a.id) ? null : signed);
+    for (const c of content.ageCards) expect(c.review, c.id).toEqual(p4.has(c.id) ? null : signed);
     expect(content.health.review).toEqual(signed);
     expect(reference.review).toEqual(signed);
   });
@@ -124,7 +128,8 @@ describe('rhythm content seed · activities, age cards, health', () => {
       expect(a.steps.vi.length, a.id).toBeGreaterThanOrEqual(3);
       expect(a.steps.vi.length, a.id).toBeLessThanOrEqual(5);
       expect(a.sources.length, a.id).toBeGreaterThan(0);
-      expect(a.ageDays.to, a.id).toBeLessThanOrEqual(760);
+      // D-154 P4 (as D-152): activities now reach 3 years (1095 days).
+      expect(a.ageDays.to, a.id).toBeLessThanOrEqual(1095);
     }
   });
 

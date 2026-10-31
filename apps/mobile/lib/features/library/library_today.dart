@@ -20,7 +20,8 @@ import 'stage_screens.dart' show lbVisibleStages;
 ///
 /// 1. the current stage ("Giai đoạn của bé · 3–4 tuần"), or, for a parent when the date of birth
 ///    is unknown, "Thêm ngày sinh của bé" (2c on Hôm nay);
-/// 2. up to two care articles for the baby's age, newest first.
+/// 2. two care articles for the baby's age, moving on each week of age (D-154 P3): before, the
+///    two newest stayed for months. The newest come first in the week the list starts again.
 ///
 /// Only published content: nothing shows while nothing is published.
 final lbForBabyCardsProvider = Provider.family<List<ForBabyCard>, ForBabyQuery>(
@@ -70,7 +71,12 @@ final lbForBabyCardsProvider = Provider.family<List<ForBabyCard>, ForBabyQuery>(
       );
     }
     final weeks = lbAgeIn(LbUnit.week, dob, baby.today);
-    for (final a in lbRecent(lbForAge(articles, weeks)).take(2)) {
+    final fit = lbRecent(lbForAge(articles, weeks));
+    final start = fit.isEmpty ? 0 : (weeks * 2) % fit.length;
+    for (final a in [
+      for (var i = 0; i < 2 && i < fit.length; i++)
+        fit[(start + i) % fit.length],
+    ]) {
       cards.add(
         ForBabyCard(
           id: 'article:${a.id}',

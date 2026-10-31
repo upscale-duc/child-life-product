@@ -3,6 +3,7 @@ import { FieldValue, Timestamp, type Firestore } from 'firebase-admin/firestore'
 import {
   activeAt,
   addDaysIso,
+  currentStages,
   ageCardFor,
   cardAgeDays,
   dailyContexts,
@@ -26,6 +27,7 @@ import {
   routinePatterns,
   reminderInstantIn,
   recFeedbackSchema,
+  referenceModelSchema,
   defaultUserPreferences,
   weeklyFocuses,
   type FeedbackKind,
@@ -621,6 +623,23 @@ export async function personalizedDay(
     need === 'new_skill' ? 'milestone' : (need ?? (focus === 'play' ? 'play' : null));
   // D-154 (rank-v2): one pick per baby and day, shared by the household, from the exposure log.
   // The log is written only with a pick (health days and empty pools leave it as it is).
+  const sleep = !health && advanced ? await sleepFacts(db, babyId, zone, today, now, rules) : null;
+  // D-154 P3: the reference stage the baby is in (its linked ideas) and what the diary shows.
+  const dueDate = (profile.get('dueDate.date') as string | undefined) ?? null;
+  const reference =
+    crossModule && dueDate
+      ? referenceModelSchema.safeParse((await db.doc('publicConfig/rhythm_reference').get()).data())
+      : null;
+  const stageActivityIds = reference?.success
+    ? currentStages(dueDate, today, reference.data.stages).current.flatMap((st) => st.activityIds)
+    : [];
+  const diaryNeed =
+    sleep?.status === 'change_detected' &&
+    sleep.recent !== null &&
+    sleep.baseline !== null &&
+    sleep.recent < sleep.baseline
+      ? ('sleep' as const)
+      : null;
   const ranked =
     content && ageDays !== null && crossModule
       ? await db.runTransaction(async (tx) => {
@@ -640,6 +659,8 @@ export async function personalizedDay(
             memory: feedbackMemory(feedback, rules.cooldownDays),
             exposure,
             rules,
+            stageActivityIds,
+            diaryNeed,
             activities: content.activities.filter(
               (a) =>
                 !excluded.has(a.id) &&
@@ -762,7 +783,6 @@ export async function personalizedDay(
       .map(([id]) => id),
     ...outcomes.keys(),
   ]);
-  const sleep = !health && advanced ? await sleepFacts(db, babyId, zone, today, now, rules) : null;
   return {
     asOf: now.toISOString(),
     contentVersion: content?.version ?? null,

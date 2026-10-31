@@ -496,7 +496,7 @@ void main() {
 
   group('Hôm nay "Dành cho bé hôm nay" cards', () {
     test(
-      'the current stage, then two reads for the age, newest first',
+      'the current stage, then two reads for the age that move on each week (D-154 P3)',
       () async {
         SharedPreferences.setMockInitialValues(const {});
         final prefs = await SharedPreferences.getInstance();
@@ -522,8 +522,9 @@ void main() {
           final cards = container.read(articleForBabyCardsProvider(q));
           expect(cards.map((c) => c.id), [
             'stage:stg_w3',
-            'article:art_newborn_sleep',
-            'article:art_diaper_rash',
+            // 3 weeks old: the pair from the newest-first list starting at 3 × 2.
+            'article:art_day_night',
+            'article:art_sleep_position',
           ]);
           expect(cards.first.kicker, 'Giai đoạn của bé · 3–4 tuần');
         });

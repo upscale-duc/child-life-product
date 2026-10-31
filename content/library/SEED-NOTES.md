@@ -130,3 +130,41 @@ and answers: `docs/product/content-review-2026-10/library.md`.
 - **For the clinician:** button batteries (NHS nothing by mouth vs US honey for children over 1),
   iron for breastfed babies (AAP 2026 vs NHS), the Vietnamese HFMD exclusion period, the children's
   motorbike-helmet rule, and every help-line number.
+
+## 7. Additions 2026-10-31
+
+Still an engineering draft in specialist roles (D-073 #2); nothing here is a clinical review. 12 more
+articles, 68 in `content-seed.ts`, filling the sleep, teething and 2–3 year gaps; every source page was
+opened when written (CDC pages through a fetch tool, as plain requests are refused).
+
+- **Sleep:** `art_toddler_sleep_1_3` (52–156 w), `art_early_waking_short_naps` (17–156 w),
+  `art_cot_to_bed_night_fears` (78–156 w). Sources: AASM / AAP, CPS, Sydney Children's Hospitals
+  Network, Better Health Channel (Victoria), AAP and NHS night terrors.
+- **Teeth:** `art_teething_or_illness` (17–156 w), `art_first_teeth_dental_visit` (22–156 w,
+  reviewer role "Nha khoa trẻ em", new label). Sources: Pediatrics 2016 meta-analysis (PubMed), NHS,
+  AAP, FDA, WHO oral health.
+- **2–3 years (104–156 w covered):** `art_talking_2_3`, `art_potty_learning` (daily_care, 78–156 w),
+  `art_biting_hitting_sharing` (52–156 w), `art_fears_big_feelings_2_3`, `art_play_2_3`,
+  `art_new_sibling` (52–156 w), `art_screen_time_2_3` (extends `art_screens_language`). Sources: CDC
+  2 y / 30 mo / 3 y, AAP, NHS Best Start in Life, AACAP, WHO, UK Government screen guidance 2026.
+- **Related lists:** `art_screens_language` → `art_screen_time_2_3`; `art_talk_play_first_year` →
+  `art_talking_2_3`.
+
+| Topic | Bodies | Text |
+|---|---|---|
+| Toddler bed-sharing | AAP own bed; common in VN | Family's choice after 1; consistency matters more |
+| Night terror length | NHS up to 15 min; AAP up to 45 min | "a few minutes, sometimes 15 or longer" |
+| Teething fever | FDA cites AAP "low-grade fever"; AAP HC "false symptom"; NHS < 38 °C | ≥ 38 °C is never teething |
+| Potty start | NHS 18 mo–2½ y, don't wait for signs, stickers; AAP 2–3 y, readiness, no treats | Start with a few signs and a calm home; stickers yes, sweets no; pause if strong refusal |
+| Time-out | AAP 1 min per year; NHS help regulate rather than time-out | Short break beside an adult until calm |
+| Words at 2 | AAP 50–100 words; CDC ~50 words at 30 mo | Doctor flag: no two-word phrases at 2, < ~50 words at 2½ (CDC) |
+| Screens 2–4 y | WHO, CDC, UK 2026 ≤ 1 h; AAP 2026 quality / context | ≤ 1 h, co-view, no AI toys (UK) |
+
+- **Kept as specialist advice (please confirm):** sunrise / noise as early-waking causes and the
+  10–15 min step sizes; short naps "common in young babies"; brushing positions and monthly lip-lift;
+  holding food in the mouth ("ngậm cơm") and the 20–30 min meal; "Nha khoa trẻ em" role; tongue-tie
+  rarely causes late talking; bilingual children not delayed (ASHA page did not load; NHS only says
+  speak your home languages); human bites that break the skin need a doctor; xi tè, cúng vía, "tự kỷ
+  màn hình" and "nhường em" framings; never leave a toddler alone with a newborn.
+- **Dropped because unverified:** AAP "35 inches / 89 cm" cot-to-bed threshold (HC page not found),
+  Vietnamese caries prevalence, tap-water fluoridation in Việt Nam.

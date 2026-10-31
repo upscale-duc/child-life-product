@@ -1,4 +1,5 @@
 import {
+  activityKindOf,
   dailyRankingWeights,
   defaultRhythmRules,
   activitySchema,
@@ -746,6 +747,7 @@ const fieldNames: Record<string, string> = {
   to: 'rhythm.field.ageTo',
   durationMin: 'rhythm.field.duration',
   timeOfDay: 'rhythm.field.timeOfDay',
+  kind: 'rhythm.field.kind',
   status: 'rhythm.field.itemStatus',
   whileWaiting: 'rhythm.field.whileWaiting',
   disclaimer: 'rhythm.field.disclaimer',
@@ -2878,6 +2880,9 @@ function ActivitySummary({ a }: { a: Activity }) {
             <FormattedMessage id="rhythm.minutes" values={{ n: a.durationMin }} />
             {' · '}
             <FormattedMessage id={`rhythm.timeOfDay.${a.timeOfDay}`} />
+          </Row>
+          <Row label={<FormattedMessage id="rhythm.field.kind" />}>
+            <FormattedMessage id={`rhythm.kind.${activityKindOf(a)}`} />
           </Row>
           <Row label={<FormattedMessage id="rhythm.field.needs" />}>
             {a.needs.map((n) => intl.formatMessage({ id: `rhythm.need.${n}` })).join(' · ')}

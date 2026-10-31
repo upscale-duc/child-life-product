@@ -9030,5 +9030,7 @@
   "hcThanks": "Thanks for letting us know",
   "hcMuted": "This kind is hidden",
   "hcWeekNotable": "Most worth noticing",
-  "pv2IdeasUpToAge": "Ideas are only available up to age {years} for now."
+  "pv2IdeasUpToAge": "Ideas are only available up to age {years} for now.",
+  "pv2BecauseDiary": "Sleep has been shorter than usual lately (from the diary)",
+  "pv2BecauseStage": "Fits the current reference stage"
 }

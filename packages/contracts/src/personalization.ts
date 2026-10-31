@@ -88,6 +88,13 @@ export function needOf(o: Observation): Need | null {
 export const contentStatuses = ['draft', 'published', 'retired'] as const;
 
 /** One suggested activity (AC01, NL08): steps, age, needs, safety, sources, review. */
+/**
+ * D-154 P2: what an activity is. Only `activity` (something to do with the child) leads "Ý tưởng
+ * hôm nay"; a safety `check` or a card for the `parent` rides along as the extra card.
+ */
+export const activityKinds = ['activity', 'check', 'parent'] as const;
+export type ActivityKind = (typeof activityKinds)[number];
+
 export const activitySchema = z
   .object({
     id: z.string().regex(/^act_[a-z0-9_]{2,40}$/),
@@ -104,6 +111,8 @@ export const activitySchema = z
     interests: z.array(z.enum(interests)),
     /** Best time of day, for "Thử tối nay" vs "Thử hôm nay". */
     timeOfDay: z.enum(['any', 'evening', 'day']),
+    /** D-154 P2: absent on packs published before it (read through `activityKindOf`). */
+    kind: z.enum(activityKinds).optional(),
     locales: z.array(z.enum(['vi', 'en'])).min(1),
     /** Empty = every region with approved health content. */
     regions: z.array(z.string().regex(/^[A-Z]{2}$/)).max(50),

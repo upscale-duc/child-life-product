@@ -1,4 +1,6 @@
 import {
+  activityKindOf,
+  activityKinds,
   contentReviewSchema,
   healthSigns,
   interests,
@@ -510,6 +512,7 @@ export function blankActivity(items: readonly Activity[]): Activity {
     needs: [],
     interests: [],
     timeOfDay: 'any',
+    kind: 'activity',
     locales: ['vi', 'en'],
     regions: [],
     sources: [],
@@ -1716,6 +1719,18 @@ export function ActivityEditor({
                 label: intl.formatMessage({ id: `rhythm.timeOfDay.${t}` }),
               }))}
               onChange={(v) => set((x) => void (x.timeOfDay = v))}
+            />
+            {/* D-154 P2: only "Làm cùng con" may lead "Ý tưởng hôm nay". */}
+            <SelectInput
+              label={<FormattedMessage id="rhythm.field.kind" />}
+              value={activityKindOf(a)}
+              className="w-64"
+              hint={<FormattedMessage id="rhythm.field.kind.help" />}
+              options={activityKinds.map((k) => ({
+                value: k,
+                label: intl.formatMessage({ id: `rhythm.kind.${k}` }),
+              }))}
+              onChange={(v) => set((x) => void (x.kind = v))}
             />
           </div>
           <AgeDaysInput

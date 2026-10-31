@@ -281,6 +281,7 @@
       "needs": ["sleep"],
       "interests": ["sleep"],
       "timeOfDay": "evening",
+      "kind": "check",
       "locales": ["vi", "en"],
       "regions": [],
       "sources": [
@@ -1142,6 +1143,7 @@
       "needs": ["soothing"],
       "interests": [],
       "timeOfDay": "any",
+      "kind": "parent",
       "locales": ["vi", "en"],
       "regions": [],
       "sources": [
@@ -2135,6 +2137,7 @@
       "needs": ["sleep"],
       "interests": ["sleep"],
       "timeOfDay": "evening",
+      "kind": "check",
       "locales": ["vi", "en"],
       "regions": [],
       "sources": [
@@ -2193,6 +2196,7 @@
       "needs": ["sleep", "feeding"],
       "interests": ["sleep", "feeding"],
       "timeOfDay": "any",
+      "kind": "check",
       "locales": ["vi", "en"],
       "regions": [],
       "sources": [
@@ -2315,6 +2319,7 @@
       "needs": ["feeding"],
       "interests": ["nutrition", "feeding"],
       "timeOfDay": "any",
+      "kind": "check",
       "locales": ["vi", "en"],
       "regions": [],
       "sources": [
@@ -2612,6 +2617,7 @@
       "needs": ["milestone"],
       "interests": ["milestones"],
       "timeOfDay": "any",
+      "kind": "check",
       "locales": ["vi", "en"],
       "regions": [],
       "sources": [
@@ -2668,6 +2674,7 @@
       "needs": ["play"],
       "interests": ["moments"],
       "timeOfDay": "any",
+      "kind": "check",
       "locales": ["vi", "en"],
       "regions": [],
       "sources": [
@@ -2728,6 +2735,7 @@
       "needs": ["bonding"],
       "interests": ["moments"],
       "timeOfDay": "any",
+      "kind": "parent",
       "locales": ["vi", "en"],
       "regions": [],
       "sources": [
@@ -2788,6 +2796,7 @@
       "needs": ["soothing"],
       "interests": ["moments"],
       "timeOfDay": "any",
+      "kind": "parent",
       "locales": ["vi", "en"],
       "regions": [],
       "sources": [
@@ -2846,6 +2855,7 @@
       "needs": ["play", "bonding"],
       "interests": ["moments"],
       "timeOfDay": "day",
+      "kind": "check",
       "locales": ["vi", "en"],
       "regions": [],
       "sources": [
@@ -2908,6 +2918,7 @@
       "needs": ["bonding"],
       "interests": ["moments"],
       "timeOfDay": "any",
+      "kind": "check",
       "locales": ["vi", "en"],
       "regions": [],
       "sources": [
@@ -3018,6 +3029,7 @@
       "needs": ["feeding"],
       "interests": ["feeding", "nutrition"],
       "timeOfDay": "any",
+      "kind": "check",
       "locales": ["vi", "en"],
       "regions": ["US", "CA", "GB"],
       "sources": [
@@ -3035,6 +3047,1007 @@
         "credential": "Child Life Team",
         "reviewedOn": "2026-10-30"
       }
+    },
+    {
+      "id": "act_p4_gentle_massage",
+      "version": 1,
+      "status": "published",
+      "kind": "activity",
+      "title": {
+        "vi": "Xoa nhẹ tay chân cho con",
+        "en": "A gentle arm and leg massage"
+      },
+      "summary": {
+        "vi": "Vài phút vuốt nhẹ tay chân khi con tỉnh và thoải mái có thể giúp con thư giãn và thấy gần gũi ba mẹ.",
+        "en": "A few minutes of gentle strokes on the arms and legs, while baby is awake and content, may help them relax and feel close to you."
+      },
+      "steps": {
+        "vi": [
+          "Chọn lúc con tỉnh, không đói và không vừa bú xong; phòng ấm, không có gió lùa",
+          "Đặt con nằm ngửa trên mặt phẳng chắc, nhìn con và nói khẽ",
+          "Dùng lòng bàn tay ấm vuốt chậm từ vai xuống bàn tay, từ đùi xuống bàn chân",
+          "Con quay đi, nhăn mặt hay khóc là con muốn dừng; hãy bế con lên"
+        ],
+        "en": [
+          "Pick a time when baby is awake, not hungry and not just fed, in a warm room with no draughts",
+          "Lay baby on their back on a firm, flat surface; look at them and talk softly",
+          "With warm palms, stroke slowly from shoulder to hand and from thigh to foot",
+          "If baby turns away, grimaces or cries, they want to stop; pick them up"
+        ]
+      },
+      "safety": {
+        "vi": "Không cần dầu. Không xoa dầu gió, dầu tràm, cao có long não, bạc hà hay tinh dầu cho bé sơ sinh, và tránh vùng rốn khi cuống rốn chưa lành. Không xoa khi con sốt, mệt hay da nổi mẩn.",
+        "en": "No oil is needed. Don’t use medicated oils, balms with camphor or menthol, or essential oils on a newborn, and avoid the cord area until it has healed. Don’t massage when baby has a fever, seems unwell or has a rash."
+      },
+      "durationMin": 5,
+      "ageDays": {
+        "from": 0,
+        "to": 60
+      },
+      "needs": ["soothing", "bonding"],
+      "interests": ["moments"],
+      "timeOfDay": "any",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "AAP · HealthyChildren.org: Calming a fussy baby",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/crying-colic/Pages/Calming-A-Fussy-Baby.aspx"
+        },
+        {
+          "label": "NHS: Washing and bathing your baby",
+          "url": "https://www.nhs.uk/baby/caring-for-a-newborn/washing-and-bathing-your-baby/"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_p4_diaper_chat",
+      "version": 1,
+      "status": "published",
+      "kind": "activity",
+      "title": {
+        "vi": "Trò chuyện khi thay tã",
+        "en": "Chat during diaper changes"
+      },
+      "summary": {
+        "vi": "Mỗi lần thay tã là vài phút ở gần nhau; nói chuyện với con lúc này là cách gần gũi mà không cần thêm thời gian.",
+        "en": "Every diaper change is a few minutes close together; talking to baby then is a way to connect without finding extra time."
+      },
+      "steps": {
+        "vi": [
+          "Để sẵn tã, khăn lau và quần áo trong tầm tay trước khi đặt con xuống",
+          "Nói với con từng việc: “Mẹ cởi tã nhé”, “Hơi lạnh một chút thôi”",
+          "Ngừng lại khi con nhìn mình hoặc phát ra âm thanh, rồi đáp lại",
+          "Kết thúc bằng một câu quen thuộc, như “Xong rồi, sạch sẽ rồi!”"
+        ],
+        "en": [
+          "Have the diaper, wipes and clothes within reach before you lay baby down",
+          "Tell baby each step: “Diaper off now”, “Just a little cold”",
+          "Pause when baby looks at you or makes a sound, then answer",
+          "Finish with the same words each time, like “All done, all clean!”"
+        ]
+      },
+      "safety": {
+        "vi": "Không bao giờ để con một mình trên bàn thay tã hay giường, dù chỉ một giây; luôn giữ một tay trên người con. Thay tã trên tấm lót đặt dưới sàn là an toàn nhất.",
+        "en": "Never leave baby alone on a changing table or bed, even for a second; keep one hand on them. A changing mat on the floor is the safest place."
+      },
+      "durationMin": 3,
+      "ageDays": {
+        "from": 0,
+        "to": 60
+      },
+      "needs": ["bonding", "play"],
+      "interests": ["moments", "milestones"],
+      "timeOfDay": "any",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "NHS: How to change your baby’s nappy",
+          "url": "https://www.nhs.uk/baby/caring-for-a-newborn/how-to-change-your-babys-nappy/"
+        },
+        {
+          "label": "NHS: Help your baby learn to talk",
+          "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/help-your-baby-learn-to-talk/"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_p4_safe_contact_nap",
+      "version": 1,
+      "status": "published",
+      "kind": "activity",
+      "title": {
+        "vi": "Cho con ngủ trên ngực an toàn hơn",
+        "en": "A safer contact nap"
+      },
+      "summary": {
+        "vi": "Nhiều bé sơ sinh dễ ngủ hơn khi được bế sát; nếu ba mẹ muốn cho con ngủ trên người, vài điều sau giúp việc đó an toàn hơn.",
+        "en": "Many newborns settle best when held close; if you want baby to nap on you, a few steps make it safer."
+      },
+      "steps": {
+        "vi": [
+          "Chỉ làm khi ba mẹ tỉnh táo; ngồi thẳng lưng trên ghế tựa chắc hoặc trên giường, không phải sofa",
+          "Bế con áp ngực, đầu nghiêng sang một bên, mũi và miệng thông thoáng, mặt con ở chỗ ba mẹ nhìn thấy",
+          "Tạm cất điện thoại để để ý hơi thở và màu da của con",
+          "Khi thấy mình buồn ngủ, hoặc sau giấc ngắn, đặt con nằm ngửa vào cũi hay nôi riêng"
+        ],
+        "en": [
+          "Only when you’re wide awake; sit upright in a firm chair or on a bed, not a sofa",
+          "Hold baby chest to chest, head turned to one side, nose and mouth clear, face where you can see it",
+          "Put your phone away so you can notice baby’s breathing and colour",
+          "If you start to feel sleepy, or after a short nap, lay baby on their back in their own cot"
+        ]
+      },
+      "safety": {
+        "vi": "Không khi ba mẹ mệt lả, đã uống rượu bia hay dùng thuốc gây buồn ngủ. Không bao giờ ngủ cùng con trên sofa, ghế bành hay võng: đây là những chỗ nguy hiểm nhất.",
+        "en": "Not if you’re exhausted, have drunk alcohol or taken medicine that makes you drowsy. Never fall asleep with baby on a sofa, armchair or hammock: these are the most dangerous places."
+      },
+      "durationMin": 20,
+      "ageDays": {
+        "from": 0,
+        "to": 60
+      },
+      "needs": ["sleep", "soothing"],
+      "interests": ["sleep"],
+      "timeOfDay": "day",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "NHS: Sudden infant death syndrome (SIDS), reducing the risk",
+          "url": "https://www.nhs.uk/baby/caring-for-a-newborn/sudden-infant-death-syndrome-sids/"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: A parent’s guide to safe sleep",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/A-Parents-Guide-to-Safe-Sleep.aspx"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_p4_eyes_on_feed",
+      "version": 1,
+      "status": "published",
+      "kind": "activity",
+      "title": {
+        "vi": "Một cữ bú nhìn nhau",
+        "en": "One feed, eyes on each other"
+      },
+      "summary": {
+        "vi": "Cất điện thoại trong vài phút đầu của một cữ bú, nhìn và nói khẽ với con, là cách gần gũi đơn giản, dù con bú mẹ hay bú bình.",
+        "en": "Putting your phone away for the first few minutes of a feed, looking and talking softly to baby, is a simple way to connect, breast or bottle."
+      },
+      "steps": {
+        "vi": [
+          "Chọn một cữ bú trong ngày, để điện thoại ra xa",
+          "Bế con sát người, mặt con hướng về ba mẹ",
+          "Nhìn con, nói hoặc hát khẽ khi con ngừng mút",
+          "Khi con nhả ti, quay đi hay thả lỏng tay, để con nghỉ; không ép con bú hết"
+        ],
+        "en": [
+          "Pick one feed in the day and put your phone out of reach",
+          "Hold baby close, their face turned towards you",
+          "Look at baby, and talk or sing softly when they pause sucking",
+          "When baby lets go, turns away or relaxes their hands, let them rest; don’t push them to finish"
+        ]
+      },
+      "safety": {
+        "vi": "Khi bú bình, bế con hơi thẳng và luôn cầm bình; không kê bình để con bú một mình.",
+        "en": "When bottle feeding, hold baby fairly upright and always hold the bottle; never prop it for baby to feed alone."
+      },
+      "durationMin": 5,
+      "ageDays": {
+        "from": 0,
+        "to": 60
+      },
+      "needs": ["feeding", "bonding"],
+      "interests": ["feeding", "moments"],
+      "timeOfDay": "any",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "UNICEF UK Baby Friendly: Responsive feeding infosheet",
+          "url": "https://www.unicef.org.uk/babyfriendly/baby-friendly-resources/relationship-building-resources/responsive-feeding-infosheet/"
+        },
+        {
+          "label": "NHS: Bottle feeding",
+          "url": "https://www.nhs.uk/baby/breastfeeding-and-bottle-feeding/bottle-feeding/"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_p4_house_tour",
+      "version": 1,
+      "status": "published",
+      "kind": "activity",
+      "title": {
+        "vi": "Bế con đi một vòng quanh nhà",
+        "en": "A little tour of the house"
+      },
+      "summary": {
+        "vi": "Khi con thức và tỉnh táo, đi chậm quanh nhà và gọi tên những gì con thấy cho con thêm điều mới để ngắm và nghe.",
+        "en": "When baby is awake and alert, walking slowly round the house and naming what they see gives them new things to look at and listen to."
+      },
+      "steps": {
+        "vi": [
+          "Bế con lúc con thức, mắt mở to và người thả lỏng; đỡ chắc đầu và cổ con",
+          "Dừng ở cửa sổ, chậu cây, tấm ảnh; để con nhìn vài giây",
+          "Gọi tên từng thứ bằng giọng chậm, nhẹ: “Đây là cây xanh”",
+          "Con ngáp, nấc, quay đi hay quấy là con đã đủ; đưa con về chỗ yên tĩnh"
+        ],
+        "en": [
+          "Pick baby up when they’re awake, eyes wide and body relaxed; support their head and neck",
+          "Stop at a window, a plant, a photo; let baby look for a few seconds",
+          "Name each thing slowly and softly: “This is a green plant”",
+          "Yawning, hiccups, looking away or fussing mean baby has had enough; take them somewhere quiet"
+        ]
+      },
+      "safety": {
+        "vi": "Không bế con khi đang cầm đồ uống nóng hay đứng gần bếp đang nấu. Không để con nhìn thẳng vào nắng hay đèn sáng.",
+        "en": "Don’t carry baby while holding a hot drink or near a stove in use. Don’t let baby look straight at the sun or bright lights."
+      },
+      "durationMin": 5,
+      "ageDays": {
+        "from": 0,
+        "to": 60
+      },
+      "needs": ["play", "bonding"],
+      "interests": ["milestones", "moments"],
+      "timeOfDay": "day",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "NHS: Play and learning",
+          "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/"
+        },
+        {
+          "label": "WHO: Nurturing care for early childhood development (2018)",
+          "url": "https://www.who.int/publications/i/item/9789241514064"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_p4_warm_hand_settle",
+      "version": 1,
+      "status": "published",
+      "kind": "activity",
+      "title": {
+        "vi": "Bàn tay ấm khi đặt con xuống",
+        "en": "A warm hand when you lay baby down"
+      },
+      "summary": {
+        "vi": "Một số bé dễ giật mình khi rời vòng tay; giữ bàn tay ấm trên người con thêm một chút có thể giúp con ngủ tiếp.",
+        "en": "Some babies startle when they leave your arms; keeping a warm hand on them a little longer may help them stay asleep."
+      },
+      "steps": {
+        "vi": [
+          "Chờ con ngủ say: tay chân mềm, hơi thở đều",
+          "Đặt con nằm ngửa vào cũi, hạ mông và lưng trước, đầu sau cùng",
+          "Đặt nhẹ một bàn tay ấm lên ngực hoặc bụng con trong một, hai phút",
+          "Rút tay thật chậm; nếu con cựa, giữ tay thêm chút rồi thử lại"
+        ],
+        "en": [
+          "Wait until baby is deeply asleep: limbs floppy, breathing even",
+          "Lay baby on their back in the cot, bottom and back first, head last",
+          "Rest a warm hand gently on their chest or tummy for a minute or two",
+          "Lift your hand away very slowly; if baby stirs, keep it there a little longer and try again"
+        ]
+      },
+      "safety": {
+        "vi": "Luôn đặt con nằm ngửa trên nệm phẳng, chắc; không gối, chăn dày, thú bông hay gối chặn quanh con. Không đè tay lên ngực con.",
+        "en": "Always lay baby on their back on a firm, flat mattress, with no pillows, thick blankets, soft toys or positioners around them. Don’t press down on baby’s chest."
+      },
+      "durationMin": 3,
+      "ageDays": {
+        "from": 0,
+        "to": 60
+      },
+      "needs": ["soothing", "sleep"],
+      "interests": ["sleep"],
+      "timeOfDay": "any",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "NHS: Soothing a crying baby",
+          "url": "https://www.nhs.uk/baby/caring-for-a-newborn/soothing-a-crying-baby/"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: A parent’s guide to safe sleep",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/A-Parents-Guide-to-Safe-Sleep.aspx"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_p4_find_the_sound",
+      "version": 1,
+      "status": "published",
+      "kind": "activity",
+      "title": {
+        "vi": "Con tìm theo tiếng",
+        "en": "Finding the sound"
+      },
+      "summary": {
+        "vi": "Tạo một âm thanh nhẹ ở bên cạnh rồi xem con có lặng đi, nhìn hay quay đầu về phía đó không: một trò chơi nhỏ với đôi tai của con.",
+        "en": "Make a soft sound to one side and see whether baby goes still, looks or turns towards it: a small game with their hearing."
+      },
+      "steps": {
+        "vi": [
+          "Khi con nằm ngửa và tỉnh táo, ngồi cạnh con, hơi ngoài tầm mắt con",
+          "Gọi tên con khẽ hoặc lắc nhẹ lục lạc, cách tai con ít nhất một gang tay",
+          "Chờ vài giây: con có thể ngừng cử động, mở to mắt hoặc quay đầu",
+          "Ghé mặt vào cho con thấy, mỉm cười, rồi thử ở phía bên kia",
+          "Nếu con không bao giờ giật mình khi có tiếng động to, hãy hỏi bác sĩ về kiểm tra thính lực"
+        ],
+        "en": [
+          "With baby on their back and alert, sit beside them, just out of their sight",
+          "Softly say their name or gently shake a rattle, at least a hand’s span from their ear",
+          "Wait a few seconds: baby may go still, widen their eyes or turn their head",
+          "Lean in so baby can see you, smile, then try the other side",
+          "If baby never startles at loud noises, ask the doctor about a hearing check"
+        ]
+      },
+      "safety": {
+        "vi": "Chỉ dùng âm thanh nhỏ, không sát tai con. Lục lạc phải to hơn miệng con, chắc, không bung hạt.",
+        "en": "Only soft sounds, never close to the ear. The rattle must be bigger than baby’s mouth and sturdy, with no loose beads."
+      },
+      "durationMin": 3,
+      "ageDays": {
+        "from": 0,
+        "to": 90
+      },
+      "needs": ["milestone", "play"],
+      "interests": ["milestones"],
+      "timeOfDay": "any",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "AAP · HealthyChildren.org: Hearing and making sounds",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Hearing-and-Making-Sounds.aspx"
+        },
+        {
+          "label": "CDC: Milestones by age (Learn the Signs. Act Early.)",
+          "url": "https://www.cdc.gov/act-early/milestones/index.html"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_p4_coo_back",
+      "version": 1,
+      "status": "published",
+      "kind": "activity",
+      "title": {
+        "vi": "Đáp lại tiếng ê a của con",
+        "en": "Coo back to baby"
+      },
+      "summary": {
+        "vi": "Từ khoảng 6–8 tuần, nhiều bé bắt đầu ê a; ba mẹ nhại lại rồi chờ con đáp là những “cuộc trò chuyện” đầu tiên.",
+        "en": "From around 6–8 weeks, many babies start to coo; copying the sound and waiting for baby’s reply makes your first “conversations”."
+      },
+      "steps": {
+        "vi": [
+          "Bế con gần mặt mình hoặc nằm cạnh con khi con tỉnh táo",
+          "Khi con phát ra âm thanh như “a”, “ư”, nhắc lại đúng âm đó kèm một nụ cười",
+          "Im lặng chờ vài giây cho con đến lượt",
+          "Con quay đi là con cần nghỉ; dừng lại và thử lúc khác"
+        ],
+        "en": [
+          "Hold baby close to your face, or lie beside them, when they’re alert",
+          "When baby makes a sound like “ah” or “ooh”, say the same sound back with a smile",
+          "Wait quietly for a few seconds so it’s baby’s turn",
+          "If baby turns away, they need a break; stop and try another time"
+        ]
+      },
+      "safety": null,
+      "durationMin": 3,
+      "ageDays": {
+        "from": 30,
+        "to": 90
+      },
+      "needs": ["milestone", "bonding"],
+      "interests": ["milestones", "moments"],
+      "timeOfDay": "any",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "NHS: Help your baby learn to talk",
+          "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/help-your-baby-learn-to-talk/"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: Hearing and making sounds",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Hearing-and-Making-Sounds.aspx"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: Emotional and social development, birth to 3 months",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Emotional-and-Social-Development-Birth-to-3-Months.aspx"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_p4_hands_play",
+      "version": 1,
+      "status": "published",
+      "kind": "activity",
+      "title": {
+        "vi": "Chơi với đôi bàn tay",
+        "en": "Playing with hands"
+      },
+      "summary": {
+        "vi": "Bé nhỏ dần khám phá đôi tay: mở ra, nắm lại, đưa lên miệng. Vài trò chạm nhẹ cho con thêm dịp cảm nhận đôi tay mình.",
+        "en": "Young babies gradually discover their hands: opening, gripping, bringing them to the mouth. A few gentle touch games give baby more chances to feel their own hands."
+      },
+      "steps": {
+        "vi": [
+          "Khi con nằm ngửa và tỉnh, đặt ngón tay mình vào lòng bàn tay con để con nắm",
+          "Nhẹ nhàng đưa hai tay con lại gần nhau trên ngực, vỗ khẽ và hát một câu",
+          "Cho con chạm vài chất liệu khác nhau: khăn xô mềm, ống tay áo len",
+          "Để con tự cử động tay chân một lúc, tay không bị quấn"
+        ],
+        "en": [
+          "With baby on their back and awake, put your finger in their palm to grip",
+          "Gently bring baby’s hands together on their chest, pat softly and sing a line",
+          "Let baby touch a few textures: a soft muslin, a knitted sleeve",
+          "Give baby a little time to move their arms and legs freely, hands unwrapped"
+        ]
+      },
+      "safety": {
+        "vi": "Không buộc dây, vòng, lắc bạc hay đồ chơi có dây vào cổ tay, cổ chân con. Không đưa cho con đồ vật nhỏ lọt vừa miệng.",
+        "en": "Don’t tie strings, bracelets, silver anklets or toys with cords to baby’s wrists or ankles. Nothing small enough to fit in baby’s mouth."
+      },
+      "durationMin": 5,
+      "ageDays": {
+        "from": 0,
+        "to": 90
+      },
+      "needs": ["milestone", "play"],
+      "interests": ["milestones"],
+      "timeOfDay": "day",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "CDC: Milestones by age (Learn the Signs. Act Early.)",
+          "url": "https://www.cdc.gov/act-early/milestones/index.html"
+        },
+        {
+          "label": "UNICEF Parenting: Your baby’s developmental milestones",
+          "url": "https://www.unicef.org/parenting/child-development/your-babys-developmental-milestones"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_p4_back_soon_game",
+      "version": 1,
+      "status": "published",
+      "kind": "activity",
+      "title": {
+        "vi": "Trò “đi rồi về ngay”",
+        "en": "The “back soon” game"
+      },
+      "summary": {
+        "vi": "Từ khoảng 6 tháng, nhiều bé bắt đầu lo khi ba mẹ khuất mắt. Những lần đi thật ngắn rồi quay lại có thể giúp con quen dần với việc ba mẹ đi rồi về.",
+        "en": "From around 6 months, many babies start to worry when you’re out of sight. Very short absences followed by your return may help them get used to you leaving and coming back."
+      },
+      "steps": {
+        "vi": [
+          "Khi con đang vui với một người thân, nói với con, ví dụ: “Mẹ ra lấy khăn, mẹ về ngay”",
+          "Ra khỏi phòng vài giây, vẫn nói vọng vào để con nghe tiếng",
+          "Quay lại và chào con vui vẻ: “Mẹ về rồi đây!”",
+          "Lặp lại vài lần trong ngày, kéo dài thời gian từ từ khi con đã quen"
+        ],
+        "en": [
+          "While baby is happy with someone they know, tell them, for example: “I’m getting a towel, back soon”",
+          "Step out of the room for a few seconds, still talking so baby hears your voice",
+          "Come back and greet baby warmly: “I’m back!”",
+          "Repeat a few times a day, and stretch the time slowly as baby gets used to it"
+        ]
+      },
+      "safety": {
+        "vi": "Khi ba mẹ ra ngoài, dù chỉ vài giây, luôn để con ở cùng một người lớn hoặc trong cũi an toàn.",
+        "en": "Whenever you step out, even for a few seconds, leave baby with another adult or in a safe cot."
+      },
+      "durationMin": 5,
+      "ageDays": {
+        "from": 183,
+        "to": 365
+      },
+      "needs": ["soothing", "bonding"],
+      "interests": ["moments"],
+      "timeOfDay": "day",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "NHS: Separation anxiety",
+          "url": "https://www.nhs.uk/baby/babys-development/behaviour/separation-anxiety/"
+        },
+        {
+          "label": "WHO: Nurturing care for early childhood development (2018)",
+          "url": "https://www.who.int/publications/i/item/9789241514064"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_p4_slow_breath_hold",
+      "version": 1,
+      "status": "published",
+      "kind": "activity",
+      "title": {
+        "vi": "Ôm con và thở chậm",
+        "en": "Hold baby and breathe slowly"
+      },
+      "summary": {
+        "vi": "Khi con quấy, ba mẹ bình tĩnh lại trước rồi ôm con sát ngực, thở chậm và ngân khẽ; nhiều bé có thể dịu dần theo nhịp của người lớn.",
+        "en": "When baby is upset, calming yourself first, then holding them chest to chest, breathing slowly and humming low, may help them settle to your rhythm."
+      },
+      "steps": {
+        "vi": [
+          "Kiểm tra nhanh: con có đói, tã bẩn, nóng hay lạnh không",
+          "Thả lỏng vai, hít vào chậm, thở ra dài hơn hít vào",
+          "Ôm con áp ngực, ngân nhẹ một âm trầm “ừm…” theo hơi thở ra",
+          "Đi chậm hoặc đung đưa nhẹ; con có thể dịu sau vài phút, có khi lâu hơn"
+        ],
+        "en": [
+          "Quickly check: is baby hungry, in a dirty diaper, too hot or too cold?",
+          "Drop your shoulders, breathe in slowly and breathe out for longer than you breathe in",
+          "Hold baby chest to chest and hum a low “mmm” as you breathe out",
+          "Walk slowly or sway gently; baby may settle within a few minutes, sometimes longer"
+        ]
+      },
+      "safety": {
+        "vi": "Không bao giờ lắc hay xóc mạnh bé. Nếu thấy mình sắp mất bình tĩnh, đặt con nằm ngửa trong cũi an toàn và ra ngoài vài phút. Nếu con khóc khác hẳn mọi khi, kèm sốt hay bỏ ăn, hãy gọi bác sĩ.",
+        "en": "Never shake or roughly bounce a baby. If you feel you might lose control, lay baby on their back in a safe cot and step away for a few minutes. If the crying is very different from usual, or comes with fever or not eating, call the doctor."
+      },
+      "durationMin": 5,
+      "ageDays": {
+        "from": 183,
+        "to": 365
+      },
+      "needs": ["soothing"],
+      "interests": ["moments"],
+      "timeOfDay": "any",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "NHS: Soothing a crying baby",
+          "url": "https://www.nhs.uk/baby/caring-for-a-newborn/soothing-a-crying-baby/"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: Calming a fussy baby",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/crying-colic/Pages/Calming-A-Fussy-Baby.aspx"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: Abusive head trauma (shaken baby syndrome)",
+          "url": "https://www.healthychildren.org/English/safety-prevention/at-home/Pages/Abusive-Head-Trauma-Shaken-Baby-Syndrome.aspx"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_p4_meet_slowly",
+      "version": 1,
+      "status": "published",
+      "kind": "activity",
+      "title": {
+        "vi": "Làm quen người mới từ từ",
+        "en": "Meeting new people slowly"
+      },
+      "summary": {
+        "vi": "Trong khoảng 6–12 tháng, nhiều bé e dè với người lạ, kể cả họ hàng ít gặp. Cho con quan sát từ vòng tay ba mẹ thường dễ chịu hơn là trao con ngay.",
+        "en": "Between about 6 and 12 months, many babies are wary of strangers, even relatives they rarely see. Letting baby watch from your arms is often easier than handing them over straight away."
+      },
+      "steps": {
+        "vi": [
+          "Bế con khi khách đến; để khách nói chuyện với ba mẹ trước",
+          "Nhờ khách khoan bế hay hôn con, chỉ mỉm cười và nói nhẹ với con",
+          "Khách có thể đưa con một món đồ chơi quen khi con vẫn ngồi trong lòng ba mẹ",
+          "Con bám chặt hay khóc là con cần thêm thời gian; thử lại lần sau"
+        ],
+        "en": [
+          "Hold baby when visitors arrive, and let them talk to you first",
+          "Ask visitors to wait before picking up or kissing baby; a smile and a soft voice are enough",
+          "The visitor can offer a familiar toy while baby stays on your lap",
+          "If baby clings or cries, they need more time; try again next visit"
+        ]
+      },
+      "safety": {
+        "vi": "Người đang ốm, ho, sốt hay có mụn rộp quanh miệng không nên hôn con.",
+        "en": "Anyone who is ill, coughing, feverish or has a cold sore should not kiss baby."
+      },
+      "durationMin": 5,
+      "ageDays": {
+        "from": 183,
+        "to": 365
+      },
+      "needs": ["soothing", "bonding"],
+      "interests": ["moments"],
+      "timeOfDay": "day",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "NHS: Separation anxiety",
+          "url": "https://www.nhs.uk/baby/babys-development/behaviour/separation-anxiety/"
+        },
+        {
+          "label": "NHS: Behaviour",
+          "url": "https://www.nhs.uk/baby/babys-development/behaviour/"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_p4_feeling_faces",
+      "version": 1,
+      "status": "published",
+      "kind": "activity",
+      "title": {
+        "vi": "Đoán cảm xúc qua gương mặt",
+        "en": "Guess the feeling face"
+      },
+      "summary": {
+        "vi": "Làm mặt vui, buồn, ngạc nhiên rồi gọi tên cảm xúc là cách vui để con có thêm từ nói về điều mình cảm thấy.",
+        "en": "Making happy, sad and surprised faces and naming them is a fun way to give your child words for what they feel."
+      },
+      "steps": {
+        "vi": [
+          "Ngồi cùng con trước gương, hoặc mặt đối mặt",
+          "Làm một gương mặt, ví dụ mặt buồn, và nói: “Mẹ đang buồn”",
+          "Mời con làm theo, rồi đổi lượt: con làm mặt, ba mẹ đoán",
+          "Lúc khác trong ngày, gọi tên cảm xúc của con: “Con đang bực vì phải dừng chơi”"
+        ],
+        "en": [
+          "Sit with your child in front of a mirror, or face to face",
+          "Make a face, say a sad one, and say: “I’m feeling sad”",
+          "Invite them to copy, then swap: they make a face, you guess",
+          "Later in the day, name their feeling: “You’re cross because playtime stopped”"
+        ]
+      },
+      "safety": null,
+      "durationMin": 5,
+      "ageDays": {
+        "from": 731,
+        "to": 1095
+      },
+      "needs": ["bonding", "milestone"],
+      "interests": ["moments", "milestones"],
+      "timeOfDay": "any",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "AAP · HealthyChildren.org: Emotional development, 2-year-olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Emotional-Development-2-Year-Olds.aspx"
+        },
+        {
+          "label": "UNICEF Parenting: Child development",
+          "url": "https://www.unicef.org/parenting/child-development"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_p4_child_leads",
+      "version": 1,
+      "status": "published",
+      "kind": "activity",
+      "title": {
+        "vi": "5 phút con dẫn dắt",
+        "en": "Five minutes, your child leads"
+      },
+      "summary": {
+        "vi": "Vài phút mỗi ngày chơi theo ý con, không chỉ bảo, không điện thoại, có thể giúp con thấy mình được chú ý và lắng nghe.",
+        "en": "A few minutes a day playing your child’s way, with no directions and no phone, may help them feel noticed and listened to."
+      },
+      "steps": {
+        "vi": [
+          "Nói với con: “Bây giờ là giờ của con. Con muốn chơi gì?”",
+          "Để con chọn trò và cách chơi; ba mẹ làm theo",
+          "Kể lại điều con đang làm, như “Con xếp khối đỏ cao quá”; hạn chế hỏi và ra lệnh",
+          "Khen cụ thể khi con làm điều tốt, như nhẹ tay hay chờ lượt",
+          "Báo trước khi hết giờ, rồi kết thúc bằng một cái ôm"
+        ],
+        "en": [
+          "Tell your child: “This is your time. What shall we play?”",
+          "Let them choose the game and how to play it; you follow",
+          "Describe what they’re doing, like “You’re stacking the red block so high”; keep questions and instructions few",
+          "Praise specific things they do well, like being gentle or waiting a turn",
+          "Give a warning before time is up, then finish with a hug"
+        ]
+      },
+      "safety": null,
+      "durationMin": 5,
+      "ageDays": {
+        "from": 731,
+        "to": 1095
+      },
+      "needs": ["bonding", "play"],
+      "interests": ["moments"],
+      "timeOfDay": "any",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "WHO: Nurturing care for early childhood development (2018)",
+          "url": "https://www.who.int/publications/i/item/9789241514064"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: Social development, 2-year-olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Social-Development-2-Year-Olds.aspx"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_p4_family_photos",
+      "version": 1,
+      "status": "published",
+      "kind": "activity",
+      "title": {
+        "vi": "Xem ảnh gia đình cùng con",
+        "en": "Family photos together"
+      },
+      "summary": {
+        "vi": "Cùng xem lại ảnh người thân và những ngày đã qua cho con dịp gọi tên mọi người và kể lại chuyện cũ.",
+        "en": "Looking back at photos of family and past days together gives your child a chance to name people and retell what happened."
+      },
+      "steps": {
+        "vi": [
+          "Chọn vài tấm ảnh in hoặc một cuốn album; nếu dùng điện thoại, ba mẹ cầm và cùng xem với con",
+          "Hỏi: “Ai đây?”, “Hôm đó mình đi đâu nhỉ?”, rồi chờ con trả lời",
+          "Nhắc lại và nói thêm một chút: “Đúng rồi, bà. Bà bế con ở biển”",
+          "Để con chọn tấm ảnh con thích nhất"
+        ],
+        "en": [
+          "Pick a few printed photos or an album; if you use a phone, you hold it and look together",
+          "Ask: “Who’s this?”, “Where did we go that day?”, and wait for an answer",
+          "Repeat and add a little: “Yes, Grandma. Grandma held you at the beach”",
+          "Let your child pick their favourite photo"
+        ]
+      },
+      "safety": null,
+      "durationMin": 5,
+      "ageDays": {
+        "from": 731,
+        "to": 1095
+      },
+      "needs": ["bonding", "milestone"],
+      "interests": ["moments", "milestones"],
+      "timeOfDay": "any",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "AAP · HealthyChildren.org: Language development, 2-year-olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Language-Development-2-Year-Olds.aspx"
+        },
+        {
+          "label": "NHS: Help your baby learn to talk",
+          "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/help-your-baby-learn-to-talk/"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_p4_say_what_went_well",
+      "version": 1,
+      "status": "published",
+      "kind": "activity",
+      "title": {
+        "vi": "Nói cho con biết con đã làm tốt điều gì",
+        "en": "Tell your child what they did well"
+      },
+      "summary": {
+        "vi": "Khen cụ thể một việc tốt nhỏ ngay khi thấy có thể giúp con hiểu ba mẹ mong điều gì, nhẹ nhàng hơn là chỉ nhắc khi con làm sai.",
+        "en": "Praising one small good thing as soon as you see it may help your child understand what you hope for, more gently than only pointing out mistakes."
+      },
+      "steps": {
+        "vi": [
+          "Để ý một việc con làm tốt: cất giày, chờ lượt, nhẹ tay với em",
+          "Ngồi xuống ngang tầm con và nhìn con",
+          "Nói đúng việc đó: “Con đã tự cất giày lên kệ rồi đấy”",
+          "Thêm một cái ôm hay đập tay"
+        ],
+        "en": [
+          "Notice one thing your child does well: putting shoes away, waiting a turn, being gentle with a sibling",
+          "Get down to their level and look at them",
+          "Name exactly that: “You put your shoes on the shelf all by yourself”",
+          "Add a hug or a high five"
+        ]
+      },
+      "safety": null,
+      "durationMin": 2,
+      "ageDays": {
+        "from": 731,
+        "to": 1095
+      },
+      "needs": ["bonding"],
+      "interests": ["moments"],
+      "timeOfDay": "any",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "AAP · HealthyChildren.org: Social development, 2-year-olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Social-Development-2-Year-Olds.aspx"
+        },
+        {
+          "label": "NHS: Behaviour",
+          "url": "https://www.nhs.uk/baby/babys-development/behaviour/"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_p4_two_step_ask",
+      "version": 1,
+      "status": "published",
+      "kind": "activity",
+      "title": {
+        "vi": "Nhờ con hai việc liền nhau",
+        "en": "Two steps in a row"
+      },
+      "summary": {
+        "vi": "Trong khoảng 2–3 tuổi, nhiều bé bắt đầu làm theo lời nhờ có hai bước; biến việc đó thành trò chơi là một cách tập nghe và nhớ.",
+        "en": "Between 2 and 3, many children start to follow two-step requests; turning it into a game is one way to practise listening and remembering."
+      },
+      "steps": {
+        "vi": [
+          "Chọn hai việc dễ với đồ vật ở gần: “Con lấy dép, rồi mang ra cửa nhé”",
+          "Nói chậm, rõ; lúc đầu có thể chỉ tay giúp con",
+          "Chờ con làm; nếu con quên bước sau, nhắc lại bước đó",
+          "Cảm ơn con, rồi đổi vai: con nhờ ba mẹ hai việc"
+        ],
+        "en": [
+          "Pick two easy steps with things close by: “Get your sandals, then take them to the door”",
+          "Say it slowly and clearly; point to help at first",
+          "Wait while they do it; if they forget the second step, repeat it",
+          "Thank them, then swap roles: they ask you to do two things"
+        ]
+      },
+      "safety": null,
+      "durationMin": 5,
+      "ageDays": {
+        "from": 731,
+        "to": 1095
+      },
+      "needs": ["milestone", "play"],
+      "interests": ["milestones"],
+      "timeOfDay": "any",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "CDC: Milestones by age (Learn the Signs. Act Early.)",
+          "url": "https://www.cdc.gov/act-early/milestones/index.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: Language development, 2-year-olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Language-Development-2-Year-Olds.aspx"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_p4_sort_colours",
+      "version": 1,
+      "status": "published",
+      "kind": "activity",
+      "title": {
+        "vi": "Xếp đồ theo màu",
+        "en": "Sort by colour"
+      },
+      "summary": {
+        "vi": "Chia đồ vật quen thuộc thành nhóm theo màu hay kích cỡ là trò chơi đơn giản để con nhận ra điểm giống và khác nhau.",
+        "en": "Sorting everyday things into groups by colour or size is a simple game for spotting what’s the same and what’s different."
+      },
+      "steps": {
+        "vi": [
+          "Chuẩn bị hai cái bát và vài món to, an toàn: tất đỏ, tất xanh, cốc nhựa, khối gỗ",
+          "Làm mẫu: “Cái đỏ vào bát này, cái xanh vào bát kia”",
+          "Để con thử; gọi tên màu khi con đặt từng món",
+          "Con xếp nhầm cũng không sao; hỏi nhẹ: “Cái này màu gì nhỉ?”"
+        ],
+        "en": [
+          "Set out two bowls and a few large, safe items: red and blue socks, plastic cups, wooden blocks",
+          "Show them: “Red ones in this bowl, blue ones in that one”",
+          "Let your child try; say the colour as they place each item",
+          "Mix-ups are fine; ask gently: “What colour is this one?”"
+        ]
+      },
+      "safety": {
+        "vi": "Có người lớn bên cạnh. Mỗi món phải to hơn miệng con, không có hạt nhỏ, pin cúc áo hay nam châm nhỏ.",
+        "en": "Stay with your child. Each item must be bigger than their mouth, with no small beads, button batteries or small magnets."
+      },
+      "durationMin": 5,
+      "ageDays": {
+        "from": 731,
+        "to": 1095
+      },
+      "needs": ["milestone", "play"],
+      "interests": ["milestones"],
+      "timeOfDay": "day",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "CDC: Milestones by age (Learn the Signs. Act Early.)",
+          "url": "https://www.cdc.gov/act-early/milestones/index.html"
+        },
+        {
+          "label": "NHS: Baby and toddler play ideas",
+          "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/baby-and-toddler-play-ideas/"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "act_p4_frog_jumps",
+      "version": 1,
+      "status": "published",
+      "kind": "activity",
+      "title": {
+        "vi": "Nhảy ếch bằng hai chân",
+        "en": "Frog jumps with both feet"
+      },
+      "summary": {
+        "vi": "Nhiều trẻ 2–3 tuổi thích tập bật nhảy bằng hai chân; vài phút nhảy ếch vừa là vận động, vừa là trò chơi chung.",
+        "en": "Many 2- to 3-year-olds love practising jumping with both feet; a few minutes of frog jumps is active play and a game together."
+      },
+      "steps": {
+        "vi": [
+          "Dọn một khoảng sàn trống, phẳng, không trơn",
+          "Dán một vạch băng dính hoặc trải một chiếc khăn mỏng làm “dòng suối”",
+          "Ngồi xổm làm ếch, nhảy qua bằng hai chân và đếm “một, hai, nhảy!”",
+          "Nắm tay con lúc đầu nếu con cần; con có thể bước qua trước khi nhảy được"
+        ],
+        "en": [
+          "Clear a flat, non-slippery patch of floor",
+          "Stick down a strip of tape or lay a thin towel as a “stream”",
+          "Crouch like a frog, jump over with both feet and count “one, two, jump!”",
+          "Hold their hands at first if they need it; they may step over before they can jump"
+        ]
+      },
+      "safety": {
+        "vi": "Không nhảy trên giường, sofa, gần cầu thang, ban công hay cạnh bàn sắc. Đi chân trần hoặc giày đế bám.",
+        "en": "Not on beds or sofas, or near stairs, balconies or sharp table edges. Bare feet or shoes with grip."
+      },
+      "durationMin": 5,
+      "ageDays": {
+        "from": 731,
+        "to": 1095
+      },
+      "needs": ["milestone", "play"],
+      "interests": ["milestones"],
+      "timeOfDay": "day",
+      "locales": ["vi", "en"],
+      "regions": [],
+      "sources": [
+        {
+          "label": "CDC: Milestones by age (Learn the Signs. Act Early.)",
+          "url": "https://www.cdc.gov/act-early/milestones/index.html"
+        },
+        {
+          "label": "WHO: Guidelines on physical activity, sedentary behaviour and sleep for children under 5 years (2019)",
+          "url": "https://www.who.int/publications/i/item/9789241550536"
+        }
+      ],
+      "review": null
     }
   ],
   "ageCards": [
@@ -5202,6 +6215,613 @@
         "credential": "Child Life Team",
         "reviewedOn": "2026-10-30"
       }
+    },
+    {
+      "id": "age_m25",
+      "version": 1,
+      "status": "published",
+      "ageDays": {
+        "from": 761,
+        "to": 790
+      },
+      "title": {
+        "vi": "25 tháng tuổi",
+        "en": "25 months old"
+      },
+      "body": {
+        "vi": "Sau 2 tuổi, vốn từ của nhiều bé tăng nhanh: con có thể nhắc lại từ ba mẹ vừa nói và hay nói “không” để thử quyền tự quyết của mình. Nhiều bé thích chơi cạnh trẻ khác hơn là chơi cùng. Mỗi bé mỗi khác.",
+        "en": "After 2, many children’s vocabulary grows quickly: your child may repeat words you’ve just said and say “no” a lot to try out having their own say. Many like playing alongside other children more than with them. Every child is different."
+      },
+      "tips": {
+        "vi": [
+          "Nhắc lại lời con và thêm một từ: con nói “xe”, ba mẹ nói “xe đỏ chạy nhanh”",
+          "Cho con chọn giữa hai thứ ba mẹ đều đồng ý, thay vì hỏi “có hay không”",
+          "Xem lại sổ tiêm chủng và hỏi cơ sở y tế xem con còn mũi nào cần tiêm theo lịch nơi bạn sống"
+        ],
+        "en": [
+          "Repeat your child’s words and add one: they say “car”, you say “red car, going fast”",
+          "Offer a choice between two things you’re happy with, rather than a yes-or-no question",
+          "Check the vaccination record and ask your clinic whether any doses are due under the schedule where you live"
+        ]
+      },
+      "watchFor": {
+        "vi": [
+          "Con chưa ghép được hai từ với nhau",
+          "Con không làm theo được lời nhờ đơn giản",
+          "Con mất đi một kỹ năng từng làm được"
+        ],
+        "en": [
+          "Your child isn’t putting two words together",
+          "Your child doesn’t follow simple instructions",
+          "Your child loses a skill they used to have"
+        ]
+      },
+      "interests": ["milestones", "vaccines"],
+      "sources": [
+        {
+          "label": "CDC: Milestones by age (Learn the Signs. Act Early.)",
+          "url": "https://www.cdc.gov/act-early/milestones/index.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: Language development, 2-year-olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Language-Development-2-Year-Olds.aspx"
+        },
+        {
+          "label": "NHS: Help your baby learn to talk",
+          "url": "https://www.nhs.uk/baby/babys-development/play-and-learning/help-your-baby-learn-to-talk/"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "age_m26",
+      "version": 1,
+      "status": "published",
+      "ageDays": {
+        "from": 791,
+        "to": 821
+      },
+      "title": {
+        "vi": "26 tháng tuổi",
+        "en": "26 months old"
+      },
+      "body": {
+        "vi": "Nhiều trẻ 2 tuổi vẫn ngủ một giấc ngày; có bé bắt đầu khó vào giấc hơn hay đòi thêm chuyện, thêm nước trước giờ ngủ. Tổng giờ ngủ mỗi ngày, gồm cả giấc ngày, thường vào khoảng 11–14 giờ ở tuổi này. Mỗi bé mỗi khác.",
+        "en": "Many 2-year-olds still have one daytime nap; some start to take longer to settle or ask for another story or drink at bedtime. Total sleep, naps included, is often around 11–14 hours a day at this age. Every child is different."
+      },
+      "tips": {
+        "vi": [
+          "Giữ giờ đi ngủ và giờ dậy gần giống nhau mỗi ngày, kể cả cuối tuần",
+          "Cho con vận động ngoài trời ban ngày; tắt màn hình trong giờ trước khi ngủ",
+          "Báo trước khi hết giờ chơi và để con chọn một việc nhỏ, như bộ đồ ngủ hay cuốn sách"
+        ],
+        "en": [
+          "Keep bedtime and wake-up time roughly the same every day, weekends included",
+          "Plan active outdoor play in the day; no screens in the hour before bed",
+          "Give a warning before playtime ends, and let your child choose one small thing, like their pyjamas or a book"
+        ]
+      },
+      "watchFor": {
+        "vi": [
+          "Con ngáy to hầu hết các đêm, thở hổn hển hoặc có lúc như ngừng thở khi ngủ",
+          "Con mất đi một kỹ năng từng làm được"
+        ],
+        "en": [
+          "Your child snores loudly most nights, gasps, or seems to pause breathing in their sleep",
+          "Your child loses a skill they used to have"
+        ]
+      },
+      "interests": ["sleep"],
+      "sources": [
+        {
+          "label": "WHO: Guidelines on physical activity, sedentary behaviour and sleep for children under 5 years (2019)",
+          "url": "https://www.who.int/publications/i/item/9789241550536"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: Toddler (1–3 years)",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/default.aspx"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "age_m27",
+      "version": 1,
+      "status": "published",
+      "ageDays": {
+        "from": 822,
+        "to": 851
+      },
+      "title": {
+        "vi": "27 tháng tuổi",
+        "en": "27 months old"
+      },
+      "body": {
+        "vi": "Ở tuổi này, nhiều bé ăn nhiều hôm này, ít hôm khác, và dè chừng món mới. Điều đó thường gặp; con có thể cần được mời một món nhiều lần trước khi chịu nếm. Mỗi bé mỗi khác.",
+        "en": "At this age, many children eat a lot one day and little the next, and are wary of new foods. That’s common; a child may need to be offered a food many times before tasting it. Every child is different."
+      },
+      "tips": {
+        "vi": [
+          "Ba mẹ quyết định ăn gì và khi nào; con quyết định ăn bao nhiêu",
+          "Đặt một ít món mới cạnh món con đã quen; không ép, không thưởng bằng đồ ngọt",
+          "Sữa không thay cho bữa ăn; hỏi bác sĩ lượng sữa mỗi ngày hợp với con",
+          "Vẫn cắt nho, cà chua bi theo chiều dọc và không cho con ăn hạt nguyên"
+        ],
+        "en": [
+          "You decide what and when; your child decides how much",
+          "Put a little of a new food next to one they already like; no pressure, and no sweets as rewards",
+          "Milk doesn’t replace meals; ask the doctor how much a day suits your child",
+          "Keep cutting grapes and cherry tomatoes lengthways, and no whole nuts"
+        ]
+      },
+      "watchFor": {
+        "vi": [
+          "Con sụt cân, chậm lên cân hoặc chỉ ăn rất ít loại món",
+          "Con hay nôn ọe, nghẹn hoặc ho khi ăn",
+          "Con mất đi một kỹ năng từng làm được"
+        ],
+        "en": [
+          "Your child loses weight, gains slowly, or eats only a very small number of foods",
+          "Your child often gags, chokes or coughs when eating",
+          "Your child loses a skill they used to have"
+        ]
+      },
+      "interests": ["nutrition", "feeding"],
+      "sources": [
+        {
+          "label": "AAP · HealthyChildren.org: Toddler nutrition",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/nutrition/Pages/default.aspx"
+        },
+        {
+          "label": "NHS: Foods to avoid giving babies and young children",
+          "url": "https://www.nhs.uk/baby/weaning-and-feeding/foods-to-avoid-giving-babies-and-young-children/"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "age_m28",
+      "version": 1,
+      "status": "published",
+      "ageDays": {
+        "from": 852,
+        "to": 882
+      },
+      "title": {
+        "vi": "28 tháng tuổi",
+        "en": "28 months old"
+      },
+      "body": {
+        "vi": "Nhiều trẻ quanh 2 tuổi rưỡi có cảm xúc rất mạnh: đang vui ào ào rồi giận dữ khi không được theo ý. Cơn ăn vạ thường gặp ở tuổi này và có thể bớt dần khi con nói được nhiều hơn. Mỗi bé mỗi khác.",
+        "en": "Many children around two and a half have very big feelings: bursting with joy, then furious when things don’t go their way. Tantrums are common at this age and may ease as your child can say more. Every child is different."
+      },
+      "tips": {
+        "vi": [
+          "Giữ bình tĩnh, ở gần con và chờ cơn qua; nói ít, giọng nhỏ",
+          "Khi con dịu lại, gọi tên cảm xúc: “Con giận vì phải về nhà”",
+          "Để ý lúc con hay ăn vạ, như khi đói hay mệt, và sắp xếp để tránh"
+        ],
+        "en": [
+          "Stay calm and close, and wait for it to pass; few words, quiet voice",
+          "Once your child is calmer, name the feeling: “You’re angry because we had to go home”",
+          "Notice when tantrums tend to happen, such as when hungry or tired, and plan around it"
+        ]
+      },
+      "watchFor": {
+        "vi": [
+          "Cơn ăn vạ rất thường xuyên, kéo dài, hoặc con tự làm đau mình hay người khác",
+          "Con nín thở đến tím tái hoặc ngất",
+          "Con mất đi một kỹ năng từng làm được"
+        ],
+        "en": [
+          "Tantrums are very frequent or long, or your child hurts themselves or others",
+          "Your child holds their breath until they turn blue or faint",
+          "Your child loses a skill they used to have"
+        ]
+      },
+      "interests": ["moments"],
+      "sources": [
+        {
+          "label": "NHS: Temper tantrums",
+          "url": "https://www.nhs.uk/baby/babys-development/behaviour/temper-tantrums/"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: Temper tantrums",
+          "url": "https://www.healthychildren.org/English/family-life/family-dynamics/communication-discipline/Pages/Temper-Tantrums.aspx"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: Emotional development, 2-year-olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Emotional-Development-2-Year-Olds.aspx"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "age_m29",
+      "version": 1,
+      "status": "published",
+      "ageDays": {
+        "from": 883,
+        "to": 912
+      },
+      "title": {
+        "vi": "29 tháng tuổi",
+        "en": "29 months old"
+      },
+      "body": {
+        "vi": "Nhiều bé thích ở gần trẻ khác, chơi cạnh nhau và thỉnh thoảng chơi cùng. Chia sẻ đồ chơi vẫn còn khó ở tuổi này; giành đồ là chuyện thường gặp. Mỗi bé mỗi khác.",
+        "en": "Many children enjoy being near other children, playing side by side and sometimes together. Sharing toys is still hard at this age; grabbing is common. Every child is different."
+      },
+      "tips": {
+        "vi": [
+          "Cho con gặp trẻ khác trong thời gian ngắn, ở chỗ quen",
+          "Tập chờ lượt bằng trò lăn bóng hay xếp khối: “Lượt mẹ, lượt con”",
+          "Chuẩn bị hai món đồ chơi giống nhau khi có bạn đến chơi"
+        ],
+        "en": [
+          "Arrange short times with other children in a familiar place",
+          "Practise turns by rolling a ball or stacking blocks: “My turn, your turn”",
+          "Have two of the same toy ready when a friend visits"
+        ]
+      },
+      "watchFor": {
+        "vi": [
+          "Con ít nhìn vào mắt, không quay lại khi được gọi tên, hoặc không chỉ cho ba mẹ xem điều con thích",
+          "Con không chơi bắt chước hay giả vờ",
+          "Con mất đi một kỹ năng từng làm được"
+        ],
+        "en": [
+          "Your child rarely makes eye contact, doesn’t respond to their name, or doesn’t point to show you things",
+          "Your child doesn’t copy actions or play pretend",
+          "Your child loses a skill they used to have"
+        ]
+      },
+      "interests": ["milestones", "moments"],
+      "sources": [
+        {
+          "label": "AAP · HealthyChildren.org: Social development, 2-year-olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Social-Development-2-Year-Olds.aspx"
+        },
+        {
+          "label": "CDC: Milestones by age (Learn the Signs. Act Early.)",
+          "url": "https://www.cdc.gov/act-early/milestones/index.html"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "age_m30",
+      "version": 1,
+      "status": "published",
+      "ageDays": {
+        "from": 913,
+        "to": 943
+      },
+      "title": {
+        "vi": "30 tháng tuổi",
+        "en": "30 months old"
+      },
+      "body": {
+        "vi": "Quanh 2 tuổi rưỡi, nhiều bé nói được khoảng 50 từ, ghép từ với một từ chỉ hành động như “chó chạy”, dùng những từ như “con”, “mình”, bật nhảy bằng hai chân, vặn mở nắp hộp và chơi giả vờ như cho búp bê ăn. Mỗi bé mỗi khác.",
+        "en": "Around two and a half, many children say about 50 words, combine words with an action word like “doggie run”, use words like “I” or “me”, jump with both feet, twist lids open and play pretend, like feeding a doll. Every child is different."
+      },
+      "tips": {
+        "vi": [
+          "Hỏi bác sĩ về đánh giá phát triển ở lần khám quanh 30 tháng, hoặc bất cứ khi nào ba mẹ băn khoăn",
+          "Cùng xem sách tranh, hỏi “Đây là gì?” rồi chờ con trả lời",
+          "Cho con tập vặn mở nắp những hộp nhựa rỗng"
+        ],
+        "en": [
+          "Ask the doctor about a development review around 30 months, or whenever you have concerns",
+          "Share picture books, ask “What’s this?” and wait for an answer",
+          "Let your child practise twisting the lids off empty plastic tubs"
+        ]
+      },
+      "watchFor": {
+        "vi": [
+          "Con nói rất ít từ hoặc chưa ghép được hai từ",
+          "Con không làm theo được lời nhờ đơn giản",
+          "Con không chơi bắt chước hay giả vờ",
+          "Con mất đi một kỹ năng từng làm được"
+        ],
+        "en": [
+          "Your child says very few words or isn’t putting two words together",
+          "Your child doesn’t follow simple instructions",
+          "Your child doesn’t copy actions or play pretend",
+          "Your child loses a skill they used to have"
+        ]
+      },
+      "interests": ["milestones"],
+      "sources": [
+        {
+          "label": "CDC: Milestones by age (Learn the Signs. Act Early.)",
+          "url": "https://www.cdc.gov/act-early/milestones/index.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: Language development, 2-year-olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Language-Development-2-Year-Olds.aspx"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: Language delays in toddlers",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Language-Delay.aspx"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "age_m31",
+      "version": 1,
+      "status": "published",
+      "ageDays": {
+        "from": 944,
+        "to": 973
+      },
+      "title": {
+        "vi": "31 tháng tuổi",
+        "en": "31 months old"
+      },
+      "body": {
+        "vi": "Trong khoảng 2–3 tuổi, nhiều bé bắt đầu cho thấy đã sẵn sàng tập ngồi bô: báo khi tã ướt, giữ tã khô lâu hơn, tò mò khi người lớn đi vệ sinh. Có bé sẵn sàng sớm, có bé muộn hơn. Mỗi bé mỗi khác.",
+        "en": "Between 2 and 3, many children start to show they’re ready for the potty: telling you when their diaper is wet, staying dry for longer, being curious when adults use the toilet. Some are ready earlier, some later. Every child is different."
+      },
+      "tips": {
+        "vi": [
+          "Để bô trong nhà vệ sinh, lúc đầu cho con ngồi thử khi vẫn mặc nguyên quần áo",
+          "Khen khi con thử, không mắng khi con tè dầm; lỡ tè ra quần là chuyện bình thường khi tập",
+          "Khô tã ban đêm thường đến muộn hơn ban ngày, có khi nhiều năm sau"
+        ],
+        "en": [
+          "Keep a potty in the bathroom and let your child sit on it fully dressed at first",
+          "Praise trying, and don’t scold accidents; they’re a normal part of learning",
+          "Staying dry at night usually comes later than in the day, sometimes years later"
+        ]
+      },
+      "watchFor": {
+        "vi": [
+          "Con đau hay khóc khi đi tiểu, hoặc nước tiểu có máu hay mùi rất nặng",
+          "Con táo bón: phân cứng, đau khi đi ngoài, hoặc nhiều ngày không đi",
+          "Con mất đi một kỹ năng từng làm được"
+        ],
+        "en": [
+          "Your child has pain when peeing, or blood or a very strong smell in their urine",
+          "Constipation: hard poos, pain when going, or several days without one",
+          "Your child loses a skill they used to have"
+        ]
+      },
+      "interests": ["milestones"],
+      "sources": [
+        {
+          "label": "NHS: How to potty train",
+          "url": "https://www.nhs.uk/baby/babys-development/potty-training-and-bedwetting/how-to-potty-train/"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: The right age to toilet train",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/toilet-training/Pages/The-Right-Age-to-Toilet-Train.aspx"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "age_m32",
+      "version": 1,
+      "status": "published",
+      "ageDays": {
+        "from": 974,
+        "to": 1003
+      },
+      "title": {
+        "vi": "32 tháng tuổi",
+        "en": "32 months old"
+      },
+      "body": {
+        "vi": "Nhiều bé muốn tự làm: tự cởi quần áo rộng, tự rửa tay, tự cầm bàn chải. Đến khoảng 3 tuổi, nhiều bé đã có đủ 20 răng sữa. Mỗi bé mỗi khác.",
+        "en": "Many children want to do things themselves: taking off loose clothes, washing hands, holding the toothbrush. By about 3, many have all 20 baby teeth. Every child is different."
+      },
+      "tips": {
+        "vi": [
+          "Chải răng cho con 2 lần mỗi ngày với một chút kem có fluor bằng hạt gạo; để con tự chải trước, rồi ba mẹ chải lại",
+          "Dặn con nhổ kem ra, không cần súc lại bằng nước",
+          "Hạn chế đồ uống ngọt; cho con uống nước lọc hoặc sữa",
+          "Hỏi về lần khám răng đầu tiên nếu con chưa từng đi"
+        ],
+        "en": [
+          "Brush twice a day with a rice-grain smear of fluoride toothpaste; let your child have a go, then finish the job yourself",
+          "Encourage them to spit the toothpaste out, with no need to rinse",
+          "Keep sugary drinks to a minimum; offer water or milk",
+          "Ask about a first dental check if your child hasn’t had one"
+        ]
+      },
+      "watchFor": {
+        "vi": [
+          "Răng có đốm trắng đục, vệt nâu hay lỗ, hoặc con kêu đau răng",
+          "Con mất đi một kỹ năng từng làm được"
+        ],
+        "en": [
+          "White chalky spots, brown marks or holes on the teeth, or your child says a tooth hurts",
+          "Your child loses a skill they used to have"
+        ]
+      },
+      "interests": ["milestones"],
+      "sources": [
+        {
+          "label": "NHS: Taking care of children’s teeth",
+          "url": "https://www.nhs.uk/live-well/healthy-teeth-and-gums/taking-care-of-childrens-teeth/"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: Brushing up on oral health",
+          "url": "https://www.healthychildren.org/English/healthy-living/oral-health/Pages/Brushing-Up-on-Oral-Health-Never-Too-Early-to-Start.aspx"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "age_m33",
+      "version": 1,
+      "status": "published",
+      "ageDays": {
+        "from": 1004,
+        "to": 1034
+      },
+      "title": {
+        "vi": "33 tháng tuổi",
+        "en": "33 months old"
+      },
+      "body": {
+        "vi": "Trí tưởng tượng của con phong phú hơn: trò giả vờ dài hơn, con hỏi “tại sao” nhiều hơn. Cùng lúc đó, một số bé bắt đầu sợ bóng tối, tiếng động lớn hay “con quái vật”. Mỗi bé mỗi khác.",
+        "en": "Your child’s imagination is growing: pretend play lasts longer, and they ask “why?” more. Around the same time, some children start to fear the dark, loud noises or “monsters”. Every child is different."
+      },
+      "tips": {
+        "vi": [
+          "Lắng nghe con kể nỗi sợ, không chê cười; nhắc con rằng ba mẹ ở gần",
+          "Một đèn ngủ thật mờ có thể giúp một số bé yên tâm hơn",
+          "Trả lời câu hỏi “tại sao” ngắn gọn, rồi hỏi lại: “Con nghĩ sao?”"
+        ],
+        "en": [
+          "Listen to your child’s fears without teasing, and remind them you’re close by",
+          "A very dim night light may reassure some children",
+          "Answer “why?” questions briefly, then ask back: “What do you think?”"
+        ]
+      },
+      "watchFor": {
+        "vi": [
+          "Nỗi sợ khiến con không chơi, không ngủ hay không ra ngoài được trong nhiều tuần",
+          "Con hay gặp ác mộng và rất khó dỗ",
+          "Con mất đi một kỹ năng từng làm được"
+        ],
+        "en": [
+          "Fears stop your child playing, sleeping or going out for weeks",
+          "Your child has frequent nightmares and is very hard to comfort",
+          "Your child loses a skill they used to have"
+        ]
+      },
+      "interests": ["moments", "sleep"],
+      "sources": [
+        {
+          "label": "AAP · HealthyChildren.org: Emotional development, 2-year-olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Emotional-Development-2-Year-Olds.aspx"
+        },
+        {
+          "label": "NHS: Behaviour",
+          "url": "https://www.nhs.uk/baby/babys-development/behaviour/"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "age_m34",
+      "version": 1,
+      "status": "published",
+      "ageDays": {
+        "from": 1035,
+        "to": 1064
+      },
+      "title": {
+        "vi": "34 tháng tuổi",
+        "en": "34 months old"
+      },
+      "body": {
+        "vi": "Nhiều bé chạy, leo trèo, đá bóng và lên xuống cầu thang tự tin hơn. Con nhanh hơn ba mẹ nghĩ, nên những nguy hiểm như ban công, cửa sổ hay nước càng cần để ý. Mỗi bé mỗi khác.",
+        "en": "Many children run, climb, kick a ball and manage stairs more confidently. They’re quicker than you expect, so dangers like balconies, windows and water need more attention. Every child is different."
+      },
+      "tips": {
+        "vi": [
+          "Cho con vận động nhiều lần trong ngày, cộng lại khoảng 3 giờ, và không ngồi yên một chỗ quá lâu",
+          "Khoá cửa ban công, lắp chấn song cửa sổ và kê đồ đạc xa cửa sổ",
+          "Đậy kín chum, vại, xô nước và luôn có người lớn trông khi con ở gần nước",
+          "Màn hình không quá 1 giờ mỗi ngày; càng ít càng tốt"
+        ],
+        "en": [
+          "Plenty of active play spread through the day, about 3 hours in total, and no long stretches sitting still",
+          "Lock balcony doors, fit window guards and move furniture away from windows",
+          "Cover water jars, tanks and buckets, and always have an adult watching near water",
+          "No more than 1 hour of screen time a day; less is better"
+        ]
+      },
+      "watchFor": {
+        "vi": [
+          "Con hay vấp ngã hoặc khó lên xuống cầu thang hơn trẻ cùng tuổi",
+          "Con mất đi một kỹ năng từng làm được"
+        ],
+        "en": [
+          "Your child falls over a lot or has more trouble with stairs than other children their age",
+          "Your child loses a skill they used to have"
+        ]
+      },
+      "interests": ["milestones"],
+      "sources": [
+        {
+          "label": "WHO: Guidelines on physical activity, sedentary behaviour and sleep for children under 5 years (2019)",
+          "url": "https://www.who.int/publications/i/item/9789241550536"
+        },
+        {
+          "label": "WHO: Drowning (fact sheet)",
+          "url": "https://www.who.int/news-room/fact-sheets/detail/drowning"
+        },
+        {
+          "label": "NHS: Baby and toddler safety",
+          "url": "https://www.nhs.uk/baby/first-aid-and-safety/safety/baby-and-toddler-safety/"
+        }
+      ],
+      "review": null
+    },
+    {
+      "id": "age_m35",
+      "version": 1,
+      "status": "published",
+      "ageDays": {
+        "from": 1065,
+        "to": 1095
+      },
+      "title": {
+        "vi": "35 tháng tuổi",
+        "en": "35 months old"
+      },
+      "body": {
+        "vi": "Gần 3 tuổi, nhiều bé trò chuyện qua lại được vài lượt, hỏi “ai”, “cái gì”, “ở đâu”, “tại sao”, nói được tên mình, tự mặc đồ rộng và bắt đầu chơi cùng trẻ khác. Người ngoài thường hiểu phần lớn lời con nói. Mỗi bé mỗi khác.",
+        "en": "Nearly 3, many children hold a short back-and-forth conversation, ask “who”, “what”, “where” and “why”, say their first name, put on loose clothes and start to join other children in play. People outside the family often understand most of what they say. Every child is different."
+      },
+      "tips": {
+        "vi": [
+          "Hỏi bác sĩ về đánh giá phát triển và kiểm tra mắt ở lần khám quanh 3 tuổi",
+          "Nếu con sắp đi nhà trẻ hay mẫu giáo, kể trước cho con nghe một ngày ở lớp diễn ra thế nào",
+          "Cùng con vẽ: vẽ một vòng tròn và mời con vẽ theo"
+        ],
+        "en": [
+          "Ask the doctor about development and eyesight checks around age 3",
+          "If your child is starting nursery or preschool, talk through what a day there looks like",
+          "Draw together: draw a circle and invite your child to copy it"
+        ]
+      },
+      "watchFor": {
+        "vi": [
+          "Con chưa nói được câu ngắn, hoặc người trong nhà khó hiểu con nói gì",
+          "Con hay ngã hoặc rất khó lên xuống cầu thang",
+          "Con không muốn chơi với trẻ khác, hoặc không chơi giả vờ",
+          "Con mất đi một kỹ năng từng làm được"
+        ],
+        "en": [
+          "Your child doesn’t speak in short sentences, or family find them hard to understand",
+          "Your child falls down a lot or has real trouble with stairs",
+          "Your child doesn’t want to play with other children, or doesn’t play pretend",
+          "Your child loses a skill they used to have"
+        ]
+      },
+      "interests": ["milestones"],
+      "sources": [
+        {
+          "label": "CDC: Milestones by age (Learn the Signs. Act Early.)",
+          "url": "https://www.cdc.gov/act-early/milestones/index.html"
+        },
+        {
+          "label": "AAP · HealthyChildren.org: Language development, 2-year-olds",
+          "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/Language-Development-2-Year-Olds.aspx"
+        },
+        {
+          "label": "UNICEF Parenting: Child development",
+          "url": "https://www.unicef.org/parenting/child-development"
+        }
+      ],
+      "review": null
     }
   ],
   "health": {
