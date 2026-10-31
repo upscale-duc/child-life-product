@@ -70,26 +70,39 @@ Future<bool> showRecordSheet(
   required MtCtx ctx,
   ReferenceMilestone? reference,
   MilestoneRecord? record,
+  DateTime? day,
 }) async =>
     await showClSheet<bool>(
       context: context,
-      builder: (_) =>
-          _RecordSheet(ctx: ctx, reference: reference, record: record),
+      builder: (_) => _RecordSheet(
+        ctx: ctx,
+        reference: reference,
+        record: record,
+        day: day,
+      ),
     ) ??
     false;
 
 class _RecordSheet extends ConsumerStatefulWidget {
-  const _RecordSheet({required this.ctx, this.reference, this.record});
+  const _RecordSheet({
+    required this.ctx,
+    this.reference,
+    this.record,
+    this.day,
+  });
   final MtCtx ctx;
   final ReferenceMilestone? reference;
   final MilestoneRecord? record;
+
+  /// The day said to Lumi (L5), when the milestone has none yet.
+  final DateTime? day;
 
   @override
   ConsumerState<_RecordSheet> createState() => _RecordSheetState();
 }
 
 class _RecordSheetState extends ConsumerState<_RecordSheet> {
-  late DateTime _date = widget.record?.date ?? widget.ctx.today;
+  late DateTime _date = widget.record?.date ?? widget.day ?? widget.ctx.today;
   late final _note = TextEditingController(text: widget.record?.note ?? '');
   late final _name = TextEditingController(text: widget.record?.name ?? '');
   late List<PickedMedia> _photos = [

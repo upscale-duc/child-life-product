@@ -24324,6 +24324,30 @@
   "@asEditDiaper": {
     "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
   },
+  "asPhotoToMemories": "Lưu ảnh của bé vào Kỷ niệm",
+  "@asPhotoToMemories": {
+    "description": "Row of Lumi's photo sheet, Cùng nuôi only: picks photos and opens Kỷ niệm's own \"Soạn & chia sẻ\"; the photo is never sent to Lumi. L5 lumi-plan. EN is an engineering draft for owner review."
+  },
+  "asPhotoToMemoriesSub": "Không gửi cho Lumi đọc, không tốn lượt",
+  "@asPhotoToMemoriesSub": {
+    "description": "Under asPhotoToMemories: the photo is not read by Lumi and uses no AI credits. L5 lumi-plan. EN is an engineering draft for owner review."
+  },
+  "asRecordMilestone": "Ghi nhận mốc",
+  "@asRecordMilestone": {
+    "description": "Button on Lumi's offer under a new skill that is a reference milestone (\"bé biết lẫy rồi\"): opens the milestone's page with its record sheet on the day said; saved there. L5 lumi-plan. EN is an engineering draft for owner review."
+  },
+  "asViewMilestone": "Xem mốc",
+  "@asViewMilestone": {
+    "description": "Button on Lumi's note that the milestone said is already recorded: opens its page. L5 lumi-plan. EN is an engineering draft for owner review."
+  },
+  "asOpenVaccines": "Mở Sổ tiêm chủng",
+  "@asOpenVaccines": {
+    "description": "Button on Lumi's reply about a shot when no single dose can be opened (no vaccine named, the series already complete, a dose the schedule lacks): opens the vaccination book. L5 lumi-plan. EN is an engineering draft for owner review."
+  },
+  "asViewDose": "Xem mũi tiêm",
+  "@asViewDose": {
+    "description": "Button on Lumi's reply when the dose said is already recorded in the vaccination book: opens that dose's page. L5 lumi-plan. EN is an engineering draft for owner review."
+  },
   "asSetRule": "Đặt nhắc",
   "@asSetRule": {
     "description": "Button on Lumi's reply to a repeating care reminder (\"nhắc cữ bú mỗi 3 tiếng\"): opens the rule editor filled with what was said; nothing is saved until the person saves it there. L5 lumi-plan. EN is an engineering draft for owner review."
@@ -24339,14 +24363,6 @@
   "asEditGrowth": "Sửa cân đo",
   "@asEditGrowth": {
     "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
-  "asOpenVaccines": "Mở Sổ tiêm chủng",
-  "@asOpenVaccines": {
-    "description": "Button on Lumi's reply about a shot when no single dose can be opened (no vaccine named, the series already complete, a dose the schedule lacks): opens the vaccination book. L5 lumi-plan. EN is an engineering draft for owner review."
-  },
-  "asViewDose": "Xem mũi tiêm",
-  "@asViewDose": {
-    "description": "Button on Lumi's reply when the dose said is already recorded in the vaccination book: opens that dose's page. L5 lumi-plan. EN is an engineering draft for owner review."
-  },
   },
   "asFieldWeight": "Cân nặng",
   "@asFieldWeight": {

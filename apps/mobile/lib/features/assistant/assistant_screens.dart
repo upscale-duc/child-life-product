@@ -24,7 +24,9 @@ import '../../core/widgets/cl_pressable.dart';
 import '../../core/widgets/cl_sheet.dart';
 import '../../l10n/app_localizations.dart';
 import '../baby/baby_models.dart';
-import '../home/home_shell.dart' show selectedBabyIdProvider;
+import '../home/home_shell.dart'
+    show selectedBabyIdProvider, selectedMembershipProvider;
+import '../memories/quick_add.dart' show QuickAdd, openQuickAdd;
 import '../baby/baby_repository.dart';
 import '../care/care_models.dart' show CareType;
 import '../care/care_repository.dart' show inBabyZone, recentRecordsProvider;
@@ -445,11 +447,21 @@ class _ChatState extends ConsumerState<AssistantChatScreen>
     final l10n = AppLocalizations.of(context);
     final toaster = ClToaster.of(context);
     _focus.unfocus();
-    final source = await showClSheet<PhotoSource>(
+    final router = GoRouter.maybeOf(context);
+    final choice = await showClSheet<Object>(
       context: context,
-      builder: (_) => const _PhotoSourceSheet(),
+      builder: (_) => _PhotoSourceSheet(
+        toMemories:
+            ref.read(selectedMembershipProvider)?.role == MemberRole.coParent,
+      ),
     );
-    if (source == null || !mounted) return;
+    if (choice == _PhotoSourceSheet.memories && router != null) {
+      // Lumi L5 (album): Kỷ niệm's own pick and "Soạn & chia sẻ"; nothing goes to Lumi.
+      await openQuickAdd(router, ref, QuickAdd.library);
+      return;
+    }
+    if (choice is! PhotoSource || !mounted) return;
+    final source = choice;
     _forceBottom = true;
     final out = await _ctl(key).pickPhoto(source, hint: _hint);
     switch (out) {
@@ -2375,6 +2387,20 @@ class _ThreadView {
           null => null,
         },
       ),
+      // Lumi L5: the milestone's own record sheet on the day said (saved there), or its page.
+      NoticeCode.milestoneSeen => AsNoticeCard(
+        icon: ClIcons.star,
+        text: text,
+        action: switch (milestoneRoute(link)) {
+          final route? => AsLink(
+            label: route.contains('record=')
+                ? l10n.asRecordMilestone
+                : l10n.asViewMilestone,
+            onPressed: () => GoRouter.of(context).pushSafe(route),
+          ),
+          null => null,
+        },
+      ),
       NoticeCode.medicineNotScheduled => AsNoticeCard(
         icon: ClIcons.bell,
         text: text,
@@ -3757,14 +3783,18 @@ class _EmptyState extends StatelessWidget {
 /// costs from the household's policy, and "Huỷ" (0 credits). The exact quote follows in the
 /// thread before anything is uploaded.
 class _PhotoSourceSheet extends StatelessWidget {
-  const _PhotoSourceSheet();
+  const _PhotoSourceSheet({required this.toMemories});
+
+  /// Lumi L5 (album): a Cùng nuôi may save a baby photo to Kỷ niệm instead (not read, 0 credits).
+  final bool toMemories;
+  static const memories = 'memories';
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cl = context.cl;
     final c = cl.colors;
-    Widget row(PhotoSource source, ClIcons icon, String title, String sub) =>
+    Widget row(Object source, ClIcons icon, String title, String sub) =>
         ClPressable(
           onPressed: () => Navigator.of(context).pop(source),
           semanticLabel: title,
@@ -3829,6 +3859,15 @@ class _PhotoSourceSheet extends StatelessWidget {
           l10n.avatarLibrary,
           l10n.asPhotoLibrarySub,
         ),
+        if (toMemories) ...[
+          const SizedBox(height: ClSpace.s2),
+          row(
+            memories,
+            ClIcons.heart,
+            l10n.asPhotoToMemories,
+            l10n.asPhotoToMemoriesSub,
+          ),
+        ],
         const SizedBox(height: ClSpace.s3),
         AsButton(
           label: l10n.asCancel,
@@ -4917,6 +4956,24 @@ String? vaccineRoute(String? link) {
     path: Routes.vaccines,
     queryParameters: q.isEmpty ? null : q,
   ).toString();
+}
+
+/// Lumi L5: a milestone offer's link — `/utilities/milestones/{referenceId}`, with only
+/// `record=YYYY-MM-DD`; null for anything else.
+String? milestoneRoute(String? link) {
+  final uri = link == null ? null : Uri.tryParse(link);
+  if (uri == null || uri.hasScheme || uri.hasAuthority) return null;
+  final m = RegExp(
+    r'^/utilities/milestones/([a-z][a-z0-9_]{1,39})$',
+  ).firstMatch(uri.path);
+  // `own` is the "Tạo mốc riêng" page, not a milestone.
+  if (m == null || m.group(1) == 'own') return null;
+  final q = uri.queryParameters;
+  if (q.keys.any((k) => k != 'record')) return null;
+  final day = q['record'];
+  if (day != null && !RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(day)) return null;
+  final path = '${Routes.milestones}/${m.group(1)}';
+  return day == null ? path : '$path?record=$day';
 }
 
 /// The app route of a timer notice's link (`/care/timer/{sleep|breast}`, query dropped); null

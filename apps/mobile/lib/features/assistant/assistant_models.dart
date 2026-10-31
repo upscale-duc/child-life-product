@@ -350,7 +350,10 @@ enum NoticeCode with WireEnum {
   ruleSuggested('RULE_SUGGESTED'),
 
   /// Lumi L5: "bé vừa tiêm 6in1 mũi 2" — `link` opens that dose in Sổ tiêm chủng (to log or view).
-  vaccineDose('VACCINE_DOSE');
+  vaccineDose('VACCINE_DOSE'),
+
+  /// Lumi L5: "bé biết lẫy rồi" — `link` opens the milestone, its record sheet on the day.
+  milestoneSeen('MILESTONE_SEEN');
 
   const NoticeCode(this.wire);
   @override

@@ -27555,8 +27555,26 @@ abstract class AppLocalizations {
   /// Button on Lumi's reply to a repeating care reminder ("nhắc cữ bú mỗi 3 tiếng"): opens the rule editor filled with what was said; nothing is saved until the person saves it there. L5 lumi-plan. EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Đặt nhắc'**
-  String get asSetRule;
+  /// **'Lưu ảnh của bé vào Kỷ niệm'**
+  String get asPhotoToMemories;
+
+  /// Under asPhotoToMemories: the photo is not read by Lumi and uses no AI credits. L5 lumi-plan. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không gửi cho Lumi đọc, không tốn lượt'**
+  String get asPhotoToMemoriesSub;
+
+  /// Button on Lumi's offer under a new skill that is a reference milestone ("bé biết lẫy rồi"): opens the milestone's page with its record sheet on the day said; saved there. L5 lumi-plan. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi nhận mốc'**
+  String get asRecordMilestone;
+
+  /// Button on Lumi's note that the milestone said is already recorded: opens its page. L5 lumi-plan. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem mốc'**
+  String get asViewMilestone;
 
   /// Button on Lumi's reply about a shot when no single dose can be opened (no vaccine named, the series already complete, a dose the schedule lacks): opens the vaccination book. L5 lumi-plan. EN is an engineering draft for owner review.
   ///

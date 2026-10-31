@@ -82,6 +82,13 @@
 - **Khác kế hoạch:** như nhắc lặp, mũi tiêm không thành thẻ nháp lưu trong chat; form của Sổ đã có nơi tiêm, phản ứng, ảnh, gợi ý ghi chi phí và quyền sửa theo vai trò (P-133), nên dùng lại thay vì làm bản thứ hai.
 - **Kiểm chứng:** Functions unit 546 đạt (+22 `assistant-vaccine`); app: test Lumi, replay, Tiêm chủng và ảnh golden 657 đạt (+3 test mới: link, form điền sẵn mở một lần, mũi đã tiêm mở trang mũi); e2e model giả 359/360 (chỉ `ga-11` baseline), gồm 6 ca mới `23-vaccines-l5.json`; không cần chạy model thật (đường này không gọi model). Ảnh `as/ch06v_vaccine` (Light/Night × vi/en).
 
+## L5 Mốc và album qua Lumi (31/10)
+
+- **Mốc:** "bé biết lẫy rồi", "bé vịn đứng được rồi", "he took his first steps" vẫn là thẻ Nhịp sinh hoạt (kỹ năng mới) như trước. Khi kỹ năng là một mốc tham khảo (khoảng 30 mốc: lẫy, ngồi, bò, vịn đứng, đi men, tự đi, nói từ đầu tiên, vẫy tay…), Cùng nuôi thấy thêm "“Lẫy (lật người)” cũng là một mốc phát triển. Chạm Ghi nhận mốc để lưu ngày 31/10 và thêm ảnh." với nút **Ghi nhận mốc**. Nút mở trang mốc với form "Bé đã làm được" điền sẵn ngày; lưu ở đó, rồi trang mốc mời "Giữ làm kỷ niệm" như thường lệ. Mốc đã ghi → "đã được ghi nhận ngày …" + **Xem mốc**. Người chăm sóc chỉ có thẻ Nhịp (mốc là của Cùng nuôi). Không thêm lượt gọi model.
+- **Album:** bảng ảnh của Lumi có thêm dòng **Lưu ảnh của bé vào Kỷ niệm** ("Không gửi cho Lumi đọc, không tốn lượt"), chỉ cho Cùng nuôi; dòng này mở chọn ảnh và "Soạn & chia sẻ" của chính Kỷ niệm (người xem, album, chú thích), ngay trên màn Lumi.
+- **Khác kế hoạch:** kế hoạch viết "ảnh của bé gửi cho Lumi → Lưu vào album, không đọc". Lumi không thể biết ảnh là ảnh của bé nếu không đọc ảnh, nên lựa chọn được đặt trước khi gửi. Mốc riêng ("bé biết nói cảm ơn") chưa được mời tạo; vẫn là thẻ Nhịp.
+- **Kiểm chứng:** Functions unit 563 đạt (+17 `assistant-milestone`); app: Lumi, replay, Mốc, Tiêm chủng và ảnh golden 1194 đạt (+5 test mới); e2e model giả 363/364 (chỉ `ga-11` baseline), gồm 4 ca mới `24-milestones-l5.json`; không cần model thật (không thêm lượt gọi); ảnh `as/ch06t_milestone`, `as/ch09s_photo_sheet` (Light/Night × vi/en).
+
 ## Ghi chú
 
 - **23 ca e2e cũ đã cập nhật.**

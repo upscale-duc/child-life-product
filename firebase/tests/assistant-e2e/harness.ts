@@ -14,6 +14,8 @@ import {
   defaultFlags,
   draftKinds,
   isTimedEventKind,
+  milestoneSeedSchema,
+  publishedFromSeed,
   type AssistantPart,
   type AssistantTaskSnapshot,
   type ConfirmItemResult,
@@ -539,6 +541,30 @@ async function seedPreset(name: string) {
         createdAt: Timestamp.fromDate(localAt('D-30 09:00')),
         updatedAt: Timestamp.fromDate(localAt('D-30 09:00')),
         updatedBy: UID.MOM,
+      });
+      return;
+    // Lumi L5 (Mốc): the reference milestones published, as the dev seed does.
+    case 'milestones': {
+      const seed = milestoneSeedSchema.parse(
+        JSON.parse(readFileSync(resolve(ROOT, 'content/milestones/milestones.seed.json'), 'utf8')),
+      );
+      const at = localAt('D-30 09:00').toISOString();
+      await Promise.all(
+        seed.milestones.map((m) =>
+          db.doc(`contentMilestones/${m.id}`).set(publishedFromSeed(m, at)),
+        ),
+      );
+      return;
+    }
+    // Lumi L5 (Mốc): "Lẫy" already recorded.
+    case 'rolledOver':
+      await db.doc(`babies/${B}/milestones/p_rolls_over`).set({
+        kind: 'reference',
+        referenceId: 'rolls_over',
+        status: 'observed',
+        name: 'Lẫy (lật người)',
+        date: '2026-09-20',
+        deleted: false,
       });
       return;
     default:

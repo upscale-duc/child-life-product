@@ -178,7 +178,8 @@ export interface Expect {
 
 export interface World {
   /** Record presets: "bottle0800", "day", "sleepNight", "expense500k", "solidsOn" (L5),
-   * "dtp1Given" (L5 vaccines). */
+   * "dtp1Given" (L5 vaccines),
+   * "milestones", "rolledOver" (L5 Mốc). */
   seed?: string[];
   /** Flags to switch off. */
   off?: string[];

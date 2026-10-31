@@ -14,7 +14,11 @@ GoRoute milestonesRoute() => _page(
     _page('own', modal: true, (_, _) => const OwnMilestoneScreen()),
     _page(
       ':id',
-      (_, s) => MilestoneDetailScreen(id: s.pathParameters['id'] ?? ''),
+      // Lumi L5: `?record=YYYY-MM-DD` opens "Bé đã làm được" on that day, once.
+      (_, s) => MilestoneDetailScreen(
+        id: s.pathParameters['id'] ?? '',
+        recordOn: DateTime.tryParse(s.uri.queryParameters['record'] ?? ''),
+      ),
     ),
   ],
 );

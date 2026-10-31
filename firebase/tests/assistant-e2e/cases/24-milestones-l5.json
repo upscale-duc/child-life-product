@@ -1,0 +1,87 @@
+{
+  "group": "milestone.seen",
+  "note": "Lumi L5 (Mốc, 2026-10-31): a new skill is still the Nhịp sinh hoạt observation; when it is a reference milestone a Cùng nuôi is also offered \"Ghi nhận mốc\" (the milestone's own record sheet, on the day; nothing saved by Lumi). Caregivers keep the observation only.",
+  "cases": [
+    {
+      "id": "l5m-01-rolls-over",
+      "title": "\"bé biết lẫy rồi\": the observation draft plus the milestone offer",
+      "world": { "seed": ["milestones"] },
+      "turns": [
+        {
+          "say": "bé biết lẫy rồi",
+          "model": {
+            "i": [
+              {
+                "k": "observation",
+                "f": { "observation": "new_skill", "note": "biết lẫy" },
+                "ev": { "observation": "biết lẫy" }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": { "outcome": "drafts", "kinds": ["observation"], "codes": ["MILESTONE_SEEN"] }
+    },
+    {
+      "id": "l5m-02-already-recorded",
+      "title": "Lẫy already recorded: the offer says so and links to it",
+      "world": { "seed": ["milestones", "rolledOver"] },
+      "turns": [
+        {
+          "say": "hôm nay bé biết lật",
+          "model": {
+            "i": [
+              {
+                "k": "observation",
+                "f": { "observation": "new_skill", "note": "biết lật" },
+                "ev": { "observation": "biết lật" }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": { "outcome": "drafts", "kinds": ["observation"], "codes": ["MILESTONE_SEEN"] }
+    },
+    {
+      "id": "l5m-03-caregiver-observation-only",
+      "title": "a Người chăm sóc: the observation only (milestones are Cùng nuôi's)",
+      "as": "NANNY",
+      "world": { "seed": ["milestones"] },
+      "turns": [
+        {
+          "say": "bé biết lẫy rồi",
+          "model": {
+            "i": [
+              {
+                "k": "observation",
+                "f": { "observation": "new_skill" },
+                "ev": { "observation": "biết lẫy" }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": { "outcome": "drafts", "kinds": ["observation"], "notCodes": ["MILESTONE_SEEN"] }
+    },
+    {
+      "id": "l5m-04-not-a-reference",
+      "title": "\"bé biết nói cảm ơn\": a new skill outside the list stays an observation",
+      "world": { "seed": ["milestones"] },
+      "turns": [
+        {
+          "say": "bé biết nói cảm ơn",
+          "model": {
+            "i": [
+              {
+                "k": "observation",
+                "f": { "observation": "new_skill", "note": "biết nói cảm ơn" },
+                "ev": { "observation": "biết nói cảm ơn" }
+              }
+            ]
+          }
+        }
+      ],
+      "expect": { "outcome": "drafts", "kinds": ["observation"], "notCodes": ["MILESTONE_SEEN"] }
+    }
+  ]
+}

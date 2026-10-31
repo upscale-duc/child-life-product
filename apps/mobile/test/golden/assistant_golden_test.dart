@@ -251,6 +251,39 @@ final _cases = <String, _Case>{
     ),
     prefs: () => _thread([taskA]),
   ),
+  // Lumi L5 (Mốc): a new skill that is a reference milestone → "Ghi nhận mốc".
+  'ch06t_milestone': _c(
+    repo: () => _repo(
+      tasks: {
+        taskA: snapshotWith(
+          task: taskJson(),
+          messages: [
+            userMessage('bé biết lẫy rồi'),
+            assistantMessage([
+              {
+                'type': 'text',
+                'schemaVersion': 1,
+                'text':
+                    '“Lẫy (lật người)” cũng là một mốc phát triển. Chạm Ghi '
+                    'nhận mốc để lưu ngày 8/10 và thêm ảnh.',
+                'code': 'MILESTONE_SEEN',
+                'link': '/utilities/milestones/rolls_over?record=2026-10-08',
+              },
+            ]),
+          ],
+        ),
+      },
+    ),
+    prefs: () => _thread([taskA]),
+  ),
+  // Lumi L5 (album): the photo sheet with "Lưu ảnh của bé vào Kỷ niệm" for a Cùng nuôi.
+  'ch09s_photo_sheet': _c(
+    images: true,
+    act: (tester) async {
+      await tester.tap(find.bySemanticsLabel(RegExp(r'^(Ảnh|Photo)$')).last);
+      await tester.pumpAndSettle();
+    },
+  ),
   'ch07_partial': _c(
     height: 900,
     repo: () => _repo(

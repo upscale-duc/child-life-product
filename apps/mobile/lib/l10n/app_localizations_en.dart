@@ -17535,11 +17535,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   @override
-  String get asSetRule => 'Set up reminder';
-
-  String get asEditMeal => 'Edit meal';
+  String get asPhotoToMemoriesSub => 'Not sent to Lumi, uses no credits';
 
   @override
+  String get asRecordMilestone => 'Record milestone';
+
+  @override
+  String get asViewMilestone => 'View milestone';
+
+  @override
+  String get asPhotoToMemories => 'Save a baby photo to Memories';
+
   String get asOpenVaccines => 'Open vaccination book';
 
   @override

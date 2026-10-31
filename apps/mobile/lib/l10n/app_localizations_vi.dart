@@ -16446,11 +16446,17 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   @override
-  String get asSetRule => 'Đặt nhắc';
-
-  String get asEditMeal => 'Sửa bữa ăn';
+  String get asPhotoToMemoriesSub => 'Không gửi cho Lumi đọc, không tốn lượt';
 
   @override
+  String get asRecordMilestone => 'Ghi nhận mốc';
+
+  @override
+  String get asViewMilestone => 'Xem mốc';
+
+  @override
+  String get asPhotoToMemories => 'Lưu ảnh của bé vào Kỷ niệm';
+
   String get asOpenVaccines => 'Mở Sổ tiêm chủng';
 
   @override

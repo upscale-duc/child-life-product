@@ -1,3 +1,4 @@
+import { milestoneInvitePart, milestoneSaidIn } from './assistant-milestone.js';
 import { vaccineGivenIn, vaccineParts } from './assistant-vaccine.js';
 import { recurringRuleIn, ruleEditorLink } from './assistant-recurring.js';
 import { assistantReadsIn, privateReadTool } from '@child-life/contracts';
@@ -423,6 +424,42 @@ async function process(
   t: StoredTask,
   /** Lumi L2: which reader read the message (timing logs only). */
   trace: { path: 'rules' | 'model' | 'cached' | 'none' } = { path: 'none' },
+): Promise<WorkResult> {
+  return withMilestoneInvite(deps, t, await processMessage(deps, t, trace));
+}
+
+/**
+ * Lumi L5 (Mốc): a new skill noted for Nhịp sinh hoạt ("bé biết lẫy rồi") that is a reference
+ * milestone also offers "Ghi nhận mốc" to a Cùng nuôi; the observation draft stays as it was.
+ */
+async function withMilestoneInvite(
+  deps: WorkerDeps,
+  t: StoredTask,
+  work: WorkResult,
+): Promise<WorkResult> {
+  if (t.modality !== 'text' || work.handoff) return work;
+  const skill = work.drafts.find(
+    (d) => d.payload.kind === 'observation' && d.payload.observation === 'new_skill',
+  )?.payload;
+  if (skill?.kind !== 'observation' || !skill.date) return work;
+  const referenceId = milestoneSaidIn(`${t.input?.text ?? ''}\n${skill.note ?? ''}`);
+  if (!referenceId) return work;
+  try {
+    const s =
+      deps.preloaded?.s ??
+      (await loadTrustedScope(deps.db, t.ownerUid, t.scope, deps.now, deps.environment));
+    const part = await milestoneInvitePart(deps.db, s, referenceId, skill.date, t.locale);
+    return part ? { ...work, parts: [...work.parts, part] } : work;
+  } catch {
+    // The offer is extra: the observation still settles without it.
+    return work;
+  }
+}
+
+async function processMessage(
+  deps: WorkerDeps,
+  t: StoredTask,
+  trace: { path: 'rules' | 'model' | 'cached' | 'none' },
 ): Promise<WorkResult> {
   const { db, now } = deps;
   const answers = (t.clarifications ?? []).filter((c) => c.answer !== null);

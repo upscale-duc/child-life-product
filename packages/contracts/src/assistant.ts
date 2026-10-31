@@ -268,6 +268,8 @@ export const assistantNoticeCodes = [
   'RULE_SUGGESTED',
   // Lumi L5: "bé vừa tiêm 6in1 mũi 2" — the dose its link opens in Sổ tiêm chủng (to log or view).
   'VACCINE_DOSE',
+  // Lumi L5: "bé biết lẫy rồi" — the reference milestone's page, its record sheet open on the day.
+  'MILESTONE_SEEN',
 ] as const;
 export type AssistantNoticeCode = (typeof assistantNoticeCodes)[number];
 

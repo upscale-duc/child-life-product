@@ -427,8 +427,11 @@ class _FilterChip extends StatelessWidget {
 /// A reference milestone (by its id) or a custom record (`ms_…`): 3b until it is observed,
 /// then 3d (saved) / 3f (linked to a memory).
 class MilestoneDetailScreen extends ConsumerWidget {
-  const MilestoneDetailScreen({required this.id, super.key});
+  const MilestoneDetailScreen({required this.id, this.recordOn, super.key});
   final String id;
+
+  /// Lumi L5 ("bé biết lẫy rồi"): "Bé đã làm được" opens once on this day; saved there.
+  final DateTime? recordOn;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -451,7 +454,12 @@ class MilestoneDetailScreen extends ConsumerWidget {
       return _SavedView(ctx: ctx, record: record, reference: reference);
     }
     if (reference != null) {
-      return _ReferenceView(ctx: ctx, m: reference, record: record);
+      return _ReferenceView(
+        ctx: ctx,
+        m: reference,
+        record: record,
+        recordOn: recordsAsync.hasValue ? recordOn : null,
+      );
     }
     final loading =
         (!custom && !referenceAsync.hasValue) ||
@@ -559,9 +567,17 @@ class _Points extends StatelessWidget {
 }
 
 class _ReferenceView extends ConsumerStatefulWidget {
-  const _ReferenceView({required this.ctx, required this.m, this.record});
+  const _ReferenceView({
+    required this.ctx,
+    required this.m,
+    this.record,
+    this.recordOn,
+  });
   final MtCtx ctx;
   final ReferenceMilestone m;
+
+  /// Lumi L5: the record sheet opens once on this day (only for someone who can record).
+  final DateTime? recordOn;
 
   /// Followed ("Lưu để theo dõi"), never observed here.
   final MilestoneRecord? record;
@@ -572,6 +588,37 @@ class _ReferenceView extends ConsumerStatefulWidget {
 
 class _ReferenceViewState extends ConsumerState<_ReferenceView> {
   var _busy = false;
+  var _openedRecord = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _openRecord();
+  }
+
+  @override
+  void didUpdateWidget(_ReferenceView old) {
+    super.didUpdateWidget(old);
+    _openRecord();
+  }
+
+  void _openRecord() {
+    final day = widget.recordOn;
+    if (day == null || _openedRecord || !widget.ctx.canRecord) return;
+    _openedRecord = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      unawaited(
+        showRecordSheet(
+          context,
+          ctx: widget.ctx,
+          reference: widget.m,
+          record: widget.record,
+          day: day,
+        ),
+      );
+    });
+  }
 
   Future<void> _toggleFollow() async {
     final l10n = AppLocalizations.of(context);
