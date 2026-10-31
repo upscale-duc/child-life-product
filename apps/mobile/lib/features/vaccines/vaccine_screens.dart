@@ -618,12 +618,26 @@ class _NextCard extends StatelessWidget {
   }
 }
 
-/// A dose circle in the design's status colours, with its label under it.
+/// A dose circle in the design's status colours, with its date under it: the day it was given or
+/// is planned, so every dose answers "ngày nào?" (owner, 2026-10-30; the ages are already in the
+/// row's hint). A dose ticked without a date asks for it ([canLog]) or says it has none.
 class _Dot extends StatelessWidget {
-  const _Dot({required this.item, required this.onTap});
+  const _Dot({
+    required this.item,
+    required this.today,
+    required this.canLog,
+    required this.onTap,
+  });
   final DoseItem item;
+  final DateTime today;
+  final bool canLog;
   final VoidCallback onTap;
   static const size = 34.0;
+
+  /// "17/11" this year, "17/3/28" in another.
+  String _day(DateTime d) => d.year == today.year
+      ? vxDay(d)
+      : '${vxDay(d)}/${'${d.year % 100}'.padLeft(2, '0')}';
 
   @override
   Widget build(BuildContext context) {
@@ -644,15 +658,12 @@ class _Dot extends StatelessWidget {
       DoseStatus.later => (cl.colors.surface2, null, cl.colors.inkMuted),
       DoseStatus.declined => (cl.colors.surface2, null, cl.colors.inkMuted),
     };
+    final givenOn = item.record?.givenOn;
     final label = switch (item.status) {
-      DoseStatus.given =>
-        item.record?.givenOn == null ? '—' : vxDay(item.record!.givenOn!),
-      DoseStatus.upcoming || DoseStatus.overdue => vxDay(item.planned),
-      DoseStatus.later =>
-        item.months == 0
-            ? vxDay(item.planned)
-            : l10n.vxMonthsShort(item.months),
+      DoseStatus.given when givenOn != null => _day(givenOn),
+      DoseStatus.given => canLog ? l10n.vxDotAddDate : l10n.vxDotNoDate,
       DoseStatus.declined => '—',
+      _ => _day(item.planned),
     };
     final status = switch (item.status) {
       DoseStatus.given => l10n.vxLegendGiven,
@@ -663,9 +674,16 @@ class _Dot extends StatelessWidget {
     };
     return ClPressable(
       onPressed: onTap,
-      semanticLabel: '${l10n.vxDoseN(item.dose)}, $status, $label',
+      semanticLabel: [
+        l10n.vxDoseN(item.dose),
+        status,
+        if (item.status == DoseStatus.given && givenOn == null)
+          l10n.vxNoDate
+        else if (item.status != DoseStatus.declined)
+          vxDate(givenOn ?? item.planned),
+      ].join(', '),
       child: SizedBox(
-        width: size + 4,
+        width: size + 12,
         child: Column(
           children: [
             Container(
@@ -698,18 +716,21 @@ class _Dot extends StatelessWidget {
               },
             ),
             const SizedBox(height: 2),
-            Text(
-              label,
-              maxLines: 1,
-              style: cl.text.caption.copyWith(
-                fontSize: 10,
-                fontWeight: FontWeight.w600,
-                color: switch (item.status) {
-                  DoseStatus.given => cl.colors.mintText,
-                  DoseStatus.upcoming => cl.colors.ink,
-                  DoseStatus.overdue => cl.colors.error,
-                  _ => cl.colors.inkMuted,
-                },
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                label,
+                maxLines: 1,
+                style: cl.text.caption.copyWith(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  color: switch (item.status) {
+                    DoseStatus.given => cl.colors.mintText,
+                    DoseStatus.upcoming => cl.colors.ink,
+                    DoseStatus.overdue => cl.colors.error,
+                    _ => cl.colors.inkMuted,
+                  },
+                ),
               ),
             ),
           ],
@@ -778,6 +799,8 @@ class _Matrix extends StatelessWidget {
                       for (final item in book.rowOf(def.id))
                         _Dot(
                           item: item,
+                          today: book.today,
+                          canLog: vxCanLog(me),
                           onTap: () => openDose(context, me, book, item),
                         ),
                     ],

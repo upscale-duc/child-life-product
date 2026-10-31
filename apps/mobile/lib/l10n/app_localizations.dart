@@ -40673,6 +40673,18 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Cần {n} ảnh'**
   String ksVideoNeedsExact(int n);
+
+  /// Under a ticked dose with no date, for someone who can add it (opens the dose page).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thêm ngày'**
+  String get vxDotAddDate;
+
+  /// Under a ticked dose with no date, for someone who can only look.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa ghi'**
+  String get vxDotNoDate;
 }
 
 class _AppLocalizationsDelegate

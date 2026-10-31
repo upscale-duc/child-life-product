@@ -35949,5 +35949,13 @@
         "type": "int"
       }
     }
+  },
+  "vxDotAddDate": "Thêm ngày",
+  "@vxDotAddDate": {
+    "description": "Under a ticked dose with no date, for someone who can add it (opens the dose page)."
+  },
+  "vxDotNoDate": "Chưa ghi",
+  "@vxDotNoDate": {
+    "description": "Under a ticked dose with no date, for someone who can only look."
   }
 }

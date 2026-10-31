@@ -9044,5 +9044,7 @@
   "ksSavedEmptyBody": "Tap the bookmark under a template you like to find it here later.",
   "ksSearchEmptyTitle": "No templates match “{query}”",
   "ksSearchEmptyBody": "Try another word, or clear the search to see every template.",
-  "ksVideoNeedsExact": "{n, plural, =1{Needs 1 photo} other{Needs {n} photos}}"
+  "ksVideoNeedsExact": "{n, plural, =1{Needs 1 photo} other{Needs {n} photos}}",
+  "vxDotAddDate": "Add date",
+  "vxDotNoDate": "No date"
 }

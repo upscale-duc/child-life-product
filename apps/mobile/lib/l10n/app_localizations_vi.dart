@@ -24504,4 +24504,10 @@ class AppLocalizationsVi extends AppLocalizations {
   String ksVideoNeedsExact(int n) {
     return 'Cần $n ảnh';
   }
+
+  @override
+  String get vxDotAddDate => 'Thêm ngày';
+
+  @override
+  String get vxDotNoDate => 'Chưa ghi';
 }

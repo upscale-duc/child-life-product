@@ -25889,4 +25889,10 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get vxDotAddDate => 'Add date';
+
+  @override
+  String get vxDotNoDate => 'No date';
 }

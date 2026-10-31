@@ -75,6 +75,29 @@ void main() {
     );
 
     testWidgets(
+      'every dose shows its date; one ticked without a date asks for it',
+      (tester) async {
+        await pumpRouted(
+          tester,
+          const VaccineBookScreen(),
+          overrides: careOverrides(
+            vaccines: {...vxBirthDoses(), 'vitk_1': vxRec('vitk', 1)},
+            vaccinePlan: vxSetUp,
+          ),
+        );
+        expect(find.text('Thêm ngày'), findsOneWidget);
+        expect(
+          find.bySemanticsLabel(RegExp('^Mũi 1, Đã tiêm, Chưa ghi ngày')),
+          findsOneWidget,
+        );
+        // Later doses: a day, with the year once it is not this one (no more "3 th").
+        expect(find.text('17/12'), findsWidgets);
+        expect(find.text('17/3/28'), findsWidgets);
+        expect(find.text('3 th'), findsNothing);
+      },
+    );
+
+    testWidgets(
       'VX 5: tick Rota 1 today, at the clinic; the toast names dose 2',
       (tester) async {
         final repo = FakeVaccineRepository();
