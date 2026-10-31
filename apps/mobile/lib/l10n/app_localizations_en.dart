@@ -25824,4 +25824,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hcWeekNotable => 'Most worth noticing';
+
+  @override
+  String pv2IdeasUpToAge(int years) {
+    return 'Ideas are only available up to age $years for now.';
+  }
 }

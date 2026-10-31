@@ -296,6 +296,9 @@ export interface FeedbackMemory {
   cooldownUntil: Map<string, string>;
   /** contentId → last date shown or started. */
   lastShown: Map<string, string>;
+  /** D-154: contentId → last date the household said "Có ích" / "Mình sẽ thử" (rank-v2 rests). */
+  helpfulOn?: Map<string, string>;
+  startedOn?: Map<string, string>;
 }
 
 /** Folds a baby's feedback (any author) into what the ranking uses; newest wins per kind. */
@@ -308,9 +311,13 @@ export function feedbackMemory(
     notSuitable: new Set(),
     cooldownUntil: new Map(),
     lastShown: new Map(),
+    helpfulOn: new Map(),
+    startedOn: new Map(),
   };
   const sorted = [...rows].sort((a, b) => a.date.localeCompare(b.date));
   for (const r of sorted) {
+    if (r.kind === 'helpful') m.helpfulOn!.set(r.contentId, r.date);
+    if (r.kind === 'started') m.startedOn!.set(r.contentId, r.date);
     switch (r.kind) {
       case 'helpful':
         m.helpful.add(r.contentId);

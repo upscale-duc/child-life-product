@@ -35864,5 +35864,14 @@
   "hcWeekNotable": "Điều đáng chú ý nhất",
   "@hcWeekNotable": {
     "description": "Tổng kết tuần: the week's top insight (AI06)."
+  },
+  "pv2IdeasUpToAge": "Hiện mới có gợi ý cho con đến {years} tuổi.",
+  "@pv2IdeasUpToAge": {
+    "description": "D-154 Q5: Hôm nay card and Hôm nay của nhà mình when the child is older than every published idea (the pack ends at {years} years). Cross-age wording (D-143).",
+    "placeholders": {
+      "years": {
+        "type": "int"
+      }
+    }
   }
 }

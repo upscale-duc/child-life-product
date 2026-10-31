@@ -71,6 +71,16 @@ void main() {
     expect(copy['context'], 'few_minutes');
   });
 
+  test(
+    'D-154 Q5: keeps the age ideas stop at, so Home can say why there is none',
+    () {
+      final day = PersonalDay({...full().data, 'ideasMaxAgeDays': 1095});
+      final copy = PersonalDay(PersonalDayHomeCache.reduce(day)!);
+      expect(copy.ideasUpToYears, 3);
+      expect(full().ideasUpToYears, isNull);
+    },
+  );
+
   test('a health day keeps nothing and removes the old copy', () async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();

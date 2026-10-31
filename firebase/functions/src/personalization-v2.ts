@@ -8,6 +8,7 @@ import {
   dailyContexts,
   dayBoundsIn,
   daysBetweenIso,
+  exposureAnswer,
   familyCan,
   feedbackMemory,
   localDateIn,
@@ -17,8 +18,11 @@ import {
   personalizationDayRequestSchema,
   personalizationDigestRequestSchema,
   personalizationMutationSchema,
-  recommend,
+  pickDailySuggestion,
+  readExposure,
+  recordDailyPick,
   responseSuppresses,
+  rollExposure,
   routinePatterns,
   reminderInstantIn,
   recFeedbackSchema,
@@ -59,6 +63,9 @@ const iso = (v: unknown) =>
       : null;
 const stateRef = (db: Firestore, uid: string, baby: string) =>
   db.doc(`users/${uid}/personalization/${baby}`);
+/** D-154: the baby's shared daily pick and exposure log (server-only; ids, dates, counts). */
+const exposureRef = (db: Firestore, baby: string) =>
+  db.doc(`babies/${baby}/personalization/exposure`);
 
 /**
  * P-172 (audit 2026-10-21 P2 #6): the module feedback ("Mình sẽ thử", AC02 "Có ích" / "Chưa thấy
@@ -248,6 +255,14 @@ export async function updatePersonalization(
             createdAt: FieldValue.serverTimestamp(),
           });
         }
+        // D-154: any answer but "restore" means the idea was not scrolled past; "Đã thử" and
+        // "Có ích" start their rests. Merged without a read (every field has a default).
+        if (activity && action.value !== 'restore')
+          tx.set(
+            exposureRef(db, babyId),
+            { items: { [activity.id]: exposureAnswer(action.value, localDateIn(zone, now)) } },
+            { merge: true },
+          );
         if (
           activity &&
           (action.value === 'save'
@@ -602,23 +617,48 @@ export async function personalizedDay(
   const need = needDoc?.get('observation') as
     'sleep' | 'feeding' | 'soothing' | 'new_skill' | undefined;
   const crossModule = checkCapability(ctx, 'personalization.cross_module', now).allowed;
+  const pickNeed =
+    need === 'new_skill' ? 'milestone' : (need ?? (focus === 'play' ? 'play' : null));
+  // D-154 (rank-v2): one pick per baby and day, shared by the household, from the exposure log.
+  // The log is written only with a pick (health days and empty pools leave it as it is).
   const ranked =
     content && ageDays !== null && crossModule
-      ? recommend({
-          locale,
-          today,
-          ageDays,
-          need: need === 'new_skill' ? 'milestone' : (need ?? (focus === 'play' ? 'play' : null)),
-          interests: prefs.interests,
-          fewer: prefs.fewer,
-          country: ctx.family.country,
-          healthFlag: health,
-          memory: feedbackMemory(feedback, rules.cooldownDays),
-          activities: content.activities.filter(
-            (a) =>
-              !excluded.has(a.id) &&
-              ((context !== 'few_minutes' && context !== 'busy') || a.durationMin <= 5),
-          ),
+      ? await db.runTransaction(async (tx) => {
+          const ref = exposureRef(db, babyId);
+          const exposure = rollExposure(readExposure((await tx.get(ref)).data()), today);
+          const out = pickDailySuggestion({
+            babyId,
+            locale,
+            today,
+            ageDays,
+            need: pickNeed,
+            context,
+            interests: prefs.interests,
+            fewer: prefs.fewer,
+            country: ctx.family.country,
+            healthFlag: health,
+            memory: feedbackMemory(feedback, rules.cooldownDays),
+            exposure,
+            rules,
+            activities: content.activities.filter(
+              (a) =>
+                !excluded.has(a.id) &&
+                ((context !== 'few_minutes' && context !== 'busy') || a.durationMin <= 5),
+            ),
+          });
+          if (out.kind === 'suggestion' && !out.reused) {
+            const next = recordDailyPick(exposure, {
+              date: today,
+              primary: out.primary.id,
+              secondary: out.secondary.map((a) => a.id),
+              extra: out.extra?.id ?? null,
+              reasonCode: out.reasonCode,
+              need: pickNeed,
+              context,
+            });
+            if (JSON.stringify(next) !== JSON.stringify(exposure)) tx.set(ref, next);
+          }
+          return out;
         })
       : null;
   const liveRecords = records.docs
@@ -745,13 +785,22 @@ export async function personalizedDay(
       : [],
     patterns,
     sleep,
+    // D-154: the extra card (a safety check or one for the parents) rides last, never first.
     activityIds:
       ranked?.kind === 'suggestion'
-        ? [ranked.primary, ...ranked.secondary]
+        ? [ranked.primary, ...ranked.secondary, ...(ranked.extra ? [ranked.extra] : [])]
             .slice(0, context === 'busy' ? 1 : 3)
             .map((a) => a.id)
         : [],
-    // P-172 (audit 2026-10-21 P2 #7): the reason recommend() gave for this pick. WEEKLY_FOCUS only
+    extraId: ranked?.kind === 'suggestion' ? (ranked.extra?.id ?? null) : null,
+    // D-154 Q5: the child is older than every published activity (the pack ends at 3 years), so
+    // the app says ideas stop at that age instead of "nothing fits today" or a Premium invite.
+    ideasMaxAgeDays: (() => {
+      const published = (content?.activities ?? []).filter((a) => a.status === 'published');
+      const max = Math.max(...published.map((a) => a.ageDays.to));
+      return ageDays !== null && published.length > 0 && ageDays > max ? max : null;
+    })(),
+    // P-172 (audit 2026-10-21 P2 #7): the reason the pick gave for itself. WEEKLY_FOCUS only
     // when the "play" focus stood in for a need nobody reported; none without a suggestion.
     reason:
       ranked?.kind === 'suggestion'

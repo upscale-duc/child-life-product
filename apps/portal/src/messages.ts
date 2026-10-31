@@ -2677,6 +2677,7 @@ const vi: Record<string, string> = {
   'rhythm.rules.group.recent': 'Giai đoạn gần đây',
   'rhythm.rules.group.change': 'Khi nào là “có thay đổi”',
   'rhythm.rules.group.repeat': 'Lặp lại gợi ý',
+  'rhythm.rules.group.daily': 'Ý tưởng hôm nay (xoay vòng)',
   'rhythm.rule.maxGapMinutes': 'Quãng trống tối đa trong ngày (phút)',
   'rhythm.rule.maxGapMinutes.help':
     'Ngày có một quãng dài hơn số phút này mà không ghi gì sẽ không được tính. Không ghi ≠ ngủ 0 giờ.',
@@ -2705,6 +2706,23 @@ const vi: Record<string, string> = {
   'rhythm.rule.cooldownDays': 'Không lặp cùng bài (ngày)',
   'rhythm.rule.cooldownDays.help':
     'Sau “Để sau”, hoạt động đó không được gợi ý lại trong chừng này ngày.',
+  'rhythm.rule.rotationMaxGapDays': 'Không lặp ý chính tối đa (ngày)',
+  'rhythm.rule.rotationMaxGapDays.help':
+    'Một ý đã làm ý chính thì nghỉ chừng này ngày; khi tuổi đó có ít hoạt động, app tự rút ngắn để luôn có ý mới.',
+  'rhythm.rule.triedRestDays': 'Nghỉ sau “Đã thử” (ngày)',
+  'rhythm.rule.triedRestDays.help':
+    'Sau “Mình sẽ thử” hoặc “Đã thử”, ý đó không quay lại trong chừng này ngày.',
+  'rhythm.rule.helpfulRestDays': 'Quay lại sau “Có ích” (ngày)',
+  'rhythm.rule.helpfulRestDays.help':
+    'Ý nhà mình thấy có ích được gợi ý lại (“thử lại nhé”) sau chừng này ngày.',
+  'rhythm.rule.extraEveryDays': 'Thẻ phụ mỗi (ngày)',
+  'rhythm.rule.extraEveryDays.help':
+    'Thẻ kiểm tra an toàn hoặc thẻ dành cho ba mẹ đi kèm nhiều nhất một lần trong chừng này ngày; không bao giờ là ý chính.',
+  'rhythm.rule.checkEveryDays': 'Nhắc lại một thẻ kiểm tra sau (ngày)',
+  'rhythm.rule.checkEveryDays.help':
+    'Cùng một thẻ kiểm tra hiện lại sau chừng này ngày, cho tới khi ba mẹ chọn “Đã biết”.',
+  'rhythm.rule.parentEveryDays': 'Nhắc lại một thẻ cho ba mẹ sau (ngày)',
+  'rhythm.rule.parentEveryDays.help': 'Cùng một thẻ dành cho ba mẹ hiện lại sau chừng này ngày.',
   'rhythm.rules.err.baselineMin': 'Số ngày tối thiểu không được lớn hơn số ngày tối đa của mốc.',
   'rhythm.rules.err.recentMin': 'Số ngày hợp lệ tối thiểu không được lớn hơn giai đoạn gần đây.',
   'rhythm.rules.err.lookback': 'Số ngày nhìn lại phải đủ chứa số ngày tối đa của mốc.',
@@ -2720,6 +2738,9 @@ const vi: Record<string, string> = {
   'rhythm.rules.summary.repeat': 'Lặp lại',
   'rhythm.rules.summary.repeat.value':
     'Không lặp cùng bài trong {cooldownDays} ngày · luôn giải thích “vì sao gợi ý này”',
+  'rhythm.rules.summary.daily': 'Ý tưởng hôm nay',
+  'rhythm.rules.summary.daily.value':
+    'Mỗi bé một ý mỗi ngày, cả nhà thấy giống nhau · ý chính không lặp trong tối đa {rotationMaxGapDays} ngày · đã thử nghỉ {triedRestDays} ngày · có ích quay lại sau {helpfulRestDays} ngày · thẻ phụ tối đa mỗi {extraEveryDays} ngày',
   'rhythm.unit.minutes': '{n} phút',
   'rhythm.unit.days': '{n} ngày',
   'rhythm.ranking': 'Xếp hạng gợi ý',
@@ -2733,6 +2754,13 @@ const vi: Record<string, string> = {
   'rhythm.ranking.tie.value': 'Theo mã tăng dần · “Không phù hợp” loại hẳn khỏi gợi ý cho bé đó',
   'rhythm.ranking.code':
     'Trọng số đi kèm từng bản phát hành của app (có phiên bản); không đổi được ở đây.',
+  'rhythm.ranking.v1': 'Sau check-in và Lumi',
+  'rhythm.ranking.daily': 'Ý tưởng hôm nay',
+  'rhythm.ranking.daily.value':
+    '{need}×khớp nhu cầu + {interest}×khớp sở thích + {helpful}×từng có ích + {newForAge}×mới hợp tuổi (< {newForAgeDays} ngày) + {narrow}×khung tuổi hẹp + {novelty}×chưa từng hiện − {ignored}×mỗi lần lướt qua (tối đa {ignoredCap}) · chỉ hoạt động làm cùng con được làm ý chính',
+  'rhythm.ranking.daily.tie': 'Bằng điểm (ý tưởng hôm nay)',
+  'rhythm.ranking.daily.tie.value':
+    'Một phần nhỏ (dưới {jitter}) theo bé và ngày: giữ nguyên trong ngày, đổi giữa các ngày, không bao giờ thắng một tín hiệu thật',
   'rhythm.health.routing': 'Định tuyến sức khoẻ',
   'rhythm.health.first': 'Ưu tiên cao nhất',
   'rhythm.health.signsShort': 'Dấu hiệu',
@@ -5764,6 +5792,7 @@ const en: Record<string, string> = {
   'rhythm.rules.group.recent': 'Recent window',
   'rhythm.rules.group.change': 'When it counts as a change',
   'rhythm.rules.group.repeat': 'Repeating suggestions',
+  'rhythm.rules.group.daily': 'Idea of the day (rotation)',
   'rhythm.rule.maxGapMinutes': 'Longest gap in a day (minutes)',
   'rhythm.rule.maxGapMinutes.help':
     'A day with a longer stretch than this without anything logged is not counted. Not logging ≠ 0 hours of sleep.',
@@ -5795,6 +5824,24 @@ const en: Record<string, string> = {
   'rhythm.rule.cooldownDays': 'Do not repeat an item for (days)',
   'rhythm.rule.cooldownDays.help':
     'After “Later”, that activity is not suggested again for this many days.',
+  'rhythm.rule.rotationMaxGapDays': 'Longest gap before a lead idea repeats (days)',
+  'rhythm.rule.rotationMaxGapDays.help':
+    'An idea that led rests this long; with few activities for the age, the app shortens it so there is always a new one.',
+  'rhythm.rule.triedRestDays': 'Rest after “Tried” (days)',
+  'rhythm.rule.triedRestDays.help':
+    'After “I’ll try” or “Tried”, the idea does not come back for this many days.',
+  'rhythm.rule.helpfulRestDays': 'Back after “Helpful” (days)',
+  'rhythm.rule.helpfulRestDays.help':
+    'An idea the family found helpful is suggested again (“try it again”) after this many days.',
+  'rhythm.rule.extraEveryDays': 'Extra card every (days)',
+  'rhythm.rule.extraEveryDays.help':
+    'A safety check or a card for the parents rides along at most once in this many days; never as the lead idea.',
+  'rhythm.rule.checkEveryDays': 'Repeat a safety check after (days)',
+  'rhythm.rule.checkEveryDays.help':
+    'The same safety check shows again after this many days, until the parents choose “I know this”.',
+  'rhythm.rule.parentEveryDays': 'Repeat a card for the parents after (days)',
+  'rhythm.rule.parentEveryDays.help':
+    'The same card for the parents shows again after this many days.',
   'rhythm.rules.err.baselineMin': 'The minimum cannot be larger than the baseline maximum.',
   'rhythm.rules.err.recentMin': 'The minimum cannot be larger than the recent window.',
   'rhythm.rules.err.lookback': 'The look-back must be at least the baseline maximum.',
@@ -5810,6 +5857,9 @@ const en: Record<string, string> = {
   'rhythm.rules.summary.repeat': 'Repeats',
   'rhythm.rules.summary.repeat.value':
     'No repeat of the same item within {cooldownDays} days · always explains “why this suggestion”',
+  'rhythm.rules.summary.daily': 'Idea of the day',
+  'rhythm.rules.summary.daily.value':
+    'One idea per child per day, the same for the whole family · a lead idea does not repeat within up to {rotationMaxGapDays} days · tried rests {triedRestDays} days · helpful comes back after {helpfulRestDays} days · an extra card at most every {extraEveryDays} days',
   'rhythm.unit.minutes': '{n} min',
   'rhythm.unit.days': '{n, plural, one {# day} other {# days}}',
   'rhythm.ranking': 'Suggestion ranking',
@@ -5823,6 +5873,13 @@ const en: Record<string, string> = {
   'rhythm.ranking.tie.value': 'By id, ascending · “Not suitable” removes the item for that baby',
   'rhythm.ranking.code':
     'The weights ship with each app release (versioned); they cannot be changed here.',
+  'rhythm.ranking.v1': 'After a check-in and in Lumi',
+  'rhythm.ranking.daily': 'Idea of the day',
+  'rhythm.ranking.daily.value':
+    '{need}×need match + {interest}×interest match + {helpful}×helped before + {newForAge}×new for the age (< {newForAgeDays} days) + {narrow}×short age window + {novelty}×never shown − {ignored}×per time scrolled past (up to {ignoredCap}) · only things to do with the child lead',
+  'rhythm.ranking.daily.tie': 'Ties (idea of the day)',
+  'rhythm.ranking.daily.tie.value':
+    'A small share (under {jitter}) from the child and the date: the same all day, different across days, never over a real signal',
   'rhythm.health.routing': 'Health routing',
   'rhythm.health.first': 'Highest priority',
   'rhythm.health.signsShort': 'Signs',

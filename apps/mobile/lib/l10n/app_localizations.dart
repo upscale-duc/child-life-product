@@ -40583,6 +40583,12 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Điều đáng chú ý nhất'**
   String get hcWeekNotable;
+
+  /// D-154 Q5: Hôm nay card and Hôm nay của nhà mình when the child is older than every published idea (the pack ends at {years} years). Cross-age wording (D-143).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiện mới có gợi ý cho con đến {years} tuổi.'**
+  String pv2IdeasUpToAge(int years);
 }
 
 class _AppLocalizationsDelegate

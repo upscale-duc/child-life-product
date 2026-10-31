@@ -29,6 +29,8 @@ export * from './entitlements.js';
 export * from './rhythm.js';
 export * from './insights.js';
 export * from './personalization.js';
+// D-154: rank-v2, the shared daily pick and its exposure log.
+export * from './daily-suggestion.js';
 export * from './quota.js';
 export * from './ai-summary.js';
 export * from './care-duty.js';

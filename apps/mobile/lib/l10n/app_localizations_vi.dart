@@ -24444,4 +24444,9 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get hcWeekNotable => 'Điều đáng chú ý nhất';
+
+  @override
+  String pv2IdeasUpToAge(int years) {
+    return 'Hiện mới có gợi ý cho con đến $years tuổi.';
+  }
 }

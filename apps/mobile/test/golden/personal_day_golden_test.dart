@@ -82,6 +82,15 @@ PersonalDay _day() => PersonalDay({
   },
 });
 
+/// D-154 Q5: a child older than the published pack, nothing suggested: the line that ideas stop
+/// at 3 years, and no "Điều chỉnh gợi ý".
+PersonalDay _upToAgeDay() => PersonalDay({
+  ..._day().data,
+  'activityIds': <String>[],
+  'responses': <String, Object?>{},
+  'ideasMaxAgeDays': 1095,
+});
+
 class _HomeCard extends ConsumerWidget {
   const _HomeCard();
   @override
@@ -112,6 +121,14 @@ final _cases =
     <String, (Widget Function(), double, Future<void> Function(WidgetTester)?)>{
       'home_card': (() => const _HomeCard(), 620, null),
       'day': (() => const PersonalizationDayScreen(), 2300, null),
+      'day_upto_age': (
+        () => const PersonalizationDayScreen(),
+        1800,
+        (tester) async {
+          expect(find.byKey(const Key('personalIdeasUpToAge')), findsOneWidget);
+          expect(find.byKey(const Key('personalDayFocus')), findsNothing);
+        },
+      ),
       'handover': (() => const PersonalHandoverScreen(), 900, null),
       'week_block': (
         () => Builder(
@@ -160,7 +177,7 @@ void main() {
                 environmentProvider.overrideWithValue(AppEnvironment.dev),
                 ...rhythmOverrides(
                   repo: FakeRhythmRepository(),
-                  personalDay: _day(),
+                  personalDay: name == 'day_upto_age' ? _upToAgeDay() : _day(),
                 ),
                 nuDataProvider.overrideWithValue(null),
               ],

@@ -450,10 +450,18 @@ class PersonalDayHome extends ConsumerWidget {
             ),
           ] else ...[
             const SizedBox(height: ClSpace.s2),
-            Text(
-              l.pv2NoIdeas,
-              style: cl.text.body.copyWith(color: cl.colors.inkMuted),
-            ),
+            // D-154 Q5: past the pack's last age, say so; Premium would not add ideas either.
+            if (day.ideasUpToYears case final years?)
+              Text(
+                l.pv2IdeasUpToAge(years),
+                key: const Key('personalIdeasUpToAge'),
+                style: cl.text.body.copyWith(color: cl.colors.inkMuted),
+              )
+            else
+              Text(
+                l.pv2NoIdeas,
+                style: cl.text.body.copyWith(color: cl.colors.inkMuted),
+              ),
           ],
           // What was tried today stays on the card, each with its chips and, until answered,
           // "Thấy sao?" as its own button (owner, 2026-10-22: no text squeezed beside it).
@@ -839,10 +847,17 @@ List<Widget> _dayChildren(
           ),
         ),
       if (ideas.isEmpty) ...[
-        Text(
-          l.pv2NoIdeas,
-          style: cl.text.body.copyWith(color: cl.colors.inkMuted),
-        ),
+        if (day.ideasUpToYears case final years?)
+          Text(
+            l.pv2IdeasUpToAge(years),
+            key: const Key('personalIdeasUpToAge'),
+            style: cl.text.body.copyWith(color: cl.colors.inkMuted),
+          )
+        else
+          Text(
+            l.pv2NoIdeas,
+            style: cl.text.body.copyWith(color: cl.colors.inkMuted),
+          ),
         if (day.data['ageCardId'] != null)
           RhLink(
             label: l.rhWeekTitle,
@@ -863,7 +878,8 @@ List<Widget> _dayChildren(
             _DoneRow(dayKey: key, day: day, id: id, write: write),
         ],
       ),
-    if (day.writable) ...[
+    // D-154 Q5: past the pack's last age nothing is suggested, so nothing to adjust either.
+    if (day.writable && day.ideasUpToYears == null) ...[
       PersonalHeading(l.pv2Adjust),
       Text(l.pv2Context, style: cl.text.bodyStrong),
       const SizedBox(height: ClSpace.s2),

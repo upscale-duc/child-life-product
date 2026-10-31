@@ -1,4 +1,5 @@
 import {
+  dailyRankingWeights,
   defaultRhythmRules,
   activitySchema,
   needs,
@@ -3067,6 +3068,18 @@ export const ruleGroups: Array<{ id: string; keys: RuleKey[] }> = [
   { id: 'recent', keys: ['recentDays', 'recentMinDays'] },
   { id: 'change', keys: ['minDeltaMinutes', 'minDeltaShare', 'minSameDirectionDays'] },
   { id: 'repeat', keys: ['cooldownDays'] },
+  // D-154: rank-v2 rotation of "Ý tưởng hôm nay".
+  {
+    id: 'daily',
+    keys: [
+      'rotationMaxGapDays',
+      'triedRestDays',
+      'helpfulRestDays',
+      'extraEveryDays',
+      'checkEveryDays',
+      'parentEveryDays',
+    ],
+  },
 ];
 
 function RulesTab({
@@ -3097,7 +3110,11 @@ function RulesTab({
         title={<FormattedMessage id="rhythm.ranking" />}
         collapsible
         defaultOpen={false}
-        summary={<span className="font-mono text-xs">{rankingWeights.version}</span>}
+        summary={
+          <span className="font-mono text-xs">
+            {rankingWeights.version} · {dailyRankingWeights.version}
+          </span>
+        }
       >
         <RankingDetails />
       </Section>
@@ -3134,6 +3151,12 @@ const ruleUnit: Record<RuleKey, 'minutes' | 'days' | 'share'> = {
   minDeltaShare: 'share',
   minSameDirectionDays: 'days',
   cooldownDays: 'days',
+  rotationMaxGapDays: 'days',
+  triedRestDays: 'days',
+  helpfulRestDays: 'days',
+  extraEveryDays: 'days',
+  checkEveryDays: 'days',
+  parentEveryDays: 'days',
 };
 
 function ruleValue(intl: IntlShape, key: RuleKey, v: number) {
@@ -3148,7 +3171,7 @@ export function RulesSummary({ rules: r }: { rules: RhythmRules }) {
   const intl = useIntl();
   return (
     <dl className="grid gap-x-6 gap-y-2 rounded-lg bg-muted/50 p-4 text-sm sm:grid-cols-[minmax(0,9rem)_minmax(0,1fr)]">
-      {(['baseline', 'validDay', 'change', 'repeat'] as const).map((k) => (
+      {(['baseline', 'validDay', 'change', 'repeat', 'daily'] as const).map((k) => (
         <div key={k} className="contents">
           <dt className="font-medium">
             <FormattedMessage id={`rhythm.rules.summary.${k}`} />
@@ -3398,16 +3421,46 @@ function RulesDialog({
   );
 }
 
-/** PN04 "Xếp hạng gợi ý": the weights ship with the app (`rankingWeights`), read-only here. */
+/**
+ * PN04 "Xếp hạng gợi ý": the weights ship with the app, read-only here. "Ý tưởng hôm nay" uses
+ * rank-v2 (`dailyRankingWeights`, D-154); a check-in result and Lumi still use rank-v1.
+ */
 export function RankingDetails() {
   const w = rankingWeights;
+  const d = dailyRankingWeights;
   return (
     <div className="grid gap-4">
       <Rows>
         <Row label={<FormattedMessage id="rhythm.ranking.filter" />}>
           <FormattedMessage id="rhythm.ranking.filter.value" />
         </Row>
-        <Row label={<FormattedMessage id="rhythm.ranking.score" />}>
+        <Row label={<FormattedMessage id="rhythm.ranking.daily" />}>
+          <FormattedMessage
+            id="rhythm.ranking.daily.value"
+            values={{
+              need: d.need,
+              interest: d.interest,
+              helpful: d.helpfulAgain,
+              newForAge: d.newForAge,
+              newForAgeDays: d.newForAgeDays,
+              narrow: d.narrowWindow,
+              novelty: d.novelty,
+              ignored: -d.ignored,
+              ignoredCap: d.ignoredCap,
+            }}
+          />
+        </Row>
+        <Row label={<FormattedMessage id="rhythm.ranking.daily.tie" />}>
+          <FormattedMessage id="rhythm.ranking.daily.tie.value" values={{ jitter: d.jitter }} />
+        </Row>
+        <Row
+          label={
+            <>
+              <FormattedMessage id="rhythm.ranking.score" /> ·{' '}
+              <FormattedMessage id="rhythm.ranking.v1" />
+            </>
+          }
+        >
           <FormattedMessage
             id="rhythm.ranking.score.value"
             values={{
@@ -3419,7 +3472,14 @@ export function RankingDetails() {
             }}
           />
         </Row>
-        <Row label={<FormattedMessage id="rhythm.ranking.tie" />}>
+        <Row
+          label={
+            <>
+              <FormattedMessage id="rhythm.ranking.tie" /> ·{' '}
+              <FormattedMessage id="rhythm.ranking.v1" />
+            </>
+          }
+        >
           <FormattedMessage id="rhythm.ranking.tie.value" />
         </Row>
       </Rows>

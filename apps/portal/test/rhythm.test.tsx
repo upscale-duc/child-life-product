@@ -970,6 +970,16 @@ describe('Nhịp lớn lên: rules (PN04)', () => {
     expect(text(render(<RankingDetails />))).toContain(
       '3×khớp nhu cầu + 2×khớp sở thích + 1×từng có ích − 2×đã xem gần đây − 4×không phù hợp',
     );
+    // D-154: "Ý tưởng hôm nay" (rank-v2) and its rotation rules.
+    expect(text(render(<RankingDetails />))).toContain(
+      '3×khớp nhu cầu + 1×khớp sở thích + 1×từng có ích + 1×mới hợp tuổi (< 14 ngày)',
+    );
+    const daily = text(render(<RulesPanel view={rulesView} canEdit={false} onSaved={() => {}} />));
+    expect(daily).toContain('Ý tưởng hôm nay (xoay vòng)');
+    expect(daily).toContain('Nghỉ sau “Đã thử” (ngày) 7 ngày');
+    expect(daily).toContain(
+      'Mỗi bé một ý mỗi ngày, cả nhà thấy giống nhau · ý chính không lặp trong tối đa 7 ngày',
+    );
     const routing = text(render(<HealthRoutingDetails content={content} />));
     expect(routing).toContain('VN (115)');
     expect(routing).toContain('Sốt từ 38°C ở bé dưới 3 tháng · Khó thở');

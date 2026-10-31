@@ -181,6 +181,19 @@ export const rhythmRulesSchema = z.object({
   minSameDirectionDays: z.number().int().min(1).max(7),
   /** "Không lặp cùng bài trong N ngày" (PN04). */
   cooldownDays: z.number().int().min(0).max(30),
+  // D-154 (rank-v2, "Ý tưởng hôm nay"): rotation. Defaults keep documents saved before them valid.
+  /** The longest an idea stays out after it was shown (the gap shrinks with a small pool). */
+  rotationMaxGapDays: z.number().int().min(2).max(30).default(7),
+  /** "Đã thử": not suggested again for this long. */
+  triedRestDays: z.number().int().min(1).max(60).default(7),
+  /** "Có ích": comes back as "nhà mình thấy có ích" after this long. */
+  helpfulRestDays: z.number().int().min(1).max(60).default(7),
+  /** A safety check or a card for the parents rides along at most this often. */
+  extraEveryDays: z.number().int().min(1).max(30).default(4),
+  /** The same safety check again (until "Đã biết") after this long. */
+  checkEveryDays: z.number().int().min(7).max(180).default(30),
+  /** The same card for the parents again after this long. */
+  parentEveryDays: z.number().int().min(3).max(90).default(10),
 });
 export type RhythmRules = z.infer<typeof rhythmRulesSchema>;
 
@@ -197,6 +210,12 @@ export const defaultRhythmRules: RhythmRules = {
   minDeltaShare: 0.15,
   minSameDirectionDays: 2,
   cooldownDays: 3,
+  rotationMaxGapDays: 7,
+  triedRestDays: 7,
+  helpfulRestDays: 7,
+  extraEveryDays: 4,
+  checkEveryDays: 30,
+  parentEveryDays: 10,
 };
 
 export type DayInvalidReason = 'not_finished' | 'open_timer' | 'overlap' | 'no_sleep' | 'sparse';

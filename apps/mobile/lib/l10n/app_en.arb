@@ -9029,5 +9029,6 @@
   "hcMute": "Don't show this kind again",
   "hcThanks": "Thanks for letting us know",
   "hcMuted": "This kind is hidden",
-  "hcWeekNotable": "Most worth noticing"
+  "hcWeekNotable": "Most worth noticing",
+  "pv2IdeasUpToAge": "Ideas are only available up to age {years} for now."
 }

@@ -39,6 +39,12 @@ class PersonalDay {
   String get context => data['context'] as String? ?? 'usual';
   List<String> get activityIds =>
       (data['activityIds'] as List? ?? []).whereType<String>().toList();
+
+  /// D-154 Q5: the child is older than every published idea; the age, in years, they stop at.
+  int? get ideasUpToYears => switch (data['ideasMaxAgeDays']) {
+    final num days => (days + 1) ~/ 365,
+    _ => null,
+  };
   List<Map<String, dynamic>> get notes => dayRows(data['notes']);
   List<Map<String, dynamic>> get work => dayRows(data['work']);
   List<Map<String, dynamic>> get patterns => dayRows(data['patterns']);
@@ -152,6 +158,8 @@ class PersonalDayHomeCache {
     'reason',
     'activityIds',
     'weekly',
+    // A content limit (the pack's last age), not child data: Home needs it to say why.
+    'ideasMaxAgeDays',
   ];
   static const _responseFields = [
     'value',

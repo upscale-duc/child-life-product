@@ -3,10 +3,12 @@ import { deleteApp, initializeApp } from 'firebase-admin/app';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import {
+  activityKindOf,
   defaultEntitlementsConfig,
   defaultFlags,
   defaultUserPreferences,
   feedbackMemory,
+  readExposure,
   recFeedbackSchema,
 } from '@child-life/contracts';
 import {
@@ -453,9 +455,16 @@ describe('P-172 daily suggestions and truthful aggregates', () => {
   });
   it('gives the pick its own reason and refuses choices that changed nothing (audit P2 #7)', async () => {
     await grantGroupA();
-    // No need, no focus, no interest: the pick is there for the baby's age.
+    // D-154: the reason follows the pick; INTEREST only when the pick matches a chosen topic.
+    const interestsOf = (id: string | undefined) =>
+      contentSeed.activities.find((a) => a.id === id)?.interests ?? [];
+    const honest = (r: { activityIds: string[]; reason: unknown }, chosen: string[]) =>
+      expect(r.reason).toBe(
+        interestsOf(r.activityIds[0]).some((i) => chosen.includes(i)) ? 'INTEREST' : 'AGE_CONTENT',
+      );
+    // No need, no focus, no interest: the pick is there for the baby's age, and never a check.
     const plain = await read('carer');
-    expect(plain.activityIds[0]).toBe('act_bed_sharing_safer');
+    expect(activityKindOf({ id: plain.activityIds[0]! })).toBe('activity');
     expect(plain.reason).toBe('AGE_CONTENT');
     expect(await reason(call('carer', { kind: 'focus', value: 'handover' }))).toBe('bad-request');
     expect(await reason(call('carer', { kind: 'focus', value: 'routine' }))).toBe('bad-request');
@@ -476,21 +485,21 @@ describe('P-172 daily suggestions and truthful aggregates', () => {
     // The play focus picks play activities, and says so.
     await call('carer', { kind: 'focus', value: 'play' });
     const play = await read('carer');
-    expect(play.activityIds[0]).toBe('act_face_to_face');
+    expect(contentSeed.activities.find((a) => a.id === play.activityIds[0])?.needs).toContain(
+      'play',
+    );
     expect(play.reason).toBe('WEEKLY_FOCUS');
     // A chosen interest the pick matches is a true INTEREST.
     await call('carer', { kind: 'focus', value: null });
     await db
       .doc('users/carer/settings/personalization')
       .set({ ...defaultUserPreferences, interests: ['milestones'] });
-    const interest = await read('carer');
-    expect(interest.activityIds[0]).toBe('act_face_to_face');
-    expect(interest.reason).toBe('INTEREST');
+    honest(await read('carer'), ['milestones']);
     // D-143 (4): once the person has an arrangement for this child, its goals replace EN01.
     await db.doc('users/carer/experience/baby').set({ goals: ['spending'] });
     expect((await read('carer')).reason).toBe('AGE_CONTENT');
     await db.doc('users/carer/experience/baby').set({ goals: ['growth_vaccines'] });
-    expect((await read('carer')).reason).toBe('INTEREST');
+    honest(await read('carer'), ['milestones', 'vaccines']);
     await db.doc('users/carer/experience/baby').delete();
     // What the family reported today wins over the focus.
     await call('carer', { kind: 'focus', value: 'play' });
@@ -499,6 +508,52 @@ describe('P-172 daily suggestions and truthful aggregates', () => {
       .set({ date: '2026-10-20', observation: 'sleep', updatedAt: now.toISOString() });
     expect((await read('carer')).reason).toBe('SELF_REPORTED_NEED');
   });
+  it('D-154: one pick per baby and day for the whole household, a new one tomorrow', async () => {
+    await grantGroupA();
+    const first = await read('parent');
+    expect((await read('carer')).activityIds[0]).toBe(first.activityIds[0]);
+    expect((await read('parent')).activityIds).toEqual(first.activityIds);
+    const stored = readExposure(
+      (await db.doc('babies/baby/personalization/exposure').get()).data(),
+    );
+    expect(stored.day).toMatchObject({ date: '2026-10-20', primary: first.activityIds[0] });
+    // Nobody answered: tomorrow's idea is another one, and yesterday's counts as scrolled past.
+    const tomorrow = await read('parent', new Date('2026-10-21T03:00:00Z'));
+    expect(tomorrow.activityIds[0]).not.toBe(first.activityIds[0]);
+    const after = readExposure((await db.doc('babies/baby/personalization/exposure').get()).data());
+    expect(after.items[first.activityIds[0]!]).toMatchObject({ ignored: 1, shown: 1 });
+    // Never a safety check or a card for the parents first.
+    for (const r of [first, tomorrow])
+      expect(activityKindOf({ id: r.activityIds[0]! })).toBe('activity');
+  });
+
+  it('D-154: "Đã thử" rests the idea a week; the person who tried it gets another one today', async () => {
+    await grantGroupA();
+    const first = await read('parent');
+    const id = first.activityIds[0]!;
+    await call('parent', { kind: 'respond', contentId: id, value: 'tried' });
+    expect((await read('parent')).activityIds[0]).not.toBe(id);
+    const e = readExposure((await db.doc('babies/baby/personalization/exposure').get()).data());
+    expect(e.items[id]).toMatchObject({ lastTried: '2026-10-20', lastAnswered: '2026-10-20' });
+    for (let d = 1; d < 7; d++) {
+      const day = new Date(Date.parse('2026-10-20T03:00:00Z') + d * 86_400_000);
+      expect((await read('parent', day)).activityIds[0]).not.toBe(id);
+    }
+  });
+
+  it('D-154 Q5: past the last published age, no idea and the age it stops at', async () => {
+    await grantGroupA();
+    expect((await read('parent')).ideasMaxAgeDays).toBeNull();
+    const max = Math.max(...contentSeed.activities.map((a) => a.ageDays.to));
+    const dob = new Date(Date.parse('2026-10-20T00:00:00Z') - (max + 30) * 86_400_000);
+    await db
+      .doc('babies/baby/restricted/profile')
+      .set({ dateOfBirth: dob.toISOString().slice(0, 10) });
+    const older = await read('parent');
+    expect(older.activityIds).toEqual([]);
+    expect(older.ideasMaxAgeDays).toBe(max);
+  });
+
   it('aggregates generation separately and is idempotent without overwriting answer counters', async () => {
     const act = contentSeed.activities[0]!;
     await call('parent', { kind: 'respond', contentId: act.id, value: 'save' });
