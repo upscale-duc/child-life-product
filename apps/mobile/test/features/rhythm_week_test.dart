@@ -359,7 +359,7 @@ void main() {
         babyId: teddyId,
         fireAt: DateTime(2026, 10, 11, 20, 30),
       ));
-      expect(n.title, l10n.rhWeekTitle);
+      expect(n.title, l10n.rhWeekNotifTitle);
       expect(n.body, l10n.rhWeekNotifBody);
       expect('${n.title} ${n.body}', isNot(contains('Teddy')));
       expect(n.id & (1 << 30), isNot(0));

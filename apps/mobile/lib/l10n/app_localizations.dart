@@ -21453,7 +21453,7 @@ abstract class AppLocalizations {
   /// Evening check-in notification body (title is rhCheckInEntry). EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
-  /// **'Ghi lại một điều trong vài giây, nếu có. Không có gì khác cũng không sao.'**
+  /// **'Nếu có điều gì mới, bạn ghi lại vài giây thôi nhé. Không có gì cũng không sao đâu.'**
   String get rhEveningBody;
 
   /// PR01 subtitle.
@@ -22215,7 +22215,7 @@ abstract class AppLocalizations {
   /// Sunday notification body: no baby name, no figures (R-120).
   ///
   /// In vi, this message translates to:
-  /// **'Xem lại những gì cả nhà đã ghi trong tuần.'**
+  /// **'Cùng xem lại những gì cả nhà đã ghi trong tuần nhé.'**
   String get rhWeekNotifBody;
 
   /// CH01 entry card title.
@@ -31113,7 +31113,7 @@ abstract class AppLocalizations {
   /// Personalization v2: DigestBody
   ///
   /// In vi, this message translates to:
-  /// **'Mở để xem gợi ý mới và việc gia đình đã đặt.'**
+  /// **'Có gợi ý mới cho bé và việc cả nhà đã đặt, xem khi bạn tiện nhé.'**
   String get pv2DigestBody;
 
   /// Personalization v2: Loading
@@ -31773,19 +31773,19 @@ abstract class AppLocalizations {
   /// Notification title at the time the person chose to try an idea; the body is the idea.
   ///
   /// In vi, this message translates to:
-  /// **'Đến giờ thử rồi'**
+  /// **'Đến giờ thử cùng bé rồi'**
   String get pv2TryNowTitle;
 
   /// Next-morning notification title when the person has not answered after a planned try.
   ///
   /// In vi, this message translates to:
-  /// **'Đã thử chưa?'**
+  /// **'Bạn đã thử cùng bé chưa?'**
   String get pv2TryAskTitle;
 
   /// Next-morning notification body: the idea, then how to answer.
   ///
   /// In vi, this message translates to:
-  /// **'{title} · Chạm để trả lời'**
+  /// **'{title}. Bé thấy thế nào? Chạm để kể lại nhé.'**
   String pv2TryAskBody(String title);
 
   /// Status chip: an earlier try was helpful and the idea is planned again (owner, 2026-10-24: "Có ích" next to "Mình sẽ thử" read as a contradiction).
@@ -40601,6 +40601,12 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Hợp với giai đoạn tham khảo hiện tại'**
   String get pv2BecauseStage;
+
+  /// Title of the weekly summary local notification (the Tuần screen keeps rhWeekTitle).
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần này của bé thế nào?'**
+  String get rhWeekNotifTitle;
 }
 
 class _AppLocalizationsDelegate

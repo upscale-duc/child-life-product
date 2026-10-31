@@ -1305,7 +1305,7 @@ async function notifyImporter(
       const lang: Locale = language.startsWith('en') ? 'en' : 'vi';
       const copy = result.ok
         ? {
-            title: lang === 'vi' ? 'Đã nhập xong chi tiêu' : 'Your spending import is done',
+            title: lang === 'vi' ? 'Chi tiêu của bạn đã nhập xong' : 'Your spending import is done',
             body: importSummary(
               lang,
               result.imported,
@@ -1315,7 +1315,10 @@ async function notifyImporter(
           }
         : {
             title: lang === 'vi' ? 'Chưa nhập được chi tiêu' : 'Your spending import didn’t finish',
-            body: lang === 'vi' ? 'Mở app để thử lại.' : 'Open the app to try again.',
+            body:
+              lang === 'vi'
+                ? 'Có chút trục trặc khi nhập. Bạn mở Chi tiêu để thử lại nhé.'
+                : 'Something went wrong with the import. Open Spending to try again.',
           };
       return {
         ...copy,

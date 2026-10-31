@@ -13775,7 +13775,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rhEveningBody =>
-      'Note one thing in a few seconds, if there is one. Nothing different is fine too.';
+      'If something’s new, jot it down in a few seconds. Nothing new is fine too.';
 
   @override
   String get pmPaywallSubtitle =>
@@ -14301,7 +14301,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rhWeekRemindSub => 'Sunday 20:30 · before quiet hours';
 
   @override
-  String get rhWeekNotifBody => 'See what the family logged this week.';
+  String get rhWeekNotifBody =>
+      'Look back at what the family logged this week.';
 
   @override
   String get asEntryTitle => 'Child Life assistant';
@@ -19796,7 +19797,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pv2DigestBody =>
-      'Open for a fresh suggestion and your family’s reminders.';
+      'A fresh idea for your baby and the family’s reminders, whenever suits you.';
 
   @override
   String get pv2Loading => 'Preparing suggestions…';
@@ -20181,14 +20182,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get pv2TryNowTitle => 'Time to try';
+  String get pv2TryNowTitle => 'Time to try it with your baby';
 
   @override
-  String get pv2TryAskTitle => 'Did you try it?';
+  String get pv2TryAskTitle => 'Did you get to try it?';
 
   @override
   String pv2TryAskBody(String title) {
-    return '$title · Tap to answer';
+    return '$title. How did your baby find it? Tap to tell us.';
   }
 
   @override
@@ -25836,4 +25837,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pv2BecauseStage => 'Fits the current reference stage';
+
+  @override
+  String get rhWeekNotifTitle => 'How was your baby’s week?';
 }

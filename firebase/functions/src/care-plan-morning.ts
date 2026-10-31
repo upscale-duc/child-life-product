@@ -77,11 +77,11 @@ export async function draftCarePlanMornings(
           language === 'en'
             ? {
                 title: 'Your baby’s plan is ready',
-                body: `${made.items} tasks · starting ${taskLine(first, 'en')}. Look it over, then tap Use this plan.`,
+                body: `${made.items} ${made.items === 1 ? 'task' : 'tasks'}, first at ${taskLine(first, 'en')}. Look it over, then tap Use this plan.`,
               }
             : {
-                title: 'Lịch của bé đã sẵn',
-                body: `${made.items} việc · bắt đầu ${taskLine(first, 'vi')}. Xem rồi chọn Dùng lịch này nhé.`,
+                title: 'Lịch của bé đã sẵn sàng',
+                body: `${made.items} việc, việc đầu tiên lúc ${taskLine(first, 'vi')}. Xem qua rồi chọn Dùng lịch này nhé.`,
               },
         template: {
           id: 'care.plan_ready',

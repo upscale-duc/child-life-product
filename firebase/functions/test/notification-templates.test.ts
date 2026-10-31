@@ -31,15 +31,15 @@ describe('family notices', () => {
   it('moments, story and video carry the baby name; storage and messages do not', () => {
     const moments = noticeTemplate('shared', 7, 'Mai')!;
     expect(render(moments.id, { ...moments.values, baby_name: 'Bin' }, 'vi')).toEqual({
-      title: 'Có 7 khoảnh khắc mới của Bin',
-      body: 'Mai vừa chia sẻ với gia đình. Mở để xem.',
+      title: '7 khoảnh khắc mới của Bin',
+      body: 'Mai vừa chia sẻ với cả nhà, cùng xem nhé.',
     });
     expect(render(moments.id, { ...noticeTemplate('memories', 1, 'Mai')!.values }, 'en')).toEqual({
       title: '1 new moment of your baby',
-      body: 'Mai just shared with the family. Open to see.',
+      body: 'Mai just shared with the family. Come take a look!',
     });
     const story = noticeTemplate('story', 1, 'Mai')!;
-    expect(render(story.id, { baby_name: 'Bin' }, 'vi').title).toBe('Có 1 câu chuyện mới về Bin');
+    expect(render(story.id, { baby_name: 'Bin' }, 'vi').title).toBe('Có câu chuyện mới về Bin');
     const video = noticeTemplate('keepsakeVideo', 1, '')!;
     expect(render(video.id, { baby_name: 'Bin' }, 'en').title).toBe('Bin’s memory video is ready');
     expect(render(video.id, {}, 'en').title).toBe('Your baby’s memory video is ready');
@@ -71,11 +71,11 @@ describe('care', () => {
       },
     };
     expect(render('care.rule_due', { ...values, baby_name: 'Bin' }, 'vi')).toEqual({
-      title: 'Đến giờ nhắc bú cho Bin',
+      title: 'Đến giờ cữ bú của Bin rồi',
       body: 'Lần bú gần nhất 09:15 · 2 giờ 45 phút trước',
     });
     expect(render('care.rule_due', values, 'en').title).toBe(
-      'Time for your baby’s feeding reminder',
+      'Time for your baby’s feed',
     );
   });
 
@@ -95,8 +95,8 @@ describe('care', () => {
       },
     };
     const eve = render('care.vaccine_eve', { ...values, baby_name: 'Bin' }, 'vi');
-    expect(eve.title).toBe('Ngày mai có lịch tiêm của Bin');
-    expect(eve.body).toMatch(/Mốc 2 tháng tuổi\. Nhớ mang sổ tiêm và một chiếc khăn mỏng\.$/);
+    expect(eve.title).toBe('Ngày mai Bin có lịch tiêm');
+    expect(eve.body).toMatch(/Mốc 2 tháng tuổi\. Nhớ mang theo sổ tiêm và một chiếc khăn mỏng cho bé nhé\.$/);
     expect(render('care.vaccine_3d', values, 'en').title).toBe(
       'Your baby’s vaccination is in 3 days',
     );

@@ -534,7 +534,7 @@ LocalReminder rhythmWeeklyNotification(
   AppLocalizations l10n,
   ({String babyId, DateTime fireAt}) p,
 ) {
-  final title = l10n.rhWeekTitle;
+  final title = l10n.rhWeekNotifTitle;
   final body = l10n.rhWeekNotifBody;
   final day = '${p.fireAt.year}-${p.fireAt.month}-${p.fireAt.day}';
   final hash = '${p.babyId}/week/$day'.codeUnits.fold<int>(

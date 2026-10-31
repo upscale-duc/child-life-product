@@ -19205,7 +19205,7 @@
   "@rhEpClosed": {
     "description": "Toast after \"Con đã ổn hơn\". EN is an engineering draft for owner review."
   },
-  "rhEveningBody": "Ghi lại một điều trong vài giây, nếu có. Không có gì khác cũng không sao.",
+  "rhEveningBody": "Nếu có điều gì mới, bạn ghi lại vài giây thôi nhé. Không có gì cũng không sao đâu.",
   "@rhEveningBody": {
     "description": "Evening check-in notification body (title is rhCheckInEntry). EN is an engineering draft for owner review."
   },
@@ -19888,7 +19888,7 @@
   "@rhWeekRemindSub": {
     "description": "NL02c switch subtitle (EN07 “Chủ nhật 20:30”)."
   },
-  "rhWeekNotifBody": "Xem lại những gì cả nhà đã ghi trong tuần.",
+  "rhWeekNotifBody": "Cùng xem lại những gì cả nhà đã ghi trong tuần nhé.",
   "@rhWeekNotifBody": {
     "description": "Sunday notification body: no baby name, no figures (R-120)."
   },
@@ -27320,7 +27320,7 @@
   "pv2Digest": "Gợi ý mỗi ngày trên thiết bị này",
   "pv2DigestHint": "Tự chọn bật. Mỗi ngày tối đa một gợi ý mới, trong giờ cho phép. Chọn giờ trong cài đặt cá nhân hoá.",
   "pv2DigestTitle": "Một việc vừa sức cho hôm nay",
-  "pv2DigestBody": "Mở để xem gợi ý mới và việc gia đình đã đặt.",
+  "pv2DigestBody": "Có gợi ý mới cho bé và việc cả nhà đã đặt, xem khi bạn tiện nhé.",
   "pv2Loading": "Đang chuẩn bị gợi ý…",
   "pv2Unavailable": "Chưa tải được thông tin mới. Kết nối mạng rồi thử lại nhé.",
   "pv2Retry": "Thử lại",
@@ -28077,15 +28077,15 @@
       }
     }
   },
-  "pv2TryNowTitle": "Đến giờ thử rồi",
+  "pv2TryNowTitle": "Đến giờ thử cùng bé rồi",
   "@pv2TryNowTitle": {
     "description": "Notification title at the time the person chose to try an idea; the body is the idea."
   },
-  "pv2TryAskTitle": "Đã thử chưa?",
+  "pv2TryAskTitle": "Bạn đã thử cùng bé chưa?",
   "@pv2TryAskTitle": {
     "description": "Next-morning notification title when the person has not answered after a planned try."
   },
-  "pv2TryAskBody": "{title} · Chạm để trả lời",
+  "pv2TryAskBody": "{title}. Bé thấy thế nào? Chạm để kể lại nhé.",
   "@pv2TryAskBody": {
     "description": "Next-morning notification body: the idea, then how to answer.",
     "placeholders": {
@@ -35881,5 +35881,9 @@
   "pv2BecauseStage": "Hợp với giai đoạn tham khảo hiện tại",
   "@pv2BecauseStage": {
     "description": "D-154 P3: reason line of the idea of the day when it is linked to the reference stage the baby is in (STAGE)."
+  },
+  "rhWeekNotifTitle": "Tuần này của bé thế nào?",
+  "@rhWeekNotifTitle": {
+    "description": "Title of the weekly summary local notification (the Tuần screen keeps rhWeekTitle)."
   }
 }

@@ -163,7 +163,7 @@ describe('templates', () => {
       renderTemplate(def.builtin, 'en', { count: 1, actor_name: 'Mai', baby_name: 'Bin' }),
     ).toMatchObject({
       title: '1 new moment of Bin',
-      body: 'Mai just shared with the family. Open to see.',
+      body: 'Mai just shared with the family. Come take a look!',
       missing: [],
     });
     expect(renderTemplate(def.builtin, 'en', { count: 3, actor_name: 'Mai' }).title).toBe(
@@ -171,13 +171,13 @@ describe('templates', () => {
     );
     expect(
       renderTemplate(def.builtin, 'vi', { count: 3, actor_name: 'Mai', baby_name: 'Bin' }).title,
-    ).toBe('Có 3 khoảnh khắc mới của Bin');
+    ).toBe('3 khoảnh khắc mới của Bin');
     const rule = notificationTemplates['care.rule_due'];
     expect(
       renderTemplate(rule.builtin, 'vi', {
-        activity_name: { vi: 'nhắc bú', en: 'feeding reminder' },
+        activity_name: { vi: 'cữ bú', en: 'feed' },
       }),
-    ).toMatchObject({ title: 'Đến giờ nhắc bú cho bé', body: 'Chưa có lần ghi nào gần đây' });
+    ).toMatchObject({ title: 'Đến giờ cữ bú của bé rồi', body: 'Chưa có lần ghi nào gần đây' });
     // Without a name the line still starts with a capital ("Bé sắp tròn…", "Your baby is…").
     const eng = notificationTemplates['eng.keepsake_suggestion'];
     const label = { milestone_label: { vi: '100 ngày', en: '100 days' } };
@@ -194,8 +194,8 @@ describe('templates', () => {
     const r = renderTemplate(notificationTemplates['family.message'].builtin, 'en', {
       actor_name: 'x'.repeat(100),
     });
-    // Capitalised like any line start.
-    expect(r.body.startsWith(`X${'x'.repeat(38)}…`)).toBe(true);
+    // A long name is cut inside the title.
+    expect(r.title).toBe(`New message from ${'x'.repeat(39)}…`);
   });
 
   it('rejects unknown and disallowed placeholders, URLs, markup and dropped required ones', () => {

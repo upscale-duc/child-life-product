@@ -1469,11 +1469,14 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     ['Nhắc việc đến giờ', 'Rule reminder due'],
     ['activity_name', 'last_logged_line', 'baby_name'],
     {
-      vi: { title: 'Đến giờ {{activity_name}} cho {{baby_name}}', body: '{{last_logged_line}}' },
+      vi: {
+        title: 'Đến giờ {{activity_name}} của {{baby_name}} rồi',
+        body: '{{last_logged_line}}',
+      },
       en: { title: 'Time for {{baby_name}}’s {{activity_name}}', body: '{{last_logged_line}}' },
     },
     {
-      activity_name: both('nhắc bú', 'feeding reminder'),
+      activity_name: both('cữ bú', 'feed'),
       last_logged_line: both('Lần bú gần nhất 11:45 · 3 giờ trước', 'Last feed 11:45 · 3 h ago'),
       baby_name: both('Bin', 'Bin'),
     },
@@ -1486,12 +1489,12 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     ['dose_list', 'age_label', 'baby_name'],
     {
       vi: {
-        title: 'Còn 3 ngày đến lịch tiêm của {{baby_name}}',
-        body: '{{dose_list}} · {{age_label}}',
+        title: 'Còn 3 ngày nữa là {{baby_name}} đi tiêm',
+        body: '{{dose_list}} · {{age_label}}. Bạn sắp xếp thời gian đưa bé đi nhé.',
       },
       en: {
         title: '{{baby_name}}’s vaccination is in 3 days',
-        body: '{{dose_list}} · {{age_label}}',
+        body: '{{dose_list}} · {{age_label}}. A good time to plan the visit.',
       },
     },
     {
@@ -1508,12 +1511,12 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     ['dose_list', 'age_label', 'baby_name'],
     {
       vi: {
-        title: 'Ngày mai có lịch tiêm của {{baby_name}}',
-        body: '{{dose_list}} · {{age_label}}. Nhớ mang sổ tiêm và một chiếc khăn mỏng.',
+        title: 'Ngày mai {{baby_name}} có lịch tiêm',
+        body: '{{dose_list}} · {{age_label}}. Nhớ mang theo sổ tiêm và một chiếc khăn mỏng cho bé nhé.',
       },
       en: {
         title: '{{baby_name}}’s vaccination is tomorrow',
-        body: '{{dose_list}} · {{age_label}}. Remember the vaccination book and a thin towel.',
+        body: '{{dose_list}} · {{age_label}}. Remember to bring the vaccination book and a thin towel.',
       },
     },
     {
@@ -1530,12 +1533,12 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     ['dose_list', 'age_label', 'baby_name'],
     {
       vi: {
-        title: 'Hôm nay có lịch tiêm của {{baby_name}}',
-        body: '{{dose_list}} · {{age_label}}. Nhớ mang sổ tiêm và một chiếc khăn mỏng.',
+        title: 'Hôm nay {{baby_name}} đi tiêm nhé',
+        body: '{{dose_list}} · {{age_label}}. Nhớ mang theo sổ tiêm và một chiếc khăn mỏng cho bé nhé.',
       },
       en: {
         title: '{{baby_name}}’s vaccination is today',
-        body: '{{dose_list}} · {{age_label}}. Remember the vaccination book and a thin towel.',
+        body: '{{dose_list}} · {{age_label}}. Remember to bring the vaccination book and a thin towel.',
       },
     },
     {
@@ -1552,12 +1555,12 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     ['count'],
     {
       vi: {
-        title: '{{plural:count|Đã thêm khoản định kỳ|Đã thêm {{count}} khoản định kỳ}}',
-        body: 'Mở Chi tiêu để xem hoặc sửa.',
+        title: '{{plural:count|Đã thêm khoản chi định kỳ|Đã thêm {{count}} khoản chi định kỳ}}',
+        body: 'Đã ghi vào Chi tiêu, bạn xem hoặc sửa lúc nào cũng được.',
       },
       en: {
         title: '{{plural:count|Recurring expense added|{{count}} recurring expenses added}}',
-        body: 'Open Spending to see or edit.',
+        body: 'You can view or edit it in Spending any time.',
       },
     },
     { count: 2 },
@@ -1568,10 +1571,13 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     ['Chạm 80% ngân sách', 'Budget at 80%'],
     [],
     {
-      vi: { title: 'Chi tiêu đã dùng 80% ngân sách tháng', body: 'Mở Chi tiêu để xem chi tiết.' },
+      vi: {
+        title: 'Chi tiêu tháng này đã tới 80% ngân sách',
+        body: 'Xem lại các khoản đã chi để cân đối phần còn lại của tháng nhé.',
+      },
       en: {
-        title: 'Spending reached 80% of the monthly budget',
-        body: 'Open Spending to see the details.',
+        title: 'This month’s spending reached 80% of the budget',
+        body: 'Take a look at what’s been spent to plan the rest of the month.',
       },
     },
   ),
@@ -1581,7 +1587,7 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     ['Nhập chi tiêu xong', 'Spending import done'],
     ['import_summary'],
     {
-      vi: { title: 'Đã nhập xong chi tiêu', body: '{{import_summary}}' },
+      vi: { title: 'Chi tiêu của bạn đã nhập xong', body: '{{import_summary}}' },
       en: { title: 'Your spending import is done', body: '{{import_summary}}' },
     },
     { import_summary: both('Đã thêm 42 khoản vào Chi tiêu.', 'Added 42 expenses to Spending.') },
@@ -1592,8 +1598,14 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     ['Nhập chi tiêu lỗi', 'Spending import failed'],
     [],
     {
-      vi: { title: 'Chưa nhập được chi tiêu', body: 'Mở app để thử lại.' },
-      en: { title: 'Your spending import didn’t finish', body: 'Open the app to try again.' },
+      vi: {
+        title: 'Chưa nhập được chi tiêu',
+        body: 'Có chút trục trặc khi nhập. Bạn mở Chi tiêu để thử lại nhé.',
+      },
+      en: {
+        title: 'Your spending import didn’t finish',
+        body: 'Something went wrong with the import. Open Spending to try again.',
+      },
     },
   ),
   'memories.new_moments': tpl(
@@ -1603,12 +1615,12 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     ['count', 'actor_name', 'baby_name'],
     {
       vi: {
-        title: 'Có {{count}} khoảnh khắc mới của {{baby_name}}',
-        body: '{{actor_name}} vừa chia sẻ với gia đình. Mở để xem.',
+        title: '{{count}} khoảnh khắc mới của {{baby_name}}',
+        body: '{{actor_name}} vừa chia sẻ với cả nhà, cùng xem nhé.',
       },
       en: {
         title: '{{plural:count|1 new moment|{{count}} new moments}} of {{baby_name}}',
-        body: '{{actor_name}} just shared with the family. Open to see.',
+        body: '{{actor_name}} just shared with the family. Come take a look!',
       },
     },
     { count: 7, actor_name: 'Mai', baby_name: both('Bin', 'Bin') },
@@ -1620,8 +1632,14 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     ['Câu chuyện mới', 'New story'],
     ['baby_name'],
     {
-      vi: { title: 'Có 1 câu chuyện mới về {{baby_name}}', body: 'Từ Kỷ niệm của gia đình' },
-      en: { title: '1 new story about {{baby_name}}', body: 'From the family’s Memories' },
+      vi: {
+        title: 'Có câu chuyện mới về {{baby_name}}',
+        body: 'Một trang mới vừa được thêm vào Kỷ niệm của gia đình.',
+      },
+      en: {
+        title: 'A new story about {{baby_name}}',
+        body: 'A new page was just added to the family’s Memories.',
+      },
     },
     { baby_name: both('Bin', 'Bin') },
     [],
@@ -1633,12 +1651,12 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     ['baby_name'],
     {
       vi: {
-        title: 'Video kỷ niệm của {{baby_name}} đã sẵn sàng',
-        body: 'Mở Child Life để xem, lưu và chia sẻ.',
+        title: 'Video kỷ niệm của {{baby_name}} đã xong rồi',
+        body: 'Xem ngay rồi lưu hoặc gửi cho cả nhà nhé.',
       },
       en: {
         title: '{{baby_name}}’s memory video is ready',
-        body: 'Open Child Life to watch, save and share.',
+        body: 'Watch it now, then save it or share it with the family.',
       },
     },
     { baby_name: both('Bin', 'Bin') },
@@ -1652,11 +1670,11 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     {
       vi: {
         title: 'Chưa tạo được video kỷ niệm của {{baby_name}}',
-        body: 'Mở Child Life để thử lại.',
+        body: 'Ảnh và video của bạn vẫn còn nguyên. Bạn mở app để thử lại nhé.',
       },
       en: {
         title: '{{baby_name}}’s memory video couldn’t be made',
-        body: 'Open Child Life to try again.',
+        body: 'Your photos and videos are safe. Open the app to try again.',
       },
     },
     { baby_name: both('Bin', 'Bin') },
@@ -1668,10 +1686,13 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     ['Lời nhắn mới', 'New message'],
     ['actor_name'],
     {
-      vi: { title: 'Có lời nhắn mới', body: '{{actor_name}} vừa nhắn cho ba mẹ. Mở để đọc.' },
+      vi: {
+        title: 'Có lời nhắn mới từ {{actor_name}}',
+        body: 'Lời nhắn gửi ba mẹ, mở ra đọc nhé.',
+      },
       en: {
-        title: 'New message',
-        body: '{{actor_name}} sent the parents a message. Open to read.',
+        title: 'New message from {{actor_name}}',
+        body: 'A message for the parents. Open it to read.',
       },
     },
     { actor_name: 'Bà Lan' },
@@ -1683,12 +1704,12 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     ['percent'],
     {
       vi: {
-        title: 'Dung lượng sắp đầy',
-        body: 'Gia đình đã dùng {{percent}}% dung lượng. Mở để xem.',
+        title: 'Dung lượng của gia đình sắp đầy',
+        body: 'Đã dùng {{percent}}%. Bạn xem qua để ảnh, video mới vẫn được lưu đều nhé.',
       },
       en: {
-        title: 'Storage is almost full',
-        body: 'Your family has used {{percent}}% of its space. Open to see.',
+        title: 'Your family’s storage is almost full',
+        body: '{{percent}}% is used. Take a look so new photos and videos keep saving.',
       },
     },
     { percent: 80 },
@@ -1700,8 +1721,14 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     ['Hết dung lượng', 'Storage full'],
     [],
     {
-      vi: { title: 'Đã dùng hết dung lượng', body: 'Tạm dừng tải ảnh, video. Mở để xem.' },
-      en: { title: 'Storage is full', body: 'Photo and video uploads are paused. Open to see.' },
+      vi: {
+        title: 'Dung lượng của gia đình đã đầy',
+        body: 'Ảnh, video mới đang tạm chờ, chưa tải lên. Mở để xem cách tiếp tục lưu nhé.',
+      },
+      en: {
+        title: 'Your family’s storage is full',
+        body: 'New photos and videos are waiting to upload. Open to see how to keep saving.',
+      },
     },
   ),
   'family.storage_granted': tpl(
@@ -1711,12 +1738,12 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     ['gb'],
     {
       vi: {
-        title: 'Đã thêm dung lượng',
-        body: 'Gia đình có thêm {{gb}} GB. Ảnh, video đang chờ sẽ tự tải tiếp.',
+        title: 'Gia đình vừa có thêm {{gb}} GB',
+        body: 'Ảnh, video đang chờ sẽ tự tải lên tiếp, bạn không cần làm gì thêm.',
       },
       en: {
-        title: 'More storage added',
-        body: 'Your family has {{gb}} GB more. Waiting uploads will continue.',
+        title: 'Your family just got {{gb}} GB more',
+        body: 'Waiting photos and videos will upload on their own. Nothing else to do.',
       },
     },
     { gb: 50 },
@@ -1730,11 +1757,11 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     {
       vi: {
         title: 'Ảnh mới của {{baby_name}} đang chờ bạn 📸',
-        body: 'Chọn những tấm đẹp nhất để lưu vào Kỷ niệm trước khi chúng lẫn vào thư viện ảnh.',
+        body: 'Chọn những tấm đẹp nhất để lưu vào Kỷ niệm nhé.',
       },
       en: {
         title: 'New photos of {{baby_name}} are waiting 📸',
-        body: 'Pick the best ones to keep in Memories before they get lost in your camera roll.',
+        body: 'Pick the best ones to keep in Memories.',
       },
     },
     { baby_name: both('Bin', 'Bin') },
@@ -1748,7 +1775,7 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     {
       vi: {
         title: '{{baby_name}} sắp tròn {{milestone_label}} rồi 🎉',
-        body: 'Làm video kỷ niệm {{milestone_label}} từ những bức ảnh bạn đã lưu, chỉ mất vài phút.',
+        body: 'Làm video kỷ niệm {{milestone_label}} từ những bức ảnh bạn đã lưu, chỉ mất vài phút thôi.',
       },
       en: {
         title: '{{baby_name}} is almost {{milestone_label}} 🎉',
@@ -1766,7 +1793,7 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     {
       vi: {
         title: 'Tuần qua của {{baby_name}} có {{week_count}} khoảnh khắc đáng nhớ',
-        body: 'Cùng xem lại trước khi tuần mới bắt đầu.',
+        body: 'Cùng xem lại trước khi tuần mới bắt đầu nhé.',
       },
       en: {
         title:
@@ -1785,7 +1812,7 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     {
       vi: {
         title: 'Gia đình vừa chia sẻ {{update_count}} cập nhật mới về {{baby_name}}',
-        body: 'Mở để xem ông bà, người thân vừa gửi gì.',
+        body: 'Xem người thân vừa gửi gì nhé.',
       },
       en: {
         title:
@@ -1804,7 +1831,7 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     {
       vi: {
         title: 'Gợi ý hôm nay cho {{baby_name}}: {{activity_title}}',
-        body: 'Một hoạt động nhỏ hợp với độ tuổi của bé, chỉ vài phút.',
+        body: 'Một hoạt động nhỏ hợp với độ tuổi của bé, chỉ cần vài phút thôi.',
       },
       en: {
         title: 'Today’s idea for {{baby_name}}: {{activity_title}}',
@@ -1824,10 +1851,13 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     ['actor_name'],
     {
       vi: {
-        title: 'Thành viên mới trong gia đình',
-        body: '{{actor_name}} đã tham gia gia đình. Mở để xem.',
+        title: 'Chào mừng thành viên mới',
+        body: '{{actor_name}} vừa vào gia đình, cùng chào đón nhé!',
       },
-      en: { title: 'A new family member', body: '{{actor_name}} joined the family. Open to see.' },
+      en: {
+        title: 'Say hello to a new family member',
+        body: '{{actor_name}} just joined the family.',
+      },
     },
     { actor_name: 'Bà Lan' },
   ),
@@ -1837,10 +1867,13 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     ['Lời mời bị từ chối', 'Invitation declined'],
     [],
     {
-      vi: { title: 'Lời mời chưa được nhận', body: 'Một lời mời tham gia gia đình đã bị từ chối.' },
+      vi: {
+        title: 'Lời mời chưa được nhận',
+        body: 'Một lời mời vào gia đình đã bị từ chối. Bạn có thể gửi lời mời khác bất cứ lúc nào.',
+      },
       en: {
         title: 'Invitation not accepted',
-        body: 'An invitation to join the family was declined.',
+        body: 'An invitation to join the family was declined. You can send another one any time.',
       },
     },
   ),
@@ -1851,12 +1884,12 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     [],
     {
       vi: {
-        title: 'Quyền của bạn đã thay đổi',
-        body: 'Vai trò của bạn trong gia đình vừa được cập nhật. Mở để xem.',
+        title: 'Vai trò của bạn trong gia đình đã thay đổi',
+        body: 'Mở để xem giờ bạn có thể làm những gì nhé.',
       },
       en: {
-        title: 'Your access changed',
-        body: 'Your role in the family was just updated. Open to see.',
+        title: 'Your role in the family changed',
+        body: 'Open to see what you can do now.',
       },
     },
   ),
@@ -1867,12 +1900,12 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     [],
     {
       vi: {
-        title: 'Bạn không còn trong một gia đình',
-        body: 'Bạn không còn quyền xem hồ sơ của bé trong gia đình này.',
+        title: 'Bạn không còn ở trong một gia đình nữa',
+        body: 'Bạn sẽ không xem được hồ sơ của bé ở gia đình đó. Nếu có nhầm lẫn, hãy liên hệ ba mẹ của bé nhé.',
       },
       en: {
         title: 'You’re no longer in a family',
-        body: 'You no longer have access to a child’s profile in that family.',
+        body: 'You can no longer see the child’s profile in that family. If this is a mistake, please contact the child’s parents.',
       },
     },
   ),
@@ -1884,12 +1917,12 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     ['actor_name'],
     {
       vi: {
-        title: 'Bàn giao cho bạn',
-        body: '{{actor_name}} vừa gửi bàn giao cho bạn. Mở để xem.',
+        title: '{{actor_name}} vừa bàn giao cho bạn',
+        body: 'Mở xem bàn giao để nắm tình hình của bé nhé.',
       },
       en: {
-        title: 'A handover for you',
-        body: '{{actor_name}} sent you a handover. Open to read it.',
+        title: '{{actor_name}} sent you a handover',
+        body: 'Open it to catch up on how your baby is doing.',
       },
     },
     { actor_name: 'Mẹ' },
@@ -1902,12 +1935,12 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     ['actor_name', 'count'],
     {
       vi: {
-        title: 'Bàn giao cho cả nhà',
-        body: '{{actor_name}} vừa gửi lời bàn giao cho cả nhà · Còn {{count}} việc chờ bố mẹ',
+        title: '{{actor_name}} vừa bàn giao cho cả nhà',
+        body: 'Còn {{count}} việc chờ ba mẹ, mở xem để tiếp nối nhé.',
       },
       en: {
-        title: 'A handover for the family',
-        body: '{{actor_name}} sent the family a handover · {{plural:count|1 task|{{count}} tasks}} left for you',
+        title: '{{actor_name}} sent the family a handover',
+        body: '{{plural:count|1 task|{{count}} tasks}} left for you. Open it to pick up from here.',
       },
     },
     { actor_name: 'Cô Lan', count: 2 },
@@ -1922,12 +1955,12 @@ export const notificationTemplates: Record<NotificationTemplateId, NotificationT
     ['count', 'task_line', 'baby_name'],
     {
       vi: {
-        title: 'Lịch của {{baby_name}} đã sẵn',
-        body: '{{count}} việc · bắt đầu {{task_line}}. Xem rồi chọn Dùng lịch này nhé.',
+        title: 'Lịch của {{baby_name}} đã sẵn sàng',
+        body: '{{count}} việc, việc đầu tiên lúc {{task_line}}. Xem qua rồi chọn Dùng lịch này nhé.',
       },
       en: {
         title: '{{baby_name}}’s plan is ready',
-        body: '{{count}} tasks · starting {{task_line}}. Look it over, then tap Use this plan.',
+        body: '{{plural:count|1 task|{{count}} tasks}}, first at {{task_line}}. Look it over, then tap Use this plan.',
       },
     },
     {

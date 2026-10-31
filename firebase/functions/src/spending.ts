@@ -374,12 +374,12 @@ export function recurringCopy(count: number, language: string) {
   if (en) {
     return {
       title: count === 1 ? 'Recurring expense added' : `${count} recurring expenses added`,
-      body: 'Open Spending to see or edit.',
+      body: 'You can view or edit it in Spending any time.',
     };
   }
   return {
-    title: count === 1 ? 'Đã thêm khoản định kỳ' : `Đã thêm ${count} khoản định kỳ`,
-    body: 'Mở Chi tiêu để xem hoặc sửa.',
+    title: count === 1 ? 'Đã thêm khoản chi định kỳ' : `Đã thêm ${count} khoản chi định kỳ`,
+    body: 'Đã ghi vào Chi tiêu, bạn xem hoặc sửa lúc nào cũng được.',
   };
 }
 
@@ -405,10 +405,13 @@ export function budgetAlertDue({ total, month, currentMonth, budget }: BudgetAle
 export function budgetCopy(language: string) {
   return language.startsWith('en')
     ? {
-        title: 'Spending reached 80% of the monthly budget',
-        body: 'Open Spending to see the details.',
+        title: 'This month’s spending reached 80% of the budget',
+        body: 'Take a look at what’s been spent to plan the rest of the month.',
       }
-    : { title: 'Chi tiêu đã dùng 80% ngân sách tháng', body: 'Mở Chi tiêu để xem chi tiết.' };
+    : {
+        title: 'Chi tiêu tháng này đã tới 80% ngân sách',
+        body: 'Xem lại các khoản đã chi để cân đối phần còn lại của tháng nhé.',
+      };
 }
 
 /**

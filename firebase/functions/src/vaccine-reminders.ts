@@ -130,15 +130,15 @@ export function dueReminders(
 }
 
 const titles: Record<Kind, { vi: string; en: string }> = {
-  '3d': { vi: 'Còn 3 ngày đến lịch tiêm của bé', en: 'A vaccination is due in 3 days' },
-  eve: { vi: 'Ngày mai có lịch tiêm của bé', en: 'A vaccination is due tomorrow' },
-  morning: { vi: 'Hôm nay có lịch tiêm của bé', en: 'A vaccination is due today' },
+  '3d': { vi: 'Còn 3 ngày nữa là bé đi tiêm', en: 'A vaccination is due in 3 days' },
+  eve: { vi: 'Ngày mai bé có lịch tiêm', en: 'A vaccination is due tomorrow' },
+  morning: { vi: 'Hôm nay bé đi tiêm nhé', en: 'A vaccination is due today' },
 };
 
 /** EN08 (`561:3011`): the practical line on the eve and the morning of the appointment. */
 const bring = {
-  vi: 'Nhớ mang sổ tiêm và một chiếc khăn mỏng.',
-  en: 'Remember the vaccination book and a thin towel.',
+  vi: 'Nhớ mang theo sổ tiêm và một chiếc khăn mỏng cho bé nhé.',
+  en: 'Remember to bring the vaccination book and a thin towel.',
 };
 
 /**

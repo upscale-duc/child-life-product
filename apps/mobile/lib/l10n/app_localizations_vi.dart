@@ -12897,7 +12897,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get rhEveningBody =>
-      'Ghi lại một điều trong vài giây, nếu có. Không có gì khác cũng không sao.';
+      'Nếu có điều gì mới, bạn ghi lại vài giây thôi nhé. Không có gì cũng không sao đâu.';
 
   @override
   String get pmPaywallSubtitle =>
@@ -13363,7 +13363,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get rhWeekRemindSub => 'Chủ nhật 20:30 · trước giờ yên lặng';
 
   @override
-  String get rhWeekNotifBody => 'Xem lại những gì cả nhà đã ghi trong tuần.';
+  String get rhWeekNotifBody =>
+      'Cùng xem lại những gì cả nhà đã ghi trong tuần nhé.';
 
   @override
   String get asEntryTitle => 'Trợ lý Child Life';
@@ -18633,7 +18634,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pv2DigestTitle => 'Một việc vừa sức cho hôm nay';
 
   @override
-  String get pv2DigestBody => 'Mở để xem gợi ý mới và việc gia đình đã đặt.';
+  String get pv2DigestBody =>
+      'Có gợi ý mới cho bé và việc cả nhà đã đặt, xem khi bạn tiện nhé.';
 
   @override
   String get pv2Loading => 'Đang chuẩn bị gợi ý…';
@@ -19013,14 +19015,14 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get pv2TryNowTitle => 'Đến giờ thử rồi';
+  String get pv2TryNowTitle => 'Đến giờ thử cùng bé rồi';
 
   @override
-  String get pv2TryAskTitle => 'Đã thử chưa?';
+  String get pv2TryAskTitle => 'Bạn đã thử cùng bé chưa?';
 
   @override
   String pv2TryAskBody(String title) {
-    return '$title · Chạm để trả lời';
+    return '$title. Bé thấy thế nào? Chạm để kể lại nhé.';
   }
 
   @override
@@ -24456,4 +24458,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get pv2BecauseStage => 'Hợp với giai đoạn tham khảo hiện tại';
+
+  @override
+  String get rhWeekNotifTitle => 'Tuần này của bé thế nào?';
 }

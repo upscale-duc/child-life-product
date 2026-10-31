@@ -81,16 +81,16 @@ describe('VX 8 copy (no baby name, R-120)', () => {
   it('vi and en', () => {
     const doses = openDoses('2026-09-17', null, birth).filter((d) => d.months === 2);
     expect(vaccineCopy('eve', doses, 'vi')).toEqual({
-      title: 'Ngày mai có lịch tiêm của bé',
+      title: 'Ngày mai bé có lịch tiêm',
       // EN08 (D-076 #2): what to bring, on the eve and the morning.
-      body: '6in1 · Rota · Phế cầu (mũi 1) · Mốc 2 tháng tuổi. Nhớ mang sổ tiêm và một chiếc khăn mỏng.',
+      body: '6in1 · Rota · Phế cầu (mũi 1) · Mốc 2 tháng tuổi. Nhớ mang theo sổ tiêm và một chiếc khăn mỏng cho bé nhé.',
     });
     expect(vaccineCopy('3d', doses, 'vi').body).toBe(
       '6in1 · Rota · Phế cầu (mũi 1) · Mốc 2 tháng tuổi',
     );
     expect(vaccineCopy('3d', doses, 'en').title).toBe('A vaccination is due in 3 days');
     expect(vaccineCopy('morning', doses, 'en').body).toBe(
-      '6-in-1 · Rotavirus · Pneumococcal (dose 1) · 2-month milestone. Remember the vaccination book and a thin towel.',
+      '6-in-1 · Rotavirus · Pneumococcal (dose 1) · 2-month milestone. Remember to bring the vaccination book and a thin towel.',
     );
   });
 });

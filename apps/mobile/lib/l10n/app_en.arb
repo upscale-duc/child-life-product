@@ -3569,7 +3569,7 @@
   "rhEpNotYet": "Not yet",
   "rhEpCreated": "Following these days",
   "rhEpClosed": "Closed",
-  "rhEveningBody": "Note one thing in a few seconds, if there is one. Nothing different is fine too.",
+  "rhEveningBody": "If something’s new, jot it down in a few seconds. Nothing new is fine too.",
   "pmPaywallSubtitle": "One plan for the whole household. Unlocks both benefit groups.",
   "pmPaywallHere": "You’re here",
   "pmGroupATitle": "A · Personalisation & advanced rhythm",
@@ -3696,7 +3696,7 @@
   "rhWeekShareSleep": "average {time} per fully logged day",
   "rhWeekOpen": "Look back at the week",
   "rhWeekRemindSub": "Sunday 20:30 · before quiet hours",
-  "rhWeekNotifBody": "See what the family logged this week.",
+  "rhWeekNotifBody": "Look back at what the family logged this week.",
   "asEntryTitle": "Child Life assistant",
   "asEntryLeft": "{remaining}/{limit} left",
   "asEntryOut": "All used · resets {date}",
@@ -5194,7 +5194,7 @@
   "pv2Digest": "Daily suggestion on this device",
   "pv2DigestHint": "Opt in to at most one fresh suggestion a day, outside quiet hours. Choose the time in personalization settings.",
   "pv2DigestTitle": "One manageable action for today",
-  "pv2DigestBody": "Open for a fresh suggestion and your family’s reminders.",
+  "pv2DigestBody": "A fresh idea for your baby and the family’s reminders, whenever suits you.",
   "pv2Loading": "Preparing suggestions…",
   "pv2Unavailable": "Fresh information is unavailable. Reconnect and try again.",
   "pv2Retry": "Retry",
@@ -5951,15 +5951,15 @@
       }
     }
   },
-  "pv2TryNowTitle": "Time to try",
+  "pv2TryNowTitle": "Time to try it with your baby",
   "@pv2TryNowTitle": {
     "description": "Notification title at the time the person chose to try an idea; the body is the idea."
   },
-  "pv2TryAskTitle": "Did you try it?",
+  "pv2TryAskTitle": "Did you get to try it?",
   "@pv2TryAskTitle": {
     "description": "Next-morning notification title when the person has not answered after a planned try."
   },
-  "pv2TryAskBody": "{title} · Tap to answer",
+  "pv2TryAskBody": "{title}. How did your baby find it? Tap to tell us.",
   "@pv2TryAskBody": {
     "description": "Next-morning notification body: the idea, then how to answer.",
     "placeholders": {
@@ -9032,5 +9032,6 @@
   "hcWeekNotable": "Most worth noticing",
   "pv2IdeasUpToAge": "Ideas are only available up to age {years} for now.",
   "pv2BecauseDiary": "Sleep has been shorter than usual lately (from the diary)",
-  "pv2BecauseStage": "Fits the current reference stage"
+  "pv2BecauseStage": "Fits the current reference stage",
+  "rhWeekNotifTitle": "How was your baby’s week?"
 }

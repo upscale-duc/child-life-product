@@ -441,10 +441,11 @@ export async function onRecordForRules(
 // ---------- Delivery ----------
 
 export const ruleName: Record<ReminderRuleType, { vi: string; en: string }> = {
-  feed: { vi: 'nhắc bú', en: 'feeding reminder' },
-  sleep: { vi: 'nhắc chuẩn bị ngủ', en: 'sleep reminder' },
-  diaper: { vi: 'nhắc thay tã', en: 'diaper reminder' },
-  pump: { vi: 'nhắc hút sữa', en: 'pumping reminder' },
+  // "Đến giờ cữ bú của Bin rồi" (owner, 2026-10-30: friendly, never curt).
+  feed: { vi: 'cữ bú', en: 'feed' },
+  sleep: { vi: 'chuẩn bị ngủ', en: 'sleep routine' },
+  diaper: { vi: 'thay tã', en: 'diaper change' },
+  pump: { vi: 'hút sữa', en: 'pumping' },
 };
 
 const lastLabel: Record<ReminderRuleType, { vi: string; en: string }> = {
@@ -474,7 +475,7 @@ function ago(minutes: number, vi: boolean): string {
   return m === 0 ? `${h} h ago` : `${h} h ${m} min ago`;
 }
 
-/** 1f: "Đến giờ nhắc bú bạn đã đặt" / "Lần bú gần nhất 11:45 · 3 giờ trước" — no baby name. */
+/** 1f: "Đến giờ cữ bú của bé rồi" / "Lần bú gần nhất 11:45 · 3 giờ trước" — no baby name. */
 export function ruleCopy(
   type: ReminderRuleType,
   language: string,
@@ -484,7 +485,7 @@ export function ruleCopy(
 ): { title: string; body: string } {
   const vi = !language.startsWith('en');
   const name = ruleName[type][vi ? 'vi' : 'en'];
-  const title = vi ? `Đến giờ ${name} bạn đã đặt` : `Time for the ${name} you set`;
+  const title = vi ? `Đến giờ ${name} của bé rồi` : `Time for your baby’s ${name}`;
   if (!anchorAt) {
     return { title, body: vi ? 'Chưa có lần ghi nào gần đây' : 'Nothing logged recently' };
   }

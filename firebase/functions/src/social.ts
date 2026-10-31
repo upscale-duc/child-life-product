@@ -186,18 +186,18 @@ export function noticeTemplate(
   actorName: string,
   context?: Record<string, unknown> | null,
 ): { id: NotificationTemplateId; values: Record<string, PlaceholderValue> } | undefined {
+  // An unknown sender takes the placeholder's fallback ("Người thân"): titles start with the name.
+  const actor: Record<string, PlaceholderValue> = actorName ? { actor_name: actorName } : {};
   // D-135 N4: a helper's handover for the whole family, with the tasks still waiting.
   if (kind === 'handoverSent' && context?.family === true) {
     const open = typeof context.openTasks === 'number' ? context.openTasks : 0;
-    return open > 0
-      ? { id: 'ai.handover_family', values: { actor_name: actorName, count: open } }
-      : undefined;
+    return open > 0 ? { id: 'ai.handover_family', values: { ...actor, count: open } } : undefined;
   }
   switch (kind) {
     case 'memories':
     case 'shared':
     case 'album':
-      return { id: 'memories.new_moments', values: { count, actor_name: actorName } };
+      return { id: 'memories.new_moments', values: { count, ...actor } };
     case 'keepsakeVideo':
       return { id: 'memories.video_ready', values: {} };
     case 'keepsakeVideoFailed':
@@ -211,9 +211,9 @@ export function noticeTemplate(
     case 'storageGranted':
       return { id: 'family.storage_granted', values: { gb: count } };
     case 'message':
-      return { id: 'family.message', values: { actor_name: actorName } };
+      return { id: 'family.message', values: actor };
     case 'memberJoined':
-      return { id: 'family.member_joined', values: { actor_name: actorName } };
+      return { id: 'family.member_joined', values: actor };
     case 'inviteDeclined':
       return { id: 'family.invite_declined', values: {} };
     case 'roleChanged':
@@ -221,7 +221,7 @@ export function noticeTemplate(
     case 'memberRemoved':
       return { id: 'family.member_removed', values: {} };
     case 'handoverSent':
-      return { id: 'ai.handover_sent', values: { actor_name: actorName } };
+      return { id: 'ai.handover_sent', values: actor };
     default:
       return undefined;
   }
@@ -242,18 +242,18 @@ export function noticeCopy(
     const who = actorName || (vi ? 'Người chăm sóc' : 'Your helper');
     return vi
       ? {
-          title: 'Bàn giao cho cả nhà',
+          title: `${who} vừa bàn giao cho cả nhà`,
           body:
             open > 0
-              ? `${who} vừa gửi lời bàn giao cho cả nhà · Còn ${open} việc chờ bố mẹ`
-              : `${who} vừa gửi lời bàn giao cho cả nhà. Mở để xem.`,
+              ? `Còn ${open} việc chờ ba mẹ, mở xem để tiếp nối nhé.`
+              : 'Mở xem bàn giao để nắm tình hình của bé nhé.',
         }
       : {
-          title: 'A handover for the family',
+          title: `${who} sent the family a handover`,
           body:
             open > 0
-              ? `${who} sent the family a handover · ${open} ${open === 1 ? 'task' : 'tasks'} left for you`
-              : `${who} sent the family a handover. Open to read it.`,
+              ? `${open} ${open === 1 ? 'task' : 'tasks'} left for you. Open it to pick up from here.`
+              : 'Open it to catch up on how your baby is doing.',
         };
   }
   switch (kind) {
@@ -262,103 +262,130 @@ export function noticeCopy(
     case 'album':
       return vi
         ? {
-            title: `Có ${count} khoảnh khắc mới`,
-            body: `${actorName} vừa chia sẻ với gia đình. Mở để xem.`,
+            title: `${count} khoảnh khắc mới`,
+            body: `${actorName || 'Người thân'} vừa chia sẻ với cả nhà, cùng xem nhé.`,
           }
         : {
             title: count === 1 ? '1 new moment' : `${count} new moments`,
-            body: `${actorName} just shared with the family. Open to see.`,
+            body: `${actorName || 'A family member'} just shared with the family. Come take a look!`,
           };
     // Video kỷ niệm ready (D-068 #4, MM17), to the person who asked only.
     case 'keepsakeVideo':
       return vi
-        ? { title: 'Video kỷ niệm đã sẵn sàng', body: 'Mở Child Life để xem, lưu và chia sẻ.' }
+        ? { title: 'Video kỷ niệm đã xong rồi', body: 'Xem ngay rồi lưu hoặc gửi cho cả nhà nhé.' }
         : {
             title: 'Your memory video is ready',
-            body: 'Open Child Life to watch, save and share.',
+            body: 'Watch it now, then save it or share it with the family.',
           };
     // Video kỷ niệm could not be made (MM14), to the person who asked only.
     case 'keepsakeVideoFailed':
       return vi
-        ? { title: 'Chưa tạo được video kỷ niệm', body: 'Mở Child Life để thử lại.' }
-        : { title: 'Your memory video couldn’t be made', body: 'Open Child Life to try again.' };
+        ? {
+            title: 'Chưa tạo được video kỷ niệm',
+            body: 'Ảnh và video của bạn vẫn còn nguyên. Bạn mở app để thử lại nhé.',
+          }
+        : {
+            title: 'Your memory video couldn’t be made',
+            body: 'Your photos and videos are safe. Open the app to try again.',
+          };
     case 'story':
       return vi
-        ? { title: 'Có 1 câu chuyện mới', body: 'Từ Kỷ niệm của gia đình' }
-        : { title: '1 new story', body: 'From the family’s Memories' };
+        ? {
+            title: 'Có câu chuyện mới',
+            body: 'Một trang mới vừa được thêm vào Kỷ niệm của gia đình.',
+          }
+        : { title: 'A new story', body: 'A new page was just added to the family’s Memories.' };
     case 'storage':
       return count >= 100
         ? vi
-          ? { title: 'Đã dùng hết dung lượng', body: 'Tạm dừng tải ảnh, video. Mở để xem.' }
-          : { title: 'Storage is full', body: 'Photo and video uploads are paused. Open to see.' }
-        : vi
           ? {
-              title: 'Dung lượng sắp đầy',
-              body: `Gia đình đã dùng ${count}% dung lượng. Mở để xem.`,
+              title: 'Dung lượng của gia đình đã đầy',
+              body: 'Ảnh, video mới đang tạm chờ, chưa tải lên. Mở để xem cách tiếp tục lưu nhé.',
             }
           : {
-              title: 'Storage is almost full',
-              body: `Your family has used ${count}% of its space. Open to see.`,
+              title: 'Your family’s storage is full',
+              body: 'New photos and videos are waiting to upload. Open to see how to keep saving.',
+            }
+        : vi
+          ? {
+              title: 'Dung lượng của gia đình sắp đầy',
+              body: `Đã dùng ${count}%. Bạn xem qua để ảnh, video mới vẫn được lưu đều nhé.`,
+            }
+          : {
+              title: 'Your family’s storage is almost full',
+              body: `${count}% is used. Take a look so new photos and videos keep saving.`,
             };
     case 'storageGranted':
       return vi
         ? {
-            title: 'Đã thêm dung lượng',
-            body: `Gia đình có thêm ${count} GB. Ảnh, video đang chờ sẽ tự tải tiếp.`,
+            title: `Gia đình vừa có thêm ${count} GB`,
+            body: 'Ảnh, video đang chờ sẽ tự tải lên tiếp, bạn không cần làm gì thêm.',
           }
         : {
-            title: 'More storage added',
-            body: `Your family has ${count} GB more. Waiting uploads will continue.`,
+            title: `Your family just got ${count} GB more`,
+            body: 'Waiting photos and videos will upload on their own. Nothing else to do.',
           };
     case 'message':
       return vi
-        ? { title: 'Có lời nhắn mới', body: `${actorName} vừa nhắn cho ba mẹ. Mở để đọc.` }
-        : { title: 'New message', body: `${actorName} sent the parents a message. Open to read.` };
+        ? {
+            title: `Có lời nhắn mới từ ${actorName || 'Người thân'}`,
+            body: 'Lời nhắn gửi ba mẹ, mở ra đọc nhé.',
+          }
+        : {
+            title: `New message from ${actorName || 'A family member'}`,
+            body: 'A message for the parents. Open it to read.',
+          };
     // G-109 (D-092): membership events, no baby name (R-120).
     case 'memberJoined':
       return vi
         ? {
-            title: 'Thành viên mới trong gia đình',
-            body: `${actorName} đã tham gia gia đình. Mở để xem.`,
+            title: 'Chào mừng thành viên mới',
+            body: `${actorName || 'Người thân'} vừa vào gia đình, cùng chào đón nhé!`,
           }
-        : { title: 'A new family member', body: `${actorName} joined the family. Open to see.` };
+        : {
+            title: 'Say hello to a new family member',
+            body: `${actorName || 'A family member'} just joined the family.`,
+          };
     case 'inviteDeclined':
       return vi
-        ? { title: 'Lời mời chưa được nhận', body: 'Một lời mời tham gia gia đình đã bị từ chối.' }
+        ? {
+            title: 'Lời mời chưa được nhận',
+            body: 'Một lời mời vào gia đình đã bị từ chối. Bạn có thể gửi lời mời khác bất cứ lúc nào.',
+          }
         : {
             title: 'Invitation not accepted',
-            body: 'An invitation to join the family was declined.',
+            body: 'An invitation to join the family was declined. You can send another one any time.',
           };
     case 'roleChanged':
       return vi
         ? {
-            title: 'Quyền của bạn đã thay đổi',
-            body: 'Vai trò của bạn trong gia đình vừa được cập nhật. Mở để xem.',
+            title: 'Vai trò của bạn trong gia đình đã thay đổi',
+            body: 'Mở để xem giờ bạn có thể làm những gì nhé.',
           }
         : {
-            title: 'Your access changed',
-            body: 'Your role in the family was just updated. Open to see.',
+            title: 'Your role in the family changed',
+            body: 'Open to see what you can do now.',
           };
     case 'memberRemoved':
       return vi
         ? {
-            title: 'Bạn không còn trong một gia đình',
-            body: 'Bạn không còn quyền xem hồ sơ của bé trong gia đình này.',
+            title: 'Bạn không còn ở trong một gia đình nữa',
+            body: 'Bạn sẽ không xem được hồ sơ của bé ở gia đình đó. Nếu có nhầm lẫn, hãy liên hệ ba mẹ của bé nhé.',
           }
         : {
             title: 'You’re no longer in a family',
-            body: 'You no longer have access to a child’s profile in that family.',
+            body: 'You can no longer see the child’s profile in that family. If this is a mistake, please contact the child’s parents.',
           };
     // D-093: who sent it; never anything about the child.
     case 'handoverSent':
       return vi
         ? {
-            title: 'Bàn giao cho bạn',
-            body: `${actorName || 'Người thân'} vừa gửi bàn giao cho bạn. Mở để xem.`,
+            title: `${actorName || 'Người thân'} vừa bàn giao cho bạn`,
+            body: 'Mở xem bàn giao để nắm tình hình của bé nhé.',
           }
         : {
-            title: 'A handover for you',
-            body: `${actorName || 'A family member'} sent you a handover. Open to read it.`,
+            title: `${actorName || 'A family member'} sent you a handover`,
+            body: 'Open it to catch up on how your baby is doing.',
           };
     default:
       return vi
