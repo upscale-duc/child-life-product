@@ -1082,66 +1082,185 @@ class AsNoticeCard extends StatelessWidget {
 }
 
 /// The same semantic card for all Phase 2 reads, using the current Light/Night care tokens.
+///
+/// Owner 2026-10-31 ("format ko tốt … rất khó đọc"): rows scan like a statement. A short value sits
+/// beside its label (label muted, figure bold, right); its further `\n` lines are a quiet detail
+/// under the label. A long value stacks under its label, one paragraph per line. A row with a destination
+/// is tappable as a whole (chevron) instead of repeating a "Xem chi tiết" link.
 class AsReadCard extends StatelessWidget {
   const AsReadCard({
     required this.part,
     required this.zone,
     required this.onOpen,
+    this.now,
     super.key,
   });
   final ReadCardPart part;
   final String zone;
   final ValueChanged<String> onOpen;
 
+  /// "Dữ liệu đến 14:17" when the snapshot is from today; otherwise its date too.
+  final DateTime? now;
+
+  /// Label + first line short enough to share one line in the 272 pt card body.
+  static bool _beside(String label, String first) =>
+      label.isNotEmpty &&
+      !first.startsWith('• ') &&
+      label.length + first.length <= 40;
+
   @override
   Widget build(BuildContext context) {
     final cl = context.cl;
     final at = inBabyZone(zone, part.asOf);
+    final today = inBabyZone(zone, now ?? DateTime.now());
     final l10n = AppLocalizations.of(context);
-    final stamp =
-        '${at.day}/${at.month}/${at.year} · ${at.hour.toString().padLeft(2, '0')}:${at.minute.toString().padLeft(2, '0')}';
+    String two(int n) => n.toString().padLeft(2, '0');
+    final clock = '${two(at.hour)}:${two(at.minute)}';
+    final sameDay =
+        at.year == today.year && at.month == today.month && at.day == today.day;
+    final stamp = sameDay
+        ? clock
+        : '${two(at.day)}/${two(at.month)}${at.year == today.year ? '' : '/${at.year}'} · $clock';
+    final rows = <Widget>[];
+    for (final (i, row) in part.rows.indexed) {
+      if (i > 0) {
+        rows.add(Container(height: 1, color: cl.colors.separator));
+      }
+      final route = assistantReadRoute(row.link);
+      rows.add(
+        _ReadRow(
+          label: row.label,
+          lines: row.value
+              .split('\n')
+              .where((l) => l.trim().isNotEmpty)
+              .toList(),
+          beside: _beside(row.label, row.value.split('\n').first),
+          onPressed: route == null ? null : () => onOpen(route),
+        ),
+      );
+    }
     return AsCard(
-      title: part.title,
       children: [
+        Semantics(
+          header: true,
+          child: Text(
+            part.title,
+            style: cl.text.label.copyWith(
+              fontSize: 15,
+              height: 1.35,
+              fontWeight: FontWeight.w600,
+              color: cl.colors.ink,
+            ),
+          ),
+        ),
+        const SizedBox(height: 2),
         Text(
           l10n.asReadSnapshot(stamp),
           style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
         ),
-        for (final row in part.rows)
-          Padding(
-            padding: const EdgeInsets.only(top: ClSpace.s3),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (row.label.isNotEmpty)
-                  Text(
-                    row.label,
-                    style: cl.text.label.copyWith(color: cl.colors.ink),
-                  ),
-                Text(
-                  row.value,
-                  style: cl.text.body.copyWith(color: cl.colors.ink),
-                ),
-                if (assistantReadRoute(row.link) case final route?)
-                  AsLink(
-                    label: l10n.asReadDetails,
-                    onPressed: () => onOpen(route),
-                  ),
-              ],
-            ),
-          ),
+        const SizedBox(height: ClSpace.s1),
+        ...rows,
         if (part.caveat case final note?) ...[
-          const SizedBox(height: ClSpace.s3),
-          Text(
-            note,
-            style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-          ),
+          const SizedBox(height: ClSpace.s2),
+          AsFootnote(text: note, icon: ClIcons.alert),
         ],
         if (assistantReadRoute(part.actionLink) case final route?) ...[
-          const SizedBox(height: ClSpace.s3),
+          const SizedBox(height: ClSpace.s1),
           AsLink(label: part.actionLabel, onPressed: () => onOpen(route)),
         ],
       ],
+    );
+  }
+}
+
+/// One read-card row: beside (label and detail · figure) or stacked.
+class _ReadRow extends StatelessWidget {
+  const _ReadRow({
+    required this.label,
+    required this.lines,
+    required this.beside,
+    required this.onPressed,
+  });
+  final String label;
+  final List<String> lines;
+  final bool beside;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final cl = context.cl;
+    final ink = cl.colors.ink, muted = cl.colors.inkMuted;
+    final first = lines.isEmpty ? '' : lines.first;
+    final detail = lines.skip(1);
+    final Widget content;
+    if (beside) {
+      content = LayoutBuilder(
+        builder: (context, box) => Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(label, style: cl.text.label.copyWith(color: muted)),
+                  for (final line in detail)
+                    Text(line, style: cl.text.caption.copyWith(color: muted)),
+                ],
+              ),
+            ),
+            const SizedBox(width: ClSpace.s3),
+            // The figure takes what it needs (up to ~⅔), the label and its detail the rest.
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: box.maxWidth * 0.66),
+              child: Text(
+                first,
+                textAlign: TextAlign.end,
+                style: _semi(context, 14, ink),
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      content = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (label.isNotEmpty) ...[
+            Text(label, style: _semi(context, 14, ink)),
+            const SizedBox(height: 2),
+          ],
+          for (final (i, line) in lines.indexed)
+            Padding(
+              padding: EdgeInsets.only(top: i == 0 ? 0 : ClSpace.s1),
+              child: Text(
+                line,
+                style: cl.text.label.copyWith(
+                  fontWeight: FontWeight.w400,
+                  height: 1.45,
+                  color: ink,
+                ),
+              ),
+            ),
+        ],
+      );
+    }
+    final body = Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        children: [
+          Expanded(child: content),
+          if (onPressed != null) ...[
+            const SizedBox(width: ClSpace.s2),
+            ClIcon(ClIcons.chevronRight, size: 14, color: muted),
+          ],
+        ],
+      ),
+    );
+    if (onPressed == null) return body;
+    return ClPressable(
+      onPressed: onPressed,
+      semanticLabel: [label, ...lines].where((t) => t.isNotEmpty).join(', '),
+      child: body,
     );
   }
 }

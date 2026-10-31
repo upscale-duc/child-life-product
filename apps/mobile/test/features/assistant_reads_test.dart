@@ -144,6 +144,7 @@ void main() {
                 child: AsReadCard(
                   part: AssistantPart.fromJson(_card()) as ReadCardPart,
                   zone: 'Asia/Ho_Chi_Minh',
+                  now: DateTime.utc(2026, 10, 20, 3),
                   onOpen: opened.add,
                 ),
               ),
@@ -152,7 +153,8 @@ void main() {
         );
         await tester.pumpAndSettle();
         expect(find.text('120 ml'), findsOneWidget);
-        expect(find.text('Dữ liệu đến 20/10/2026 · 07:30'), findsOneWidget);
+        // The same local day shows the time only (owner 2026-10-31).
+        expect(find.text('Dữ liệu đến 07:30'), findsOneWidget);
         await tester.tap(find.text('Mở lịch sử hút sữa'));
         expect(opened, ['/care/history?filter=pump']);
         expect(tester.takeException(), isNull);

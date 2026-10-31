@@ -90,7 +90,8 @@ export function insightExplanation(i: Insight, vi: boolean): string {
         ? `Ghi bởi ${i.authors.map((a) => a.name).join(', ')}.`
         : `Logged by ${i.authors.map((a) => a.name).join(', ')}.`,
     );
-  return parts.join(' ');
+  // One sentence per line: the read card shows each as its own paragraph.
+  return parts.join('\n');
 }
 
 export type InsightBasis =

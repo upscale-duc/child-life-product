@@ -231,7 +231,7 @@ describe('Phase 2 end-to-end read shortcuts', () => {
     const c = r.cards[0]!;
     expect(c.tool).toBe('day_overview');
     expect(c.rows.find((r) => r.label === 'Bú bình')!.value).toContain('120 ml');
-    expect(c.rows.find((r) => r.label === 'Giấc ngủ đã kết thúc')!.value).toContain('60 phút');
+    expect(c.rows.find((r) => r.label === 'Giấc ngủ')!.value).toContain('1 giờ');
     expect(c.rows.find((r) => r.label === 'Đang ngủ')!.value).toContain('5 phút');
     expect(c.rows.find((r) => r.label === 'Hút sữa')!.value).toContain('90 ml');
     expect(JSON.stringify(c)).not.toContain('999');
@@ -258,7 +258,7 @@ describe('Phase 2 end-to-end read shortcuts', () => {
     await record('born', 'growth', '2026-03-20T00:00:00Z', { weightKg: 3.3464 });
     await record('head', 'growth', '2026-10-19T00:00:00Z', { headCm: 43 });
     const r = await ask('Bé nặng bao nhiêu, có chuẩn không?');
-    expect(r.cards[0]!.rows.find((r) => r.label === 'Cân nặng')!.value).toContain('P50.0');
+    expect(r.cards[0]!.rows.find((r) => r.label === 'Cân nặng')!.value).toContain('WHO P50');
     expect(r.cards[0]!.rows.some((r) => r.label === 'Vòng đầu')).toBe(true);
     expect(r.cards[0]!.caveat).toContain('không phải chẩn đoán');
   });
@@ -289,7 +289,7 @@ describe('Phase 2 end-to-end read shortcuts', () => {
       .set({ status: 'planned', plannedOn: '2026-10-25' });
     const r = await ask('Sắp tới bé tiêm gì?');
     expect(r.cards[0]!.rows).toHaveLength(1);
-    expect(r.cards[0]!.rows[0]!.value).toBe('25/10/2026');
+    expect(r.cards[0]!.rows[0]!.value).toBe('25/10');
     expect(r.cards[0]!.rows[0]!.link).toBe('/care/vaccines/dose/testvx_3');
     await db.doc(`families/${F}`).update({ country: 'US' });
     expect(JSON.stringify(await read('vaccine_next'))).toContain('CDC');
@@ -311,7 +311,7 @@ describe('Phase 2 end-to-end read shortcuts', () => {
     });
     const r = await ask('Hôm nay có nhắc gì?', NANNY);
     expect(r.cards[0]!.rows).toHaveLength(2);
-    expect(r.cards[0]!.rows[0]!.value).toContain(`Cả ngày · Chưa xong · ${NANNY}`);
+    expect(r.cards[0]!.rows[0]!.value).toContain(`Cả ngày · Chưa xong\n${NANNY}`);
     const denied = await ask('Hôm nay có nhắc gì?', AUNT);
     expect(denied.cards).toEqual([]);
     expect(JSON.stringify(denied.messages)).not.toContain('TEST_ONLY');
@@ -333,10 +333,10 @@ describe('Phase 2 end-to-end read shortcuts', () => {
     const r = await ask('Tháng này tiêu bao nhiêu?');
     expect(r.task.visibility).toBe('private');
     expect(r.task.conversationId).not.toBe(`cv_${B}`);
-    expect(r.cards[0]!.rows.slice(0, 2).map((r) => r.value)).toEqual(['25.00 USD', '500000 VND']);
+    expect(r.cards[0]!.rows.slice(0, 2).map((r) => r.value)).toEqual(['25,00 USD', '500.000 VND']);
     await db.doc(`babies/${B}/spending/budget`).set({ monthlyTotal: 1000000, currency: 'VND' });
     const withBudget = answerCards(await read('spending_month'))[0]!;
-    expect(withBudget.rows.find((r) => r.label === 'Ngân sách còn lại')!.value).toBe('500000 VND');
+    expect(withBudget.rows.find((r) => r.label === 'Ngân sách còn lại')!.value).toBe('500.000 VND');
     const shared = await db.collection(`assistantConversations/cv_${B}/messages`).get();
     expect(shared.empty).toBe(true);
     await db.doc(`babies/${B}/members/${NANNY}`).update({ extraRights: { recordSpending: true } });
@@ -435,7 +435,7 @@ describe('Phase 2 end-to-end read shortcuts', () => {
     );
     const r = await ask('Bé biết làm gì rồi?');
     expect(r.task.visibility).toBe('private');
-    expect(r.cards[0]!.rows.some((r) => r.value.includes('TEST_ONLY bò'))).toBe(true);
+    expect(r.cards[0]!.rows.some((r) => r.label.includes('TEST_ONLY bò'))).toBe(true);
     expect(answerCards(await read('milestones', '', NANNY))).toEqual([]);
     expect(answerCards(await read('stage'))[0]!.action.link).toBe('/stages/stg_m7');
     expect(JSON.stringify(await read('stage', '', NANNY))).not.toContain('TEST_ONLY 7 tháng');

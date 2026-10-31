@@ -442,7 +442,7 @@ export async function sleepFactsTool(
   s: TrustedScope,
   anchor: Date,
   locale: 'vi' | 'en',
-): Promise<ReadResult> {
+): Promise<ReadResult & { trend: { recent: number; baseline: number } | null }> {
   const today = localDateIn(s.zone, anchor);
   const f = await sleepFacts(db, s.babyId, s.zone, today, anchor, await readRhythmRules(db));
   const vi = locale === 'vi';
@@ -454,7 +454,16 @@ export async function sleepFactsTool(
       : vi
         ? `Giấc ngủ đã ghi gần đây: khoảng ${fmtMin(f.recent)} phút mỗi ngày; trước đó khoảng ${fmtMin(f.baseline)} phút mỗi ngày.`
         : `Recently logged sleep: about ${fmtMin(f.recent)} min a day; before that about ${fmtMin(f.baseline)} min a day.`;
-  return { tool: 'sleep_facts', facts: [{ id: `${today}:sleep_facts`, text }], parts: [] };
+  return {
+    tool: 'sleep_facts',
+    facts: [{ id: `${today}:sleep_facts`, text }],
+    parts: [],
+    // The read card's label/value rows (the model keeps the sentence above).
+    trend:
+      f.status === 'insufficient_data' || f.baseline === null || f.recent === null
+        ? null
+        : { recent: f.recent, baseline: f.baseline },
+  };
 }
 
 /** "Còn bao nhiêu lượt?": the household pool (never mutates the budget). */

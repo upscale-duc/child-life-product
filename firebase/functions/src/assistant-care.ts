@@ -582,7 +582,7 @@ export async function careAnswer(x: CareAnswerInput): Promise<CareAnswer> {
         asOf: x.anchor.toISOString(),
         rows: ranked.map(({ r, familiar }) => ({
           label: r.title[locale],
-          value: `${r.summary[locale]} · ${vi ? 'Nguyên liệu đã thử' : 'Previously tried ingredients'}: ${familiar}`,
+          value: `${r.summary[locale]}\n${vi ? 'Nguyên liệu đã thử' : 'Previously tried ingredients'}: ${familiar}`,
           link: `/care/solids/recipe/${r.id}`,
         })),
         action: { label: vi ? 'Mở Ăn dặm' : 'Open Solids', link: '/care/solids' },

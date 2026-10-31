@@ -80,6 +80,38 @@ const strings = (v: unknown): string[] =>
 const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : 0);
 const safeId = (v: string) => /^[A-Za-z0-9_-]{1,128}$/.test(v);
 const dateText = (date: string) => date.split('-').reverse().join('/');
+/*
+ * Read-card values are scannable label/value rows (owner 2026-10-31): the app shows a short first
+ * line beside its label and any further `\n` lines as a quiet second line, so a row's figure comes
+ * first and its detail (latest time, date, who) after. Zero counts are left out, minutes read as
+ * hours, numbers are grouped and dates drop the current year.
+ */
+/** "6 giờ 2 phút" / "6 h 2 min". */
+export function durationText(minutes: number, vi: boolean): string {
+  const m = Math.round(minutes);
+  const h = Math.floor(m / 60),
+    r = m % 60;
+  if (h === 0) return vi ? `${r} phút` : `${r} min`;
+  if (r === 0) return vi ? `${h} giờ` : `${h} h`;
+  return vi ? `${h} giờ ${r} phút` : `${h} h ${r} min`;
+}
+/** "1.050" / "1,050"; a plain decimal ("25.00", `minorToPlain`) keeps its fraction ("25,00"). */
+export function groupedNumber(value: number | string, vi: boolean): string {
+  const [whole = '0', fraction] = String(value).split('.');
+  const sign = whole.startsWith('-') ? '-' : '';
+  const digits = whole.replace('-', '').replace(/\B(?=(\d{3})+(?!\d))/g, vi ? '.' : ',');
+  return `${sign}${digits}${fraction === undefined ? '' : `${vi ? ',' : '.'}${fraction}`}`;
+}
+/** "2 cữ" / "1 feed" · "2 feeds". */
+const countOf = (n: number, isVi: boolean, vi: string, en: [string, string]) =>
+  `${n} ${isVi ? vi : n === 1 ? en[0] : en[1]}`;
+/** "10/10" this year, "10/10/2025" otherwise. */
+const shortDate = (date: string, today: string) =>
+  date.slice(0, 4) === today.slice(0, 4)
+    ? date.slice(5).split('-').reverse().join('/')
+    : dateText(date);
+/** A list value, one "• " line per item. */
+const bullets = (items: readonly string[]) => items.map((i) => `• ${i}`).join('\n');
 const loggedNote = (vi: boolean) =>
   vi
     ? 'Chỉ tính dữ liệu gia đình đã ghi; thiếu ghi nhận không có nghĩa là không diễn ra.'
@@ -138,8 +170,13 @@ function card(
     sourceIds: sourceIds.slice(0, 200),
   });
 }
-const instantLabel = (x: Input, at: Date) =>
-  `${localClock(x.s.zone, at)} · ${dateText(localDateIn(x.s.zone, at))}`;
+/** "11:00" on [day] (default: the anchor's day), else "22:00 · 14/10". */
+const whenText = (x: Input, at: Date, day = localDateIn(x.s.zone, x.anchor)) => {
+  const date = localDateIn(x.s.zone, at);
+  return date === day
+    ? localClock(x.s.zone, at)
+    : `${localClock(x.s.zone, at)} · ${shortDate(date, localDateIn(x.s.zone, x.anchor))}`;
+};
 async function profile(x: Input) {
   const p = await x.db.doc(`babies/${x.s.babyId}/restricted/profile`).get();
   const dob = p.get('dateOfBirth');
@@ -181,10 +218,7 @@ async function timerRows(
         x.locale === 'vi'
           ? { sleep: 'Đang ngủ', breast: 'Đang bú mẹ', pump: 'Đang hút sữa' }[k]
           : { sleep: 'Sleeping', breast: 'Nursing', pump: 'Pumping' }[k],
-      value:
-        x.locale === 'vi'
-          ? `Từ ${instantLabel(x, started)} · ${Math.floor((x.anchor.getTime() - started.getTime()) / 60000)} phút`
-          : `Since ${instantLabel(x, started)} · ${Math.floor((x.anchor.getTime() - started.getTime()) / 60000)} min`,
+      value: `${durationText(Math.floor((x.anchor.getTime() - started.getTime()) / 60000), x.locale === 'vi')}\n${x.locale === 'vi' ? 'Từ' : 'Since'} ${whenText(x, started)}`,
       link: `/care/timer/${k}`,
     });
     ids.push(`timer:${k}`);
@@ -201,8 +235,9 @@ async function daily(x: Input, request: AssistantReadRequest): Promise<Assistant
     ? 7
     : 1;
   const p = await periodRecords(x, request.dayOffset, tool === 'day_overview' ? 1 : days);
-  const date = dateText(p.date),
-    period = days === 7 ? `${dateText(p.first)} – ${date}` : date;
+  const today = localDateIn(x.s.zone, x.anchor);
+  const date = shortDate(p.date, today),
+    period = days === 7 ? `${shortDate(p.first, today)} – ${date}` : date;
   if (tool === 'day_overview') {
     const [summary, timers] = await Promise.all([
       careSummaryTool(x.db, x.s, x.anchor, request.dayOffset, x.locale),
@@ -211,34 +246,7 @@ async function daily(x: Input, request: AssistantReadRequest): Promise<Assistant
     const a = summary.summary;
     const diapers = p.docs.filter((d) => d.get('type') === 'diaper');
     const pumps = p.docs.filter((d) => d.get('type') === 'pump');
-    const rows: Row[] = [
-      {
-        label: vi ? 'Bú bình' : 'Bottle',
-        value: `${a.bottle.count} ${vi ? 'cữ' : 'feeds'} · ${a.bottle.ml} ml`,
-        link: '/care/stats/feed',
-      },
-      {
-        label: vi ? 'Bú mẹ' : 'Nursing',
-        value: `${a.breast.count} ${vi ? 'lần' : 'feeds'} · ${Math.round(a.breast.minutes)} ${vi ? 'phút' : 'min'}`,
-        link: '/care/stats/feed',
-      },
-      {
-        label: vi ? 'Giấc ngủ đã kết thúc' : 'Completed sleep',
-        value: `${a.sleep.count} ${vi ? 'giấc' : 'sleeps'} · ${Math.round(a.sleep.minutes)} ${vi ? 'phút' : 'min'}`,
-        link: '/care/stats/sleep',
-      },
-      {
-        label: vi ? 'Thay tã' : 'Diapers',
-        value: `${diapers.length} ${vi ? 'lần' : 'changes'}`,
-        link: '/care/history?filter=diaper',
-      },
-      {
-        label: vi ? 'Hút sữa' : 'Pumping',
-        value: `${pumps.length} ${vi ? 'lần' : 'sessions'} · ${pumps.reduce((n, d) => n + num(d.get('data.amountMl')), 0)} ml`,
-        link: '/care/history?filter=pump',
-      },
-    ];
-    const kinds = ['bottle', 'breast', 'sleep', 'diaper', 'pump'];
+    const kinds = ['bottle', 'breast', 'sleep', 'diaper', 'pump'] as const;
     const latest = await Promise.all(
       kinds.map((kind) =>
         x.db
@@ -252,20 +260,59 @@ async function daily(x: Input, request: AssistantReadRequest): Promise<Assistant
       ),
     );
     const lastIds: string[] = [];
+    const rows: Row[] = [];
+    // One row per module: today's figure, then when it last happened. A module with nothing
+    // today and nothing ever logged is left out; nothing today but an earlier log says so.
+    const totals: Record<(typeof kinds)[number], [number, string]> = {
+      bottle: [
+        a.bottle.count,
+        `${countOf(a.bottle.count, vi, 'cữ', ['feed', 'feeds'])} · ${groupedNumber(a.bottle.ml, vi)} ml`,
+      ],
+      breast: [
+        a.breast.count,
+        `${countOf(a.breast.count, vi, 'lần', ['feed', 'feeds'])} · ${durationText(a.breast.minutes, vi)}`,
+      ],
+      sleep: [
+        a.sleep.count,
+        `${countOf(a.sleep.count, vi, 'giấc', ['sleep', 'sleeps'])} · ${durationText(a.sleep.minutes, vi)}`,
+      ],
+      diaper: [diapers.length, countOf(diapers.length, vi, 'lần', ['change', 'changes'])],
+      pump: [
+        pumps.length,
+        `${countOf(pumps.length, vi, 'lần', ['session', 'sessions'])} · ${groupedNumber(
+          pumps.reduce((n, d) => n + num(d.get('data.amountMl')), 0),
+          vi,
+        )} ml`,
+      ],
+    };
+    const labels: Record<(typeof kinds)[number], [string, string, string]> = {
+      bottle: ['Bú bình', 'Bottle', '/care/stats/feed'],
+      breast: ['Bú mẹ', 'Nursing', '/care/stats/feed'],
+      sleep: ['Giấc ngủ', 'Sleep', '/care/stats/sleep'],
+      diaper: ['Thay tã', 'Diapers', '/care/history?filter=diaper'],
+      pump: ['Hút sữa', 'Pumping', '/care/history?filter=pump'],
+    };
     for (const [i, kind] of kinds.entries()) {
       const d = latest[i]!.docs[0];
       if (d) lastIds.push(d.id);
-      const at = d && toDate(d.get('occurredAt'));
-      if (d && at && safeId(d.id))
-        rows.push({
-          label: vi
-            ? `Gần nhất · ${{ bottle: 'bú bình', breast: 'bú mẹ', sleep: 'ngủ', diaper: 'tã', pump: 'hút sữa' }[kind]}`
-            : `Latest · ${kind}`,
-          value: instantLabel(x, at),
-          link: `/care/record/${d.id}`,
-        });
+      const at = d && safeId(d.id) ? toDate(d.get('occurredAt')) : null;
+      const [count, figure] = totals[kind];
+      if (count === 0 && !at) continue;
+      const last = at ? `${vi ? 'Gần nhất' : 'Latest'} ${whenText(x, at, p.date)}` : null;
+      rows.push({
+        label: labels[kind][vi ? 0 : 1],
+        value: [count === 0 ? (vi ? 'Chưa ghi' : 'None logged') : figure, last]
+          .filter(Boolean)
+          .join('\n'),
+        link: labels[kind][2],
+      });
     }
     rows.push(...timers.rows);
+    if (!rows.length)
+      rows.push({
+        label: '',
+        value: vi ? 'Chưa có ghi nhận nào trong ngày.' : 'Nothing logged for this day yet.',
+      });
     return [
       card(
         x,
@@ -285,20 +332,35 @@ async function daily(x: Input, request: AssistantReadRequest): Promise<Assistant
   }
   const kind = tool === 'diaper_summary' ? 'diaper' : 'pump';
   const docs = p.docs.filter((d) => d.get('type') === kind);
-  const rows: Row[] = [
-    { label: vi ? 'Số lần đã ghi' : 'Logged sessions', value: String(docs.length) },
-  ];
+  const total = countOf(
+    docs.length,
+    vi,
+    'lần',
+    kind === 'pump' ? ['session', 'sessions'] : ['change', 'changes'],
+  );
+  const rows: Row[] = [{ label: vi ? 'Số lần đã ghi' : 'Logged', value: total }];
   if (kind === 'pump')
     rows.push({
       label: vi ? 'Tổng lượng đã hút' : 'Total expressed',
-      value: `${docs.reduce((n, d) => n + num(d.get('data.amountMl')), 0)} ml`,
+      value: `${groupedNumber(
+        docs.reduce((n, d) => n + num(d.get('data.amountMl')), 0),
+        vi,
+      )} ml`,
     });
   else
-    for (const k of ['wet', 'dirty', 'both'])
-      rows.push({
-        label: vi ? { wet: 'Tã ướt', dirty: 'Tã bẩn', both: 'Cả ướt và bẩn' }[k]! : k,
-        value: String(docs.filter((d) => d.get('data.kind') === k).length),
-      });
+    for (const [k, label] of [
+      ['wet', vi ? 'Tã ướt' : 'Wet'],
+      ['dirty', vi ? 'Tã bẩn' : 'Dirty'],
+      ['both', vi ? 'Cả ướt và bẩn' : 'Wet and dirty'],
+    ] as const) {
+      const n = docs.filter((d) => d.get('data.kind') === k).length;
+      if (n > 0) rows.push({ label, value: countOf(n, vi, 'lần', ['change', 'changes']) });
+    }
+  if (!docs.length)
+    rows.splice(0, rows.length, {
+      label: '',
+      value: vi ? 'Chưa ghi lần nào trong khoảng này.' : 'Nothing logged in this period yet.',
+    });
   return [
     card(
       x,
@@ -329,6 +391,7 @@ async function growth(x: Input): Promise<AssistantPart[]> {
     );
   const rows: Row[] = [],
     ids = new Set<string>();
+  const decimal = (n: number) => groupedNumber(Number(n.toFixed(2)), vi);
   for (const [field, measure, unit, label] of [
     ['weightKg', 'weight', 'kg', vi ? 'Cân nặng' : 'Weight'],
     ['lengthCm', 'length', 'cm', vi ? 'Chiều dài' : 'Length'],
@@ -351,23 +414,25 @@ async function growth(x: Input): Promise<AssistantPart[]> {
     const percentile =
       pct === null
         ? ''
-        : ` · WHO ${pct < 0.1 ? '< P0.1' : pct > 99.9 ? '> P99.9' : `P${pct.toFixed(1)}`}`;
-    rows.push({
-      label,
-      value: `${value} ${unit} · ${dateText(localDateIn(x.s.zone, at))}${percentile}`,
-      link: '/care/growth',
-    });
+        : ` · WHO ${pct < 0.1 ? `< P${decimal(0.1)}` : pct > 99.9 ? `> P${decimal(99.9)}` : `P${groupedNumber(Number(pct.toFixed(1)), vi)}`}`;
+    const today = localDateIn(x.s.zone, x.anchor);
+    const measured = shortDate(localDateIn(x.s.zone, at), today);
     const previous = matches.find(
       (d) => localDateIn(x.s.zone, toDate(d.get('occurredAt'))!) < localDateIn(x.s.zone, at),
     );
+    // "7,2 kg · WHO P50" then "Đo 10/10 · +0,35 kg so với 12/09".
+    let detail = `${vi ? 'Đo' : 'Measured'} ${measured}`;
     if (previous) {
       ids.add(previous.id);
       const delta = value - num(previous.get(`data.${field}`));
-      rows.push({
-        label: `${label} · ${vi ? 'so với lần trước' : 'change since previous'}`,
-        value: `${delta >= 0 ? '+' : ''}${Number(delta.toFixed(2))} ${unit} · ${dateText(localDateIn(x.s.zone, toDate(previous.get('occurredAt'))!))} → ${dateText(localDateIn(x.s.zone, at))}`,
-      });
+      const before = shortDate(localDateIn(x.s.zone, toDate(previous.get('occurredAt'))!), today);
+      detail += ` · ${delta >= 0 ? '+' : '−'}${decimal(Math.abs(delta))} ${unit} ${vi ? 'so với' : 'since'} ${before}`;
     }
+    rows.push({
+      label,
+      value: `${decimal(value)} ${unit}${percentile}\n${detail}`,
+      link: '/care/growth',
+    });
   }
   if (!rows.length)
     rows.push({
@@ -467,7 +532,7 @@ async function vaccines(x: Input): Promise<AssistantPart[]> {
     for (const d of due.slice(0, 8)) {
       rows.push({
         label: `${d.name} · ${vi ? 'mũi' : 'dose'} ${d.dose}`,
-        value: `${dateText(d.date)}${d.date < today ? (vi ? ' · lịch đã qua, chưa ghi đã tiêm' : ' · past planned date, no given record') : ''}`,
+        value: `${shortDate(d.date, today)}${d.date < today ? (vi ? '\nLịch đã qua, chưa ghi đã tiêm' : '\nPast planned date, no given record') : ''}`,
         link: `/care/vaccines/dose/${d.key}`,
       });
       sourceIds.push(`vaccine:${d.key}`);
@@ -539,15 +604,14 @@ async function reminders(x: Input, offset: number): Promise<AssistantPart[]> {
     .slice(0, 20)
     .map((d) => ({
       label: String(d.get('title') ?? ''),
-      value: [
+      value: `${[
         d.get('allDay') === true
           ? vi
             ? 'Cả ngày'
             : 'All day'
           : localClock(x.s.zone, toDate(d.get('dueAt'))!),
         d.get('done') === true ? (vi ? 'Đã xong' : 'Done') : vi ? 'Chưa xong' : 'Pending',
-        names.get(d.get('assigneeUid')) ?? (vi ? 'Chưa phân công' : 'Unassigned'),
-      ].join(' · '),
+      ].join(' · ')}\n${names.get(d.get('assigneeUid')) ?? (vi ? 'Chưa phân công' : 'Unassigned')}`,
       link: `/care/reminders/${d.id}`,
     }));
   const ruleLabels: Record<string, [string, string]> = {
@@ -561,12 +625,15 @@ async function reminders(x: Input, offset: number): Promise<AssistantPart[]> {
       label:
         ruleLabels[String(d.get('type'))]?.[vi ? 0 : 1] ??
         (vi ? 'Nhắc theo quy tắc' : 'Rule reminder'),
-      value: `${localClock(x.s.zone, toDate(d.get('nextDueAt'))!)} · ${vi ? 'lần nhắc tiếp theo' : 'next scheduled occurrence'} · ${strings(
-        d.get('recipients'),
-      )
-        .map((id) => names.get(id))
+      value: [
+        `${localClock(x.s.zone, toDate(d.get('nextDueAt'))!)} · ${vi ? 'lần tiếp theo' : 'next'}`,
+        strings(d.get('recipients'))
+          .map((id) => names.get(id))
+          .filter(Boolean)
+          .join(', '),
+      ]
         .filter(Boolean)
-        .join(', ')}`,
+        .join('\n'),
       link: `/care/reminders/rules/${d.id}`,
     });
   }
@@ -633,9 +700,11 @@ async function spending(x: Input): Promise<AssistantPart[]> {
     g.categories.set(category, (g.categories.get(category) ?? 0) + amount);
     groups.set(currency, g);
   }
+  const money = (amount: number, currency: string) =>
+    `${groupedNumber(minorToPlain(amount, currencyOfDoc(currency)), vi)} ${currency}`;
   const rows: Row[] = [...groups].map(([currency, g]) => ({
-    label: `${vi ? 'Tổng đã chi' : 'Total spent'} · ${currency}`,
-    value: `${minorToPlain(g.total, currencyOfDoc(currency))} ${currency}`,
+    label: `${vi ? 'Tổng đã chi' : 'Total spent'}${groups.size > 1 ? ` · ${currency}` : ''}`,
+    value: money(g.total, currency),
   }));
   const monthlyBudget = budget.get('monthlyTotal');
   if (
@@ -647,8 +716,8 @@ async function spending(x: Input): Promise<AssistantPart[]> {
     const currency = currencyOfDoc(budget.get('currency'));
     const remaining = monthlyBudget - (groups.get(currency)?.total ?? 0);
     rows.push({
-      label: vi ? 'Ngân sách tháng hiện tại' : 'Current monthly budget',
-      value: `${minorToPlain(monthlyBudget, currency)} ${currency}`,
+      label: vi ? 'Ngân sách tháng' : 'Monthly budget',
+      value: money(monthlyBudget, currency),
       link: '/utilities/spending/budget',
     });
     rows.push({
@@ -659,13 +728,12 @@ async function spending(x: Input): Promise<AssistantPart[]> {
         : remaining < 0
           ? 'Over budget'
           : 'Budget remaining',
-      value: `${minorToPlain(Math.abs(remaining), currency)} ${currency}`,
+      value: money(Math.abs(remaining), currency),
     });
   }
   for (const [currency, g] of groups) {
-    const c = currencyOfDoc(currency);
     for (const [id, amount] of [...g.categories].sort((a, b) => b[1] - a[1]))
-      rows.push({ label: categoryName(id), value: `${minorToPlain(amount, c)} ${currency}` });
+      rows.push({ label: categoryName(id), value: money(amount, currency) });
   }
   if (!rows.length)
     rows.push({
@@ -707,7 +775,7 @@ async function solids(x: Input): Promise<AssistantPart[]> {
     .slice(0, 20)
     .map(([id, f]) => ({
       label: f.name[x.locale],
-      value: `${f.count} ${vi ? 'lần đã ghi' : 'logged tries'} · ${dateText(localDateIn(x.s.zone, f.lastAt))}${f.reaction ? ` · ${reactions[f.reaction]?.[vi ? 0 : 1] ?? ''}` : ''}${f.symptoms.size ? ` · ${[...f.symptoms].map((s) => symptoms[s]?.[vi ? 0 : 1] ?? s).join(', ')}` : ''}`,
+      value: `${countOf(f.count, vi, 'lần', ['try', 'tries'])}${f.reaction ? ` · ${reactions[f.reaction]?.[vi ? 0 : 1] ?? ''}` : ''}\n${vi ? 'Gần nhất' : 'Latest'} ${shortDate(localDateIn(x.s.zone, f.lastAt), localDateIn(x.s.zone, x.anchor))}${f.symptoms.size ? ` · ${[...f.symptoms].map((s) => symptoms[s]?.[vi ? 0 : 1] ?? s).join(', ')}` : ''}`,
       ...(id.startsWith('fd_') ? { link: `/care/solids/food/${id}` } : {}),
     }));
   if (!rows.length)
@@ -748,8 +816,8 @@ async function milestones(x: Input): Promise<AssistantPart[]> {
     .sort((a, b) => String(b.get('date')).localeCompare(String(a.get('date'))))
     .slice(0, 10)
     .map((d) => ({
-      label: vi ? 'Đã ghi nhận' : 'Observed',
-      value: `${String(d.get('name') ?? '')} · ${dateText(d.get('date') as string)}`,
+      label: String(d.get('name') ?? ''),
+      value: `${vi ? 'Đã ghi' : 'Seen'} ${shortDate(d.get('date') as string, p.today)}`,
       link: `/utilities/milestones/${d.id.startsWith('p_') ? d.id.slice(2) : d.id}`,
     }));
   if (!rows.length)
@@ -775,8 +843,8 @@ async function milestones(x: Input): Promise<AssistantPart[]> {
       .slice(0, 6);
     for (const r of around)
       rows.push({
-        label: vi ? 'Tham khảo quanh tuổi bé' : 'Around your baby’s age',
-        value: `${r.title[x.locale]}${r.illustrative ? (vi ? ' · nội dung minh hoạ, chờ duyệt' : ' · illustrative, awaiting review') : ''}`,
+        label: r.title[x.locale],
+        value: `${vi ? 'Quanh tuổi bé' : 'Around this age'}${r.illustrative ? (vi ? '\nMinh hoạ, chờ duyệt' : '\nIllustrative, awaiting review') : ''}`,
         link: `/utilities/milestones/${r.id}`,
       });
   }
@@ -808,10 +876,10 @@ async function stage(x: Input): Promise<AssistantPart[]> {
   const current = p.dob ? stageFor(stages, p.dob, p.today) : null;
   const rows: Row[] = current
     ? [
-        { label: current.title[x.locale], value: current.doing[x.locale].join('\n') },
+        { label: current.title[x.locale], value: bullets(current.doing[x.locale]) },
         {
           label: vi ? 'Ba mẹ có thể thử' : 'Things to try',
-          value: current.tryThis[x.locale].join('\n'),
+          value: bullets(current.tryThis[x.locale]),
         },
       ]
     : [
@@ -1033,30 +1101,72 @@ export async function assistantRead(
     };
   switch (request.tool) {
     case 'care_summary': {
+      const vi = x.locale === 'vi';
       const r = await careSummaryTool(x.db, x.s, x.anchor, request.dayOffset, x.locale);
+      const a = r.summary;
+      const today = localDateIn(x.s.zone, x.anchor);
+      // Owner 2026-10-31: label/value rows, zero modules left out, minutes as hours. The model
+      // still reads the sentences in `r.facts`.
+      const rows = [
+        a.bottle.count > 0 && {
+          label: vi ? 'Bú bình' : 'Bottle',
+          value: `${countOf(a.bottle.count, vi, 'cữ', ['feed', 'feeds'])} · ${groupedNumber(a.bottle.ml, vi)} ml`,
+          link: '/care/stats/feed',
+        },
+        a.breast.count > 0 && {
+          label: vi ? 'Bú mẹ' : 'Nursing',
+          value: `${countOf(a.breast.count, vi, 'lần', ['feed', 'feeds'])} · ${durationText(a.breast.minutes, vi)}`,
+          link: '/care/stats/feed',
+        },
+        a.sleep.count > 0 && {
+          label: vi ? 'Giấc ngủ' : 'Sleep',
+          value: `${countOf(a.sleep.count, vi, 'giấc', ['sleep', 'sleeps'])} · ${durationText(a.sleep.minutes, vi)}`,
+          link: '/care/stats/sleep',
+        },
+      ].filter((row) => row !== false);
       return [
         card(
           x,
           request.tool,
-          x.locale === 'vi' ? 'Bú và ngủ đã ghi' : 'Logged feeds and sleep',
-          r.facts.map((f) => ({ label: '', value: f.text })),
+          `${vi ? 'Bú và ngủ đã ghi' : 'Logged feeds and sleep'} · ${shortDate(a.date, today)}`,
+          rows.length
+            ? rows
+            : [
+                {
+                  label: '',
+                  value: vi ? 'Chưa ghi cữ bú hay giấc ngủ nào.' : 'No feeds or sleep logged yet.',
+                },
+              ],
           '/care/history',
           r.parts.flatMap((p) => (p.type === 'source_summary' ? p.sourceIds : [])),
-          loggedNote(x.locale === 'vi'),
+          loggedNote(vi),
         ),
       ];
     }
     case 'sleep_facts': {
+      const vi = x.locale === 'vi';
       const r = await sleepFactsTool(x.db, x.s, x.anchor, x.locale);
+      const perDay = (m: number) => `${vi ? 'khoảng' : 'about'} ${durationText(m, vi)}`;
       return [
         card(
           x,
           request.tool,
-          x.locale === 'vi' ? 'Xu hướng giấc ngủ' : 'Sleep trend',
-          r.facts.map((f) => ({ label: '', value: f.text })),
+          vi ? 'Xu hướng giấc ngủ' : 'Sleep trend',
+          r.trend
+            ? [
+                {
+                  label: vi ? 'Gần đây (mỗi ngày)' : 'Recently (per day)',
+                  value: perDay(r.trend.recent),
+                },
+                {
+                  label: vi ? 'Trước đó (mỗi ngày)' : 'Before (per day)',
+                  value: perDay(r.trend.baseline),
+                },
+              ]
+            : r.facts.map((f) => ({ label: '', value: f.text })),
           '/care/stats/sleep',
           r.facts.map((f) => f.id),
-          loggedNote(x.locale === 'vi'),
+          loggedNote(vi),
         ),
       ];
     }

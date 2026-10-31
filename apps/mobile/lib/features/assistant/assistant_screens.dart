@@ -1540,6 +1540,7 @@ class _ThreadView {
                 AsReadCard(
                   part: p,
                   zone: task.timezone ?? zone,
+                  now: now,
                   onOpen: (link) {
                     _openRead(
                       context,
