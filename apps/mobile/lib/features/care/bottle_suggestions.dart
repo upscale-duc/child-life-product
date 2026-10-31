@@ -7,7 +7,7 @@ import '../../core/reference/reference_repository.dart';
 
 /// 22 "Ghi bú bình · gợi ý nhanh" (v1.0 improvement 346:47151): four quick-pick amounts for the
 /// baby's age. Figma draws only "bé 3 tuần → 60 · 90 · 120 · 150 ml"; the other rows are an
-/// engineering draft from common bottle-feeding guidance, for owner review (P-126). They are
+/// engineering draft from common bottle-feeding guidance, approved by the owner (P-126, D-158). They are
 /// shortcuts, not advice: the field stays free and optional (R-012).
 ///
 /// Since the portal (P-138, Figma C02) the table is reference data `bottle.quickPicks`: bands

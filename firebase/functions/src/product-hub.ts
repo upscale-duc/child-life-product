@@ -646,7 +646,18 @@ export async function saveSection(
   return { ok: true };
 }
 
-export async function actSection(db: Firestore, staff: Staff | null, data: unknown, now: Date) {
+/**
+ * Approves or discards a section draft. `signAs` (trusted server tools only, e.g. the owner's
+ * "Child Life Team" signature, D-158) replaces the approver's display name; the audit line keeps
+ * the real actor.
+ */
+export async function actSection(
+  db: Firestore,
+  staff: Staff | null,
+  data: unknown,
+  now: Date,
+  options: { signAs?: string } = {},
+) {
   const req = parse(productSectionActSchema, data);
   const s = requireStaff(staff, req.action === 'approve' ? 'product.approve' : 'product.edit');
   const ref = db.collection(C.features).doc(req.feature).collection(C.sections).doc(req.key);
@@ -670,12 +681,18 @@ export async function actSection(db: Firestore, staff: Staff | null, data: unkno
         sources: draft.sources,
         by: draft.by,
         at: draft.at,
-        approvedBy: s.name,
+        approvedBy: options.signAs ?? s.name,
         approvedAt: now.toISOString(),
         version: (prior?.version ?? 0) + 1,
       },
     });
-    staffAudit(tx, db, s, { action: 'product.section.approve', category: 'product', target: `${req.feature}/${req.key}`, reason: null }, now);
+    staffAudit(
+      tx,
+      db,
+      s,
+      { action: 'product.section.approve', category: 'product', target: `${req.feature}/${req.key}`, reason: null, detail: options.signAs ? { signAs: options.signAs } : {} },
+      now,
+    );
     return { ok: true };
   });
 }

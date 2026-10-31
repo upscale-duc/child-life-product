@@ -10,6 +10,9 @@
 //
 // Dry run by default (checks only). An existing draft is replaced; an approved section is never
 // touched (the draft waits beside it). Prod needs CHILD_LIFE_PROD_APPROVED=yes.
+// --approve --sign "Child Life Team" then approves the saved drafts as the --as staff member (the
+// Owner may approve their own, D-155 #3), shown with that signature (D-158); only on the owner's
+// explicit instruction.
 
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
@@ -19,7 +22,7 @@ import { initializeApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
 import { z } from 'zod';
-import { saveSection } from '../src/product-hub.js';
+import { actSection, saveSection } from '../src/product-hub.js';
 import { anchorOf, chunkMarkdown, parseBusinessMap } from '../src/product-hub-ingest.js';
 import { resolveStaff } from '../src/staff-access.js';
 
@@ -107,6 +110,15 @@ async function main() {
       await saveSection(db, staff, { feature, key, body: s!.body, sources: s!.sources }, now, 'ai');
     }
     console.log(`  ${feature}: ${Object.keys(sections).length} drafts saved`);
+  }
+  if (flag('approve')) {
+    const signAs = arg('sign');
+    for (const [feature, sections] of Object.entries(drafts.features)) {
+      for (const key of Object.keys(sections)) {
+        await actSection(db, staff, { feature, key, action: 'approve' }, now, signAs ? { signAs } : {});
+      }
+      console.log(`  ${feature}: ${Object.keys(sections).length} approved${signAs ? ` as "${signAs}"` : ''}`);
+    }
   }
   console.log('Saved as AI drafts: approve them in Sản phẩm › Tính năng › (feature).');
 }

@@ -233,6 +233,16 @@ describe('sections, coverage and freshness', () => {
     expect(after.sections.find((s) => s.key === 'summary')!.approved).toMatchObject({ version: 1, approvedBy: 'Owner' });
   });
 
+  it('an approval can be signed "Child Life Team"; the audit keeps the real actor (D-158)', async () => {
+    await seeded();
+    await saveSection(db, eng, { feature: 'care.feeding', key: 'value', body: { vi: 'Giá trị.' }, sources: ['D-001'] }, now, 'ai');
+    await actSection(db, owner, { feature: 'care.feeding', key: 'value', action: 'approve' }, now, { signAs: 'Child Life Team' });
+    const f = await productFeature(db, analyst, { id: 'care.feeding' });
+    expect(f.sections.find((s) => s.key === 'value')!.approved).toMatchObject({ approvedBy: 'Child Life Team' });
+    const audit = await db.collection('staffAudit').where('action', '==', 'product.section.approve').get();
+    expect(audit.docs.map((d) => [d.get('actorName'), d.get('detail')?.signAs])).toEqual([['Owner', 'Child Life Team']]);
+  });
+
   it('the same revision again has nothing to submit', async () => {
     await seeded();
     expect(await reason(submit(eng))).toBe('no-changes');

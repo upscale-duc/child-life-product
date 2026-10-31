@@ -48,8 +48,8 @@
       },
       "rules": {
         "body": {
-          "vi": "Ý định (quyết định / thiết kế):\n• Bú bình đo bằng ml, bú mẹ đo bằng thời gian; lượng sữa không bắt buộc (R-052, R-053, R-059).\n• Sữa hút ra không bao giờ cộng vào lượng bé ăn (R-054).\n• Cùng nuôi sửa/xoá mọi bản ghi; người chăm chỉ bản ghi của mình; người thân không ghi (D-022).\n• Một timer đang chạy cho mỗi bé và mỗi loại; cả nhà thấy timer đang chạy (P-011, R-070).\n• Thống kê theo múi giờ của bé; ngày 06:00–18:00, đêm 18:00–06:00; \"Hôm nay\" của bú tính từ 18h hôm qua; số cữ gồm bú mẹ, thể tích chỉ bú bình (R-086, D-151).\n• Gợi ý nhanh ml theo tuổi chỉ là phím tắt, ô nhập vẫn tự do (P-126).\nĐã thấy trong mã (revision 33b6a667):\n• Quyền sửa/xoá do Rules kiểm (canEditRecord, firestore.rules:467–479).\n• Sheet bú nhớ loại và sữa lần trước (care_sheets.dart:654); hút sữa tách khỏi lượng ăn (care_sheets.dart:898, care_calc.dart:241).\n• Bảng gợi ml theo tuổi: bảng đã duyệt (P-138) nếu có, nếu không dùng bảng P-126 (care_sheets.dart:1198).",
-          "en": "Intended (decisions / design):\n• Bottle in ml, breast in time; amounts optional (R-052, R-053, R-059).\n• Pumped milk is never counted as intake (R-054).\n• Co-parents edit or delete any record; caregivers only their own; relatives never log (D-022).\n• One running timer per baby and type, visible to the family (P-011, R-070).\n• Stats in the baby's time zone; day 06:00–18:00, night 18:00–06:00; feeding \"today\" starts 18:00 yesterday; feed counts include breast, volume is bottle only (R-086, D-151).\n• Age-based ml quick picks are shortcuts only; the field stays free (P-126).\nSeen in code (revision 33b6a667):\n• Edit/delete enforced by Rules (canEditRecord, firestore.rules:467–479).\n• The feed sheet remembers last type and milk (care_sheets.dart:654); pumping kept out of intake (care_sheets.dart:898, care_calc.dart:241).\n• ml quick picks: the approved table (P-138) when published, else the P-126 table (care_sheets.dart:1198)."
+          "vi": "Ý định (quyết định / thiết kế):\n• Bú bình đo bằng ml, bú mẹ đo bằng thời gian; lượng sữa không bắt buộc (R-052, R-053, R-059).\n• Sữa hút ra không bao giờ cộng vào lượng bé ăn (R-054).\n• Cùng nuôi sửa/xoá mọi bản ghi; người chăm chỉ bản ghi của mình; người thân không ghi (D-022).\n• Một timer đang chạy cho mỗi bé và mỗi loại; cả nhà thấy timer đang chạy (P-011, R-070).\n• Thống kê theo múi giờ của bé; ngày 06:00–18:00, đêm 18:00–06:00; \"Hôm nay\" của bú tính từ 18h hôm qua; số cữ gồm bú mẹ, thể tích chỉ bú bình (R-086, D-151).\n• Gợi ý nhanh ml theo tuổi chỉ là phím tắt, ô nhập vẫn tự do; bảng đã được duyệt (P-126, D-158).\nĐã thấy trong mã (revision 33b6a667):\n• Quyền sửa/xoá do Rules kiểm (canEditRecord, firestore.rules:467–479).\n• Sheet bú nhớ loại và sữa lần trước (care_sheets.dart:654); hút sữa tách khỏi lượng ăn (care_sheets.dart:898, care_calc.dart:241).\n• Bảng gợi ml theo tuổi: bảng đã duyệt (P-138) nếu có, nếu không dùng bảng P-126 (care_sheets.dart:1198).",
+          "en": "Intended (decisions / design):\n• Bottle in ml, breast in time; amounts optional (R-052, R-053, R-059).\n• Pumped milk is never counted as intake (R-054).\n• Co-parents edit or delete any record; caregivers only their own; relatives never log (D-022).\n• One running timer per baby and type, visible to the family (P-011, R-070).\n• Stats in the baby's time zone; day 06:00–18:00, night 18:00–06:00; feeding \"today\" starts 18:00 yesterday; feed counts include breast, volume is bottle only (R-086, D-151).\n• Age-based ml quick picks are shortcuts only; the field stays free; the table is approved (P-126, D-158).\nSeen in code (revision 33b6a667):\n• Edit/delete enforced by Rules (canEditRecord, firestore.rules:467–479).\n• The feed sheet remembers last type and milk (care_sheets.dart:654); pumping kept out of intake (care_sheets.dart:898, care_calc.dart:241).\n• ml quick picks: the approved table (P-138) when published, else the P-126 table (care_sheets.dart:1198)."
         },
         "sources": [
           "R-052",
@@ -62,7 +62,8 @@
           "docs/product/business-map.md#73-care-logging",
           "firebase/firestore.rules:467",
           "apps/mobile/lib/features/care/care_sheets.dart:898",
-          "apps/mobile/lib/features/care/care_calc.dart:241"
+          "apps/mobile/lib/features/care/care_calc.dart:241",
+          "D-158"
         ]
       },
       "edgeCases": {
@@ -102,11 +103,10 @@
       },
       "issues": {
         "body": {
-          "vi": "• Bảng gợi ml theo tuổi ngoài mốc 3 tuần là bản nháp kỹ thuật, chờ chủ sản phẩm duyệt hoặc thay (P-126).\n• Ô ghi chú trên bản ghi tồn tại nhưng giao diện nhập chưa được thiết kế (R-058, G-020).\n• Hút sữa: chú thích trong mã nói lượng theo từng bên (G-062) và timer hút (S5) \"làm sau\" — cần kiểm lại trạng thái (care_sheets.dart:898).\n• Kiểm tra giờ trong tương lai chưa được thiết kế (G-021).\n• Chưa được kiểm trên máy theo định nghĩa \"xong\" của checklist (iOS + Android, Ngày + Đêm).\nGiả thuyết: nhắc \"cữ tiếp\" sau khi ghi (Lumi L4 đã có) có thể giảm việc quên ghi ban đêm.",
-          "en": "• The age-based ml table beyond 3 weeks is an engineering draft awaiting owner approval or replacement (P-126).\n• The record note field exists but its entry UI is not designed (R-058, G-020).\n• Pumping: a code comment says per-side amounts (G-062) and the pump timer (S5) \"come later\" — status to re-check (care_sheets.dart:898).\n• Future-time validation is not designed (G-021).\n• Not device-verified per the checklist's definition of done (iOS + Android, Light + Night).\nHypothesis: a \"next feed\" nudge after logging (Lumi L4 has one) may reduce missed night logs."
+          "vi": "• Ô ghi chú trên bản ghi tồn tại nhưng giao diện nhập chưa được thiết kế (R-058, G-020).\n• Hút sữa: chú thích trong mã nói lượng theo từng bên (G-062) và timer hút (S5) \"làm sau\" — cần kiểm lại trạng thái (care_sheets.dart:898).\n• Kiểm tra giờ trong tương lai chưa được thiết kế (G-021).\n• Chưa được kiểm trên máy theo định nghĩa \"xong\" của checklist (iOS + Android, Ngày + Đêm).\nGiả thuyết: nhắc \"cữ tiếp\" sau khi ghi (Lumi L4 đã có) có thể giảm việc quên ghi ban đêm.",
+          "en": "• The record note field exists but its entry UI is not designed (R-058, G-020).\n• Pumping: a code comment says per-side amounts (G-062) and the pump timer (S5) \"come later\" — status to re-check (care_sheets.dart:898).\n• Future-time validation is not designed (G-021).\n• Not device-verified per the checklist's definition of done (iOS + Android, Light + Night).\nHypothesis: a \"next feed\" nudge after logging (Lumi L4 has one) may reduce missed night logs."
         },
         "sources": [
-          "P-126",
           "R-058",
           "apps/mobile/lib/features/care/care_sheets.dart:898",
           "docs/product/figma-coverage-checklist.md",
@@ -115,8 +115,8 @@
       },
       "decisions": {
         "body": {
-          "vi": "Quyết định chính: D-022 (ai sửa bản ghi), D-151 (một cửa sổ đêm 18:00–06:00 cho toàn app), D-145 (Lumi ghi cữ bằng quy tắc nhanh, không trừ credit). Đề xuất đang áp dụng: P-011 (một timer mỗi bé và loại), P-013 (thùng rác 30 ngày), P-126 (bảng gợi ml, chờ duyệt). Quy tắc thiết kế R-052–R-059, R-070–R-076, R-080–R-087 là lịch sử Figma V1, vẫn đúng về nghiệp vụ trừ khi có quyết định sau.",
-          "en": "Key decisions: D-022 (who edits records), D-151 (one night window 18:00–06:00 app-wide), D-145 (Lumi logs feeds through the rule fast path, no credit). Proposals in use: P-011 (one timer per baby and type), P-013 (30-day bin), P-126 (ml table, awaiting approval). Design rules R-052–R-059, R-070–R-076, R-080–R-087 are V1 Figma history and still hold as business rules unless a later decision says otherwise."
+          "vi": "Quyết định chính: D-022 (ai sửa bản ghi), D-151 (một cửa sổ đêm 18:00–06:00 cho toàn app), D-145 (Lumi ghi cữ bằng quy tắc nhanh, không trừ credit). Đề xuất đang áp dụng: P-011 (một timer mỗi bé và loại), P-013 (thùng rác 30 ngày), P-126 (bảng gợi ml theo tuổi, đã duyệt ở D-158). Quy tắc thiết kế R-052–R-059, R-070–R-076, R-080–R-087 là lịch sử Figma V1, vẫn đúng về nghiệp vụ trừ khi có quyết định sau.",
+          "en": "Key decisions: D-022 (who edits records), D-151 (one night window 18:00–06:00 app-wide), D-145 (Lumi logs feeds through the rule fast path, no credit). Proposals in use: P-011 (one timer per baby and type), P-013 (30-day bin), P-126 (age-based ml table, approved in D-158). Design rules R-052–R-059, R-070–R-076, R-080–R-087 are V1 Figma history and still hold as business rules unless a later decision says otherwise."
         },
         "sources": [
           "D-022",
@@ -124,7 +124,8 @@
           "D-145",
           "P-011",
           "P-013",
-          "P-126"
+          "P-126",
+          "D-158"
         ]
       }
     },
@@ -307,8 +308,8 @@
       },
       "rules": {
         "body": {
-          "vi": "Ý định (quyết định):\n• Một quỹ credit chung của hộ gia đình cho mọi AI, gồm tóm tắt AI (D-075 #1).\n• Một cuộc trò chuyện chung mỗi bé cho Ba, Mẹ và người chăm; chi tiêu ở luồng riêng (D-075 #2).\n• Câu quy tắc đọc được (\"bé bú 120ml\") đi đường nhanh: không gọi mô hình, không trừ credit (D-145).\n• Một mô hình: OPENAI_MODEL (gpt-4.1-mini trên dev) (D-146); gọi phía máy chủ qua adapter (D-003).\nĐã thấy trong mã/cấu hình:\n• Giá: văn bản 1 credit, ảnh 3, hỗ trợ sức khoẻ 0, sửa/lưu/huỷ 0 (usage.md; config/entitlements trên dev: free 20, premium 200, text 1, image 3 — cấu hình QA, không phải ưu đãi, Q-071).\n• Mỗi lời gọi kiểm thành viên của bé; vai trò theo mô-đun kiểm cả lúc chuẩn bị và lúc lưu (security.md §1).\n• Không có đồng ý → không gửi gì tới nhà cung cấp, app vẫn chạy (P-160).\n• ai.assistance cần vùng nâng cao: VN, US trên dev (config/entitlements).",
-          "en": "Intended (decisions):\n• One household credit pool for all AI, including AI summaries (D-075 #1).\n• One shared conversation per baby for Ba, Mẹ and the caregiver; spending in a private thread (D-075 #2).\n• Messages the rules can read (\"bé bú 120ml\") take the fast path: no model call, no credit (D-145).\n• One model: OPENAI_MODEL (gpt-4.1-mini on dev) (D-146); server-side behind the adapter (D-003).\nSeen in code / config:\n• Prices: text 1 credit, photo 3, health support 0, edit/save/cancel 0 (usage.md; dev config/entitlements: free 20, premium 200, text 1, image 3 — QA configuration, not an offer, Q-071).\n• Every call checks membership of the baby; module roles are checked when preparing and when saving (security.md §1).\n• No consent → nothing goes to the provider; the app keeps working (P-160).\n• ai.assistance needs an advanced region: VN, US on dev (config/entitlements)."
+          "vi": "Ý định (quyết định):\n• Một quỹ credit chung của hộ gia đình cho mọi AI, gồm tóm tắt AI (D-075 #1).\n• Một cuộc trò chuyện chung mỗi bé cho Ba, Mẹ và người chăm; chi tiêu ở luồng riêng (D-075 #2).\n• Câu quy tắc đọc được (\"bé bú 120ml\") đi đường nhanh: không gọi mô hình, không trừ credit (D-145).\n• Một mô hình: OPENAI_MODEL (gpt-4.1-mini trên dev) (D-146); gọi phía máy chủ qua adapter (D-003).\nĐã thấy trong mã/cấu hình:\n• Giá: văn bản 1 credit, ảnh 3, hỗ trợ sức khoẻ 0, sửa/lưu/huỷ 0 (usage.md; text 1, image 3). Ngân sách khi Premium v2 bật: Free 30 credit một lần, Premium 200 mỗi kỳ (D-101, D-158); giá trị cũ free 20/tháng chỉ dùng khi tắt Premium v2.\n• Mỗi lời gọi kiểm thành viên của bé; vai trò theo mô-đun kiểm cả lúc chuẩn bị và lúc lưu (security.md §1).\n• Không có đồng ý → không gửi gì tới nhà cung cấp, app vẫn chạy (P-160).\n• ai.assistance cần vùng nâng cao: VN, US trên dev (config/entitlements).",
+          "en": "Intended (decisions):\n• One household credit pool for all AI, including AI summaries (D-075 #1).\n• One shared conversation per baby for Ba, Mẹ and the caregiver; spending in a private thread (D-075 #2).\n• Messages the rules can read (\"bé bú 120ml\") take the fast path: no model call, no credit (D-145).\n• One model: OPENAI_MODEL (gpt-4.1-mini on dev) (D-146); server-side behind the adapter (D-003).\nSeen in code / config:\n• Prices: text 1 credit, photo 3, health support 0, edit/save/cancel 0 (usage.md; text 1, image 3). Budgets with Premium v2 on: Free 30 credits once, Premium 200 per cycle (D-101, D-158); the old free 20/month applies only with Premium v2 off.\n• Every call checks membership of the baby; module roles are checked when preparing and when saving (security.md §1).\n• No consent → nothing goes to the provider; the app keeps working (P-160).\n• ai.assistance needs an advanced region: VN, US on dev (config/entitlements)."
         },
         "sources": [
           "D-075",
@@ -317,7 +318,9 @@
           "D-003",
           "P-160",
           "docs/assistant/usage.md#what-a-task-costs",
-          "docs/assistant/security.md#1-authentication-and-authorization"
+          "docs/assistant/security.md#1-authentication-and-authorization",
+          "D-101",
+          "D-158"
         ]
       },
       "edgeCases": {
@@ -334,14 +337,16 @@
       },
       "access": {
         "body": {
-          "vi": "Hạng mặc định trong mã và hạng đang đặt trên dev: Premium, có credit (featureCatalogue: assistant). Gia đình Free vẫn dùng trong phạm vi rollout với quỹ Free (20/tháng trên dev); Premium có quỹ lớn hơn (200/kỳ trả phí) qua quyền assistant.premium_budget; chiến dịch beta có thể cho quỹ Premium (D-075 #1). Trước go-live, lời mời Premium hiện ở mọi chỗ để thử; mua thật làm sau (D-147). Xung đột mở: plans-credits-analysis.md đề xuất Free / Plus / Pro — chỉ là đề xuất, chưa được quyết.",
-          "en": "Default tier in code and tier set on dev: Premium, with credits (featureCatalogue: assistant). Free families still use it inside the rollout with the Free budget (20/month on dev); Premium has a larger budget (200/paid period) through assistant.premium_budget; a beta campaign may grant the Premium budget (D-075 #1). Before go-live, Premium invitations show everywhere for testing; real purchase comes later (D-147). Open conflict: plans-credits-analysis.md proposes Free / Plus / Pro — a proposal only, not decided."
+          "vi": "Hạng mặc định trong mã và hạng đang đặt trên dev: Premium, có credit (featureCatalogue: assistant). Gia đình Free có 30 credit dùng một lần (D-101, D-158; Premium v2 đang bật trên dev); Premium có 200 credit mỗi kỳ trả phí qua quyền assistant.premium_budget; chiến dịch beta có thể cho quỹ Premium (D-075 #1). Trước go-live, lời mời Premium hiện ở mọi chỗ để thử; mua thật làm sau (D-147). Xung đột mở: plans-credits-analysis.md đề xuất Free / Plus / Pro — chỉ là đề xuất, chưa được quyết.",
+          "en": "Default tier in code and tier set on dev: Premium, with credits (featureCatalogue: assistant). Free families get 30 credits once (D-101, D-158; Premium v2 is on on dev); Premium gets 200 credits per paid period through assistant.premium_budget; a beta campaign may grant the Premium budget (D-075 #1). Before go-live, Premium invitations show everywhere for testing; real purchase comes later (D-147). Open conflict: plans-credits-analysis.md proposes Free / Plus / Pro — a proposal only, not decided."
         },
         "sources": [
           "D-075",
           "D-147",
           "packages/contracts/src/features-hub.ts",
-          "docs/product/plans-credits-analysis.md"
+          "docs/product/plans-credits-analysis.md",
+          "D-101",
+          "D-158"
         ]
       },
       "metrics": {

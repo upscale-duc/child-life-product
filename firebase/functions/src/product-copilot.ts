@@ -170,14 +170,14 @@ export async function loadIndex(db: Firestore, store: ArtifactStore): Promise<Se
 
 // ---------- Live knowledge: features, sections, conflicts ----------
 
-interface Live {
+export interface Live {
   features: ProductFeatureRecord[];
   sections: Map<string, FeatureSection[]>;
   conflicts: ProductConflictRecord[];
   tiers: Record<string, string | undefined>;
 }
 
-async function loadLive(db: Firestore): Promise<Live> {
+export async function loadLive(db: Firestore): Promise<Live> {
   const [features, sections, conflicts, cfg] = await Promise.all([
     db.collection('productFeatures').where('removed', '==', false).get(),
     db.collectionGroup('productSections').get(),
