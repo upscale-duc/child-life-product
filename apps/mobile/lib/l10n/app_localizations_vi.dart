@@ -16445,6 +16445,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asEditDiaper => 'Sửa thay tã';
 
   @override
+  String get asPhotoToMemories => 'Lưu ảnh của bé vào Kỷ niệm';
+
   @override
   String get asPhotoToMemoriesSub => 'Không gửi cho Lumi đọc, không tốn lượt';
 
@@ -16455,13 +16457,18 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asViewMilestone => 'Xem mốc';
 
   @override
-  String get asPhotoToMemories => 'Lưu ảnh của bé vào Kỷ niệm';
-
   String get asOpenVaccines => 'Mở Sổ tiêm chủng';
 
   @override
   String get asViewDose => 'Xem mũi tiêm';
 
+  @override
+  String get asSetRule => 'Đặt nhắc';
+
+  @override
+  String get asEditMeal => 'Sửa bữa ăn';
+
+  @override
   String get asHistoryAskMeal => 'Kể bữa ăn với Lumi: “trưa nay ăn cháo bí đỏ”';
 
   @override

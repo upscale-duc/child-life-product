@@ -17534,6 +17534,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asEditDiaper => 'Edit diaper change';
 
   @override
+  String get asPhotoToMemories => 'Save a baby photo to Memories';
+
   @override
   String get asPhotoToMemoriesSub => 'Not sent to Lumi, uses no credits';
 
@@ -17544,13 +17546,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asViewMilestone => 'View milestone';
 
   @override
-  String get asPhotoToMemories => 'Save a baby photo to Memories';
-
   String get asOpenVaccines => 'Open vaccination book';
 
   @override
   String get asViewDose => 'View shot';
 
+  @override
+  String get asSetRule => 'Đặt nhắc';
+
+  @override
+  String get asEditMeal => 'Edit meal';
+
+  @override
   String get asHistoryAskMeal =>
       'Tell Lumi about a meal: “Pumpkin porridge at lunch”';
 

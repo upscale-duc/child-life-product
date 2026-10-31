@@ -27552,7 +27552,7 @@ abstract class AppLocalizations {
   /// **'Sửa thay tã'**
   String get asEditDiaper;
 
-  /// Button on Lumi's reply to a repeating care reminder ("nhắc cữ bú mỗi 3 tiếng"): opens the rule editor filled with what was said; nothing is saved until the person saves it there. L5 lumi-plan. EN is an engineering draft for owner review.
+  /// Row of Lumi's photo sheet, Cùng nuôi only: picks photos and opens Kỷ niệm's own "Soạn & chia sẻ"; the photo is never sent to Lumi. L5 lumi-plan. EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:
   /// **'Lưu ảnh của bé vào Kỷ niệm'**
@@ -27587,6 +27587,12 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Xem mũi tiêm'**
   String get asViewDose;
+
+  /// Button on Lumi's reply to a repeating care reminder ("nhắc cữ bú mỗi 3 tiếng"): opens the rule editor filled with what was said; nothing is saved until the person saves it there. L5 lumi-plan. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đặt nhắc'**
+  String get asSetRule;
 
   /// Title of Lumi's draft editor for a solids meal (L5): the dish and its time, saved to the Ăn dặm diary. EN is an engineering draft for owner review.
   ///
