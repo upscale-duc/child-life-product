@@ -7,6 +7,7 @@ import { productAnalyticsEn, productAnalyticsVi } from './messages-product-analy
 import { hubEn, hubVi } from './messages-hub';
 import { premiumV2En, premiumV2Vi } from './messages-premium-v2';
 import { notificationsEn, notificationsVi } from './messages-notifications';
+import { productHubEn, productHubVi } from './messages-product-hub';
 
 /**
  * ICU messages (D-012). Vietnamese is the source (Figma Admin portal copy, `08-admin-portal.md`);
@@ -6244,6 +6245,7 @@ export const messages: Record<SupportedLocale, Record<string, string>> = {
     ...hubVi,
     ...premiumV2Vi,
     ...notificationsVi,
+    ...productHubVi,
   },
   en: {
     ...printEn,
@@ -6255,5 +6257,6 @@ export const messages: Record<SupportedLocale, Record<string, string>> = {
     ...hubEn,
     ...premiumV2En,
     ...notificationsEn,
+    ...productHubEn,
   },
 };

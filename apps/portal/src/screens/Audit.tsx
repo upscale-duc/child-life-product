@@ -35,6 +35,7 @@ const categoryTone: Record<AuditRow['category'], PillTone> = {
   analytics: 'info',
   premium: 'high',
   notifications: 'wait',
+  product: 'info',
 };
 
 /**

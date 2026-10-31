@@ -61,7 +61,7 @@ export const functionGroups: Array<{ group: string; fns: StaffFunction[] }> = [
   },
   // NỘI DUNG › Sơ cứu (D-058): Xem · Sửa · Duyệt (medical sign-off).
   { group: 'content', fns: ['content'] },
-  { group: 'system', fns: ['system', 'features', 'staff', 'audit'] },
+  { group: 'system', fns: ['system', 'features', 'product', 'staff', 'audit'] },
   { group: 'develop', fns: ['qa'] },
 ];
 

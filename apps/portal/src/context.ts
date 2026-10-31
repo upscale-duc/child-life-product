@@ -37,6 +37,8 @@ export type Route =
   | 'features'
   // Thông báo & Gắn kết (P-174): catalog, templates, delivery, journeys, family timeline.
   | 'notifications'
+  // Sản phẩm (D-155, docs/product-hub): catalog, plans, knowledge sources.
+  | 'product'
   | 'staff'
   | 'audit'
   | 'qa';
@@ -63,6 +65,7 @@ export const routePaths: Record<Route, string> = {
   appUpdate: '/app-update',
   features: '/features',
   notifications: '/notifications',
+  product: '/product',
   staff: '/staff',
   audit: '/audit',
   qa: '/qa',
@@ -89,6 +92,8 @@ const nestedRoutes: Route[] = [
   'system',
   // "/notifications/templates/<id>", "/notifications/timeline/F-7Q2K": a tab or an item.
   'notifications',
+  // "/product/features/care.feeding", "/product/sources/<id>": a tab or an item.
+  'product',
 ];
 
 /**

@@ -1,0 +1,2334 @@
+{
+  "version": 1,
+  "features": [
+    {
+      "id": "care.feeding",
+      "name": {
+        "vi": "Cho ăn",
+        "en": "Feeding"
+      },
+      "pillar": "care",
+      "aliases": [
+        "bottle",
+        "breastfeeding",
+        "pumping",
+        "bú bình",
+        "bú mẹ",
+        "hút sữa",
+        "cữ bú"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/care/care_sheets.dart",
+        "apps/mobile/lib/features/care/timer_*.dart",
+        "apps/mobile/lib/features/care/bottle_*.dart"
+      ],
+      "functions": [
+        "firebase/functions/src/care.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/care_calc_test.dart",
+        "apps/mobile/test/features/timer_test.dart",
+        "apps/mobile/test/features/bottle_reference_test.dart",
+        "apps/mobile/test/features/care_test.dart"
+      ],
+      "docs": [
+        "docs/product/business-map.md"
+      ],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "care.sleep",
+      "name": {
+        "vi": "Giấc ngủ",
+        "en": "Sleep"
+      },
+      "pillar": "care",
+      "aliases": [
+        "ngủ",
+        "sleep tracker",
+        "tiếng ồn trắng"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/care/timer_*.dart",
+        "apps/mobile/lib/features/care/sleep_ambient.dart"
+      ],
+      "functions": [
+        "firebase/functions/src/care.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/timer_test.dart",
+        "apps/mobile/test/features/sleep_ambient_test.dart",
+        "apps/mobile/test/features/wake_check_test.dart"
+      ],
+      "docs": [],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "care.diaper",
+      "name": {
+        "vi": "Thay tã",
+        "en": "Diaper"
+      },
+      "pillar": "care",
+      "aliases": [
+        "tã",
+        "diaper tracker"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/care/care_sheets.dart"
+      ],
+      "functions": [
+        "firebase/functions/src/care.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/care_test.dart"
+      ],
+      "docs": [],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "care.history_stats",
+      "name": {
+        "vi": "Lịch sử & thống kê",
+        "en": "History & statistics"
+      },
+      "pillar": "care",
+      "aliases": [
+        "lịch sử",
+        "thống kê",
+        "biểu đồ ngày đêm"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "history.read"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/care/history_screen.dart",
+        "apps/mobile/lib/features/care/stats_screens.dart",
+        "apps/mobile/lib/features/care/stacked_days_chart.dart"
+      ],
+      "functions": [],
+      "tests": [
+        "apps/mobile/test/features/history_test.dart",
+        "apps/mobile/test/features/care_calc_test.dart"
+      ],
+      "docs": [],
+      "figma": [],
+      "decisions": [
+        "D-151"
+      ],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "care.reminders",
+      "name": {
+        "vi": "Nhắc việc",
+        "en": "Reminders"
+      },
+      "pillar": "care",
+      "aliases": [
+        "nhắc",
+        "reminder"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/reminders/**"
+      ],
+      "functions": [
+        "firebase/functions/src/reminder-rules.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/reminder_test.dart",
+        "apps/mobile/test/features/rule_reminders_test.dart",
+        "apps/mobile/test/features/try_reminders_test.dart",
+        "apps/mobile/test/features/reminder_titles_test.dart"
+      ],
+      "docs": [
+        "docs/product/reminders-allday-assignee-plan.md"
+      ],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "care.care_plan",
+      "name": {
+        "vi": "Cùng Chăm Con",
+        "en": "Care together"
+      },
+      "pillar": "care",
+      "aliases": [
+        "care plan",
+        "bàn giao",
+        "handover",
+        "ca chăm"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "in_development",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "medium",
+      "modules": [
+        "apps/mobile/lib/features/care_plan/**"
+      ],
+      "functions": [
+        "firebase/functions/src/care-plan*.ts",
+        "firebase/functions/src/care-duty.ts",
+        "firebase/functions/src/handover-send.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/care_plan*_test.dart",
+        "apps/mobile/test/features/care_duty_test.dart",
+        "apps/mobile/test/features/handover_now_test.dart"
+      ],
+      "docs": [
+        "docs/design/reviews/*cung-cham-con*.md"
+      ],
+      "figma": [
+        "1349:22026"
+      ],
+      "decisions": [
+        "D-137"
+      ],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "care.vaccines",
+      "name": {
+        "vi": "Sổ tiêm chủng",
+        "en": "Vaccination book"
+      },
+      "pillar": "care",
+      "aliases": [
+        "tiêm chủng",
+        "vaccine",
+        "mũi tiêm"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "health.guidance"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/vaccines/**"
+      ],
+      "functions": [
+        "firebase/functions/src/vaccine-reminders.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/vaccine_test.dart",
+        "apps/mobile/test/features/vaccine_book_test.dart",
+        "apps/mobile/test/features/growth_vaccine_reference_test.dart"
+      ],
+      "docs": [
+        "docs/product/vaccination-plan.md",
+        "docs/product/vaccines-by-country.md",
+        "docs/discovery/figma-extract/17-vaccination.md"
+      ],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "care.first_aid",
+      "name": {
+        "vi": "Sơ cứu",
+        "en": "First aid"
+      },
+      "pillar": "care",
+      "aliases": [
+        "sơ cứu",
+        "first aid"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "health.guidance"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01",
+        "ch02",
+        "ch03",
+        "ch04"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/first_aid/**"
+      ],
+      "functions": [
+        "firebase/functions/src/content.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/first_aid_test.dart"
+      ],
+      "docs": [
+        "docs/product/first-aid-plan.md"
+      ],
+      "figma": [],
+      "decisions": [
+        "D-058"
+      ],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "care.nutrition",
+      "name": {
+        "vi": "Dinh dưỡng",
+        "en": "Nutrition"
+      },
+      "pillar": "care",
+      "aliases": [
+        "dinh dưỡng",
+        "nutrition"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01",
+        "ch02"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/nutrition/**"
+      ],
+      "functions": [
+        "firebase/functions/src/content-nutrition.ts",
+        "firebase/functions/src/nutrition-seed.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/nutrition_test.dart",
+        "apps/mobile/test/features/nutrition_screens_test.dart"
+      ],
+      "docs": [
+        "docs/product/nutrition-plan.md"
+      ],
+      "figma": [],
+      "decisions": [
+        "D-083"
+      ],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "care.solids",
+      "name": {
+        "vi": "Ăn dặm",
+        "en": "Solids"
+      },
+      "pillar": "care",
+      "aliases": [
+        "ăn dặm",
+        "solids",
+        "công thức"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01",
+        "ch02"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/solids/**"
+      ],
+      "functions": [
+        "firebase/functions/src/content-solids.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/solids_*_test.dart",
+        "apps/mobile/test/features/solids_test.dart"
+      ],
+      "docs": [
+        "docs/product/solids-plan.md"
+      ],
+      "figma": [],
+      "decisions": [
+        "D-085"
+      ],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "care.spending",
+      "name": {
+        "vi": "Chi tiêu",
+        "en": "Spending"
+      },
+      "pillar": "care",
+      "aliases": [
+        "chi tiêu",
+        "spending",
+        "khoản chi"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01",
+        "ch02",
+        "ch03",
+        "ch04"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "medium",
+      "modules": [
+        "apps/mobile/lib/features/spending/**"
+      ],
+      "functions": [
+        "firebase/functions/src/spending.ts",
+        "firebase/functions/src/spending-import.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/spending_*_test.dart",
+        "apps/mobile/test/features/spending_test.dart"
+      ],
+      "docs": [
+        "docs/product/spending-plan.md",
+        "docs/product/spending-currency-plan.md",
+        "docs/product/spending-import-plan.md"
+      ],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "care.visit_report",
+      "name": {
+        "vi": "Báo cáo đi khám",
+        "en": "Doctor-visit report"
+      },
+      "pillar": "care",
+      "aliases": [
+        "đi khám",
+        "visit report"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "history.read"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "partial",
+      "verification": "unverified",
+      "release": "not_released",
+      "confidence": "low",
+      "modules": [
+        "apps/mobile/lib/features/care/visit_report.dart"
+      ],
+      "functions": [],
+      "tests": [
+        "apps/mobile/test/features/visit_report_test.dart"
+      ],
+      "docs": [],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [],
+      "note": "No plan document found in Phase 0."
+    },
+    {
+      "id": "care.family_roles",
+      "name": {
+        "vi": "Gia đình & vai trò",
+        "en": "Family & roles"
+      },
+      "pillar": "care",
+      "aliases": [
+        "mời",
+        "invite",
+        "vai trò",
+        "người chăm sóc",
+        "người thân",
+        "cùng nuôi"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01",
+        "ch02",
+        "ch03",
+        "ch04"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/family/**"
+      ],
+      "functions": [
+        "firebase/functions/src/family.ts",
+        "firebase/functions/src/babies.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/family_test.dart",
+        "apps/mobile/test/features/invite_link_test.dart",
+        "apps/mobile/test/features/join_errors_test.dart",
+        "apps/mobile/test/features/family_country_test.dart"
+      ],
+      "docs": [
+        "docs/product/business-map.md",
+        "docs/development/invite-links.md"
+      ],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "care.utilities",
+      "name": {
+        "vi": "Tiện ích chăm bé",
+        "en": "Care utilities"
+      },
+      "pillar": "care",
+      "aliases": [
+        "tiện ích"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "unverified",
+      "release": "not_released",
+      "confidence": "low",
+      "modules": [
+        "apps/mobile/lib/features/utilities/**"
+      ],
+      "functions": [],
+      "tests": [],
+      "docs": [
+        "docs/discovery/figma-extract/21-care-utilities-tabs.md"
+      ],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "grow.growth",
+      "name": {
+        "vi": "Tăng trưởng",
+        "en": "Growth"
+      },
+      "pillar": "grow",
+      "aliases": [
+        "cân nặng",
+        "chiều cao",
+        "growth chart",
+        "WHO"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01",
+        "ch02",
+        "ch03",
+        "ch04"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/care/growth_*.dart",
+        "apps/mobile/lib/features/care/who_growth*.dart"
+      ],
+      "functions": [
+        "firebase/functions/src/reference-data.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/growth_who_test.dart",
+        "apps/mobile/test/features/who_growth_test.dart"
+      ],
+      "docs": [],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "grow.milestones",
+      "name": {
+        "vi": "Mốc phát triển",
+        "en": "Milestones"
+      },
+      "pillar": "grow",
+      "aliases": [
+        "mốc",
+        "milestone"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01",
+        "ch02"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/milestones/**"
+      ],
+      "functions": [
+        "firebase/functions/src/content-milestones.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/milestones/**"
+      ],
+      "docs": [],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "grow.rhythm",
+      "name": {
+        "vi": "Nhịp lớn lên",
+        "en": "Growth rhythm"
+      },
+      "pillar": "grow",
+      "aliases": [
+        "nhịp",
+        "rhythm",
+        "check-in"
+      ],
+      "hubKey": "rhythm",
+      "capabilities": [],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01",
+        "ch02"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/rhythm/**"
+      ],
+      "functions": [
+        "firebase/functions/src/rhythm-content.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/rhythm_*_test.dart"
+      ],
+      "docs": [
+        "docs/product/premium-personalization-plan.md"
+      ],
+      "figma": [],
+      "decisions": [
+        "D-148",
+        "D-152"
+      ],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "grow.personalization",
+      "name": {
+        "vi": "Cá nhân hoá",
+        "en": "Personalization"
+      },
+      "pillar": "grow",
+      "aliases": [
+        "gợi ý cá nhân hoá",
+        "gợi ý cho hôm nay",
+        "personalized"
+      ],
+      "hubKey": "personalization",
+      "capabilities": [],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/rhythm/personalization_*.dart",
+        "apps/mobile/lib/features/today/today_personalize.dart"
+      ],
+      "functions": [
+        "firebase/functions/src/personalization-v2.ts",
+        "firebase/functions/src/personalization-state.ts",
+        "firebase/functions/src/personalization-stats.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/personalization_v2_test.dart",
+        "apps/mobile/test/features/today_personalize_test.dart",
+        "apps/mobile/test/features/personal_day_cache_test.dart"
+      ],
+      "docs": [
+        "docs/product/personalization-v2-plan.md",
+        "docs/product/personalization-review-2026-10-20.md"
+      ],
+      "figma": [],
+      "decisions": [
+        "D-153"
+      ],
+      "dependsOn": [
+        "grow.rhythm"
+      ],
+      "note": ""
+    },
+    {
+      "id": "grow.insights",
+      "name": {
+        "vi": "Hiểu con",
+        "en": "Care insights"
+      },
+      "pillar": "grow",
+      "aliases": [
+        "hiểu con",
+        "điều đáng chú ý",
+        "insights"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "rhythm.advanced"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "in_development",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "medium",
+      "modules": [
+        "apps/mobile/lib/features/insights/**"
+      ],
+      "functions": [
+        "firebase/functions/src/insights.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/insights_test.dart"
+      ],
+      "docs": [
+        "docs/product/hieu-con-insights-analysis.md"
+      ],
+      "figma": [
+        "1104:1883"
+      ],
+      "decisions": [
+        "D-150",
+        "D-151"
+      ],
+      "dependsOn": [
+        "grow.personalization",
+        "care.feeding",
+        "care.sleep"
+      ],
+      "note": "Premium (D-150) through rhythm.advanced, which belongs to the personalization hub feature."
+    },
+    {
+      "id": "grow.daily_suggestion",
+      "name": {
+        "vi": "Gợi ý mỗi ngày",
+        "en": "Daily suggestion"
+      },
+      "pillar": "grow",
+      "aliases": [
+        "gợi ý mỗi ngày",
+        "daily idea"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "medium",
+      "modules": [
+        "apps/mobile/lib/features/engagement/**"
+      ],
+      "functions": [
+        "firebase/functions/src/engagement*.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/engagement*_test.dart"
+      ],
+      "docs": [
+        "docs/product-audit/13-engagement-rules.md"
+      ],
+      "figma": [],
+      "decisions": [
+        "D-152",
+        "D-154"
+      ],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "grow.stages",
+      "name": {
+        "vi": "Giai đoạn của bé",
+        "en": "Baby stages"
+      },
+      "pillar": "grow",
+      "aliases": [
+        "giai đoạn",
+        "stages"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01",
+        "ch02"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "medium",
+      "modules": [
+        "apps/mobile/lib/features/library/stage_screens.dart",
+        "apps/mobile/lib/features/library/content_calc.dart"
+      ],
+      "functions": [
+        "firebase/functions/src/content-seed.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/library_test.dart"
+      ],
+      "docs": [
+        "docs/product-audit/05-chapters-audit.md"
+      ],
+      "figma": [],
+      "decisions": [
+        "D-076"
+      ],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "grow.library",
+      "name": {
+        "vi": "Thư viện chăm bé",
+        "en": "Care library"
+      },
+      "pillar": "grow",
+      "aliases": [
+        "thư viện",
+        "bài viết",
+        "articles"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01",
+        "ch02",
+        "ch03",
+        "ch04"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/library/**"
+      ],
+      "functions": [
+        "firebase/functions/src/content-library.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/library_test.dart",
+        "apps/mobile/test/features/library_readability_test.dart"
+      ],
+      "docs": [
+        "docs/product/library-readability-intl-plan.md"
+      ],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "remember.moments",
+      "name": {
+        "vi": "Kỷ niệm",
+        "en": "Memories timeline"
+      },
+      "pillar": "remember",
+      "aliases": [
+        "kỷ niệm",
+        "memories",
+        "moment",
+        "khoảnh khắc"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "moments.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01",
+        "ch02",
+        "ch03",
+        "ch04"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/memories/memories_screen.dart",
+        "apps/mobile/lib/features/memories/memory_*.dart",
+        "apps/mobile/lib/features/memories/quick_add.dart"
+      ],
+      "functions": [
+        "firebase/functions/src/memories.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/memory_test.dart",
+        "apps/mobile/test/features/memory_history_test.dart"
+      ],
+      "docs": [
+        "docs/product/remember-2-plan.md",
+        "docs/product-audit/02-memories-audit.md"
+      ],
+      "figma": [],
+      "decisions": [
+        "D-001",
+        "D-002"
+      ],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "remember.upload",
+      "name": {
+        "vi": "Tải ảnh & video",
+        "en": "Media upload"
+      },
+      "pillar": "remember",
+      "aliases": [
+        "tải lên",
+        "upload",
+        "hàng chờ"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "moments.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01",
+        "ch02",
+        "ch03",
+        "ch04"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/memories/upload_queue.dart",
+        "apps/mobile/lib/features/memories/background_uploads.dart",
+        "apps/mobile/lib/features/memories/media_*.dart"
+      ],
+      "functions": [
+        "firebase/functions/src/memories.ts",
+        "firebase/functions/src/quota.ts",
+        "firebase/functions/src/video-*.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/upload_queue_test.dart",
+        "apps/mobile/test/features/background_uploads_test.dart"
+      ],
+      "docs": [
+        "docs/architecture/ADR-004-media-pipeline.md"
+      ],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [
+        "remember.moments"
+      ],
+      "note": ""
+    },
+    {
+      "id": "remember.albums",
+      "name": {
+        "vi": "Album & tương tác",
+        "en": "Albums & family"
+      },
+      "pillar": "remember",
+      "aliases": [
+        "album",
+        "thả thương",
+        "yêu thích"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "moments.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01",
+        "ch02",
+        "ch03",
+        "ch04"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/memories/album_*.dart",
+        "apps/mobile/lib/features/memories/social_widgets.dart",
+        "apps/mobile/lib/features/memories/messages_screen.dart"
+      ],
+      "functions": [
+        "firebase/functions/src/albums.ts",
+        "firebase/functions/src/social.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/album_test.dart"
+      ],
+      "docs": [],
+      "figma": [],
+      "decisions": [
+        "D-002"
+      ],
+      "dependsOn": [
+        "remember.moments"
+      ],
+      "note": ""
+    },
+    {
+      "id": "remember.share_extension",
+      "name": {
+        "vi": "Thêm từ Ảnh",
+        "en": "Add from Photos"
+      },
+      "pillar": "remember",
+      "aliases": [
+        "share extension",
+        "chia sẻ vào app"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "moments.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "unverified",
+      "release": "not_released",
+      "confidence": "medium",
+      "modules": [
+        "apps/mobile/lib/features/memories/share_inbox.dart",
+        "apps/mobile/ios/share/**"
+      ],
+      "functions": [],
+      "tests": [
+        "apps/mobile/test/features/share_inbox_test.dart"
+      ],
+      "docs": [],
+      "figma": [],
+      "decisions": [
+        "D-004"
+      ],
+      "dependsOn": [
+        "remember.upload"
+      ],
+      "note": ""
+    },
+    {
+      "id": "remember.auto_save",
+      "name": {
+        "vi": "Tự lưu kỷ niệm",
+        "en": "Auto-save memories"
+      },
+      "pillar": "remember",
+      "aliases": [
+        "tự lưu",
+        "auto save",
+        "auto capture",
+        "nhận diện khuôn mặt"
+      ],
+      "hubKey": "auto_save",
+      "capabilities": [],
+      "platforms": [
+        "ios"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/auto_save/**"
+      ],
+      "functions": [
+        "firebase/functions/src/features.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/auto_save*_test.dart"
+      ],
+      "docs": [
+        "docs/product/auto-save-plan.md",
+        "docs/discovery/figma-extract/27-auto-save.md"
+      ],
+      "figma": [],
+      "decisions": [
+        "D-066",
+        "P-148"
+      ],
+      "dependsOn": [
+        "remember.upload"
+      ],
+      "note": ""
+    },
+    {
+      "id": "remember.milestone_cards",
+      "name": {
+        "vi": "Thiệp cột mốc",
+        "en": "Milestone cards"
+      },
+      "pillar": "remember",
+      "aliases": [
+        "thiệp",
+        "milestone card"
+      ],
+      "hubKey": "milestone_cards",
+      "capabilities": [],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/keepsakes/milestone_card_screens.dart",
+        "apps/mobile/lib/features/keepsakes/keepsake_card_*.dart"
+      ],
+      "functions": [
+        "firebase/functions/src/keepsake-content.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/keepsake_test.dart"
+      ],
+      "docs": [
+        "docs/product/remember-2-plan.md",
+        "docs/product/keepsake-template-format.md"
+      ],
+      "figma": [],
+      "decisions": [
+        "D-068"
+      ],
+      "dependsOn": [
+        "grow.milestones"
+      ],
+      "note": ""
+    },
+    {
+      "id": "remember.memory_video",
+      "name": {
+        "vi": "Video kỷ niệm",
+        "en": "Memory video"
+      },
+      "pillar": "remember",
+      "aliases": [
+        "video kỷ niệm",
+        "memory story",
+        "memory video"
+      ],
+      "hubKey": "memory_story",
+      "capabilities": [],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "medium",
+      "modules": [
+        "apps/mobile/lib/features/keepsakes/memory_story_screens.dart",
+        "apps/mobile/lib/features/keepsakes/keepsake_jobs.dart",
+        "apps/mobile/lib/features/keepsakes/video_quality_selector.dart"
+      ],
+      "functions": [
+        "firebase/functions/src/keepsake-jobs.ts",
+        "firebase/functions/src/video-quota.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/memory_story_test.dart",
+        "apps/mobile/test/features/keepsake_live_test.dart"
+      ],
+      "docs": [
+        "docs/product/remember-2-plan.md"
+      ],
+      "figma": [],
+      "decisions": [
+        "D-068"
+      ],
+      "dependsOn": [
+        "remember.moments"
+      ],
+      "note": ""
+    },
+    {
+      "id": "remember.premium_templates",
+      "name": {
+        "vi": "Mẫu Cao cấp",
+        "en": "Premium templates"
+      },
+      "pillar": "remember",
+      "aliases": [
+        "premium48",
+        "mẫu cao cấp",
+        "templates"
+      ],
+      "hubKey": "templates_premium",
+      "capabilities": [],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "in_development",
+      "implementation": "partial",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "medium",
+      "modules": [
+        "apps/mobile/lib/features/keepsakes/premium_keepsake_editor.dart",
+        "apps/mobile/lib/features/keepsakes/keepsake_personalization.dart"
+      ],
+      "functions": [
+        "packages/contracts/src/keepsakes-premium48*.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/premium48_editor_test.dart"
+      ],
+      "docs": [
+        "docs/product/remember-2-templates.md",
+        "docs/development/premium48-*.md"
+      ],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [
+        "remember.milestone_cards",
+        "remember.memory_video"
+      ],
+      "note": ""
+    },
+    {
+      "id": "remember.stories",
+      "name": {
+        "vi": "Câu chuyện",
+        "en": "Stories"
+      },
+      "pillar": "remember",
+      "aliases": [
+        "câu chuyện",
+        "story",
+        "bản nháp AI"
+      ],
+      "hubKey": "ai_story_drafts",
+      "capabilities": [],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "medium",
+      "modules": [
+        "apps/mobile/lib/features/stories/stor*.dart"
+      ],
+      "functions": [
+        "firebase/functions/src/stories.ts",
+        "firebase/functions/src/ai.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/story_test.dart"
+      ],
+      "docs": [],
+      "figma": [],
+      "decisions": [
+        "D-003"
+      ],
+      "dependsOn": [
+        "remember.moments"
+      ],
+      "note": ""
+    },
+    {
+      "id": "remember.share_links",
+      "name": {
+        "vi": "Liên kết riêng",
+        "en": "Private story link"
+      },
+      "pillar": "remember",
+      "aliases": [
+        "link riêng",
+        "share link",
+        "mật mã"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "moments.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "medium",
+      "modules": [
+        "apps/mobile/lib/features/stories/share_*.dart"
+      ],
+      "functions": [
+        "firebase/functions/src/links.ts",
+        "firebase/functions/src/pages.ts"
+      ],
+      "tests": [],
+      "docs": [],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [
+        "remember.stories"
+      ],
+      "note": ""
+    },
+    {
+      "id": "remember.print_studio",
+      "name": {
+        "vi": "In kỷ niệm",
+        "en": "Print studio"
+      },
+      "pillar": "remember",
+      "aliases": [
+        "in ảnh",
+        "print",
+        "photobook"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "moments.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "in_development",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "medium",
+      "modules": [
+        "apps/mobile/lib/features/print_studio/**"
+      ],
+      "functions": [
+        "firebase/functions/src/print-studio.ts",
+        "firebase/functions/src/print-render.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/print_studio_test.dart",
+        "apps/mobile/test/features/print_motion_test.dart"
+      ],
+      "docs": [
+        "docs/product/print-studio-plan.md",
+        "docs/discovery/figma-extract/42-print-studio-current-flow.md"
+      ],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [
+        "remember.moments"
+      ],
+      "note": ""
+    },
+    {
+      "id": "remember.letter",
+      "name": {
+        "vi": "Thư của con",
+        "en": "Letter from your child"
+      },
+      "pillar": "remember",
+      "aliases": [
+        "thư của con"
+      ],
+      "hubKey": null,
+      "capabilities": [],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "designed",
+      "implementation": "not_found",
+      "verification": "unverified",
+      "release": "not_released",
+      "confidence": "medium",
+      "modules": [],
+      "functions": [],
+      "tests": [],
+      "docs": [],
+      "figma": [],
+      "decisions": [
+        "D-149"
+      ],
+      "dependsOn": [
+        "remember.moments"
+      ],
+      "note": "Approved by D-149; Phase 0 found no module by name."
+    },
+    {
+      "id": "platform.lumi",
+      "name": {
+        "vi": "Lumi",
+        "en": "Lumi assistant"
+      },
+      "pillar": "platform",
+      "aliases": [
+        "lumi",
+        "trợ lý",
+        "assistant",
+        "chat"
+      ],
+      "hubKey": "assistant",
+      "capabilities": [],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01",
+        "ch02",
+        "ch03",
+        "ch04"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/assistant/**"
+      ],
+      "functions": [
+        "firebase/functions/src/assistant*.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/assistant*_test.dart",
+        "apps/mobile/test/features/lumi_test.dart"
+      ],
+      "docs": [
+        "docs/assistant/*.md",
+        "docs/product/lumi-plan.md",
+        "docs/product/plans-credits-analysis.md",
+        "docs/product-audit/06-lumi-audit.md"
+      ],
+      "figma": [],
+      "decisions": [
+        "D-075",
+        "D-145",
+        "D-146"
+      ],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "platform.lumi_voice",
+      "name": {
+        "vi": "Nói với Lumi",
+        "en": "Voice input to Lumi"
+      },
+      "pillar": "platform",
+      "aliases": [
+        "giọng nói",
+        "voice"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "ai.assistance"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "unverified",
+      "release": "not_released",
+      "confidence": "medium",
+      "modules": [
+        "apps/mobile/lib/features/assistant/assistant_voice.dart"
+      ],
+      "functions": [],
+      "tests": [],
+      "docs": [],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [
+        "platform.lumi"
+      ],
+      "note": ""
+    },
+    {
+      "id": "platform.ai_summaries",
+      "name": {
+        "vi": "Tóm tắt AI",
+        "en": "AI summaries"
+      },
+      "pillar": "platform",
+      "aliases": [
+        "tóm tắt",
+        "handover summary",
+        "giải thích"
+      ],
+      "hubKey": "ai_assist",
+      "capabilities": [],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/ai/**"
+      ],
+      "functions": [
+        "firebase/functions/src/ai-summary.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/ai_summary_test.dart"
+      ],
+      "docs": [],
+      "figma": [],
+      "decisions": [
+        "D-075",
+        "P-151"
+      ],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "platform.adaptive_today",
+      "name": {
+        "vi": "Hôm nay thích ứng",
+        "en": "Adaptive Today"
+      },
+      "pillar": "platform",
+      "aliases": [
+        "hôm nay",
+        "today",
+        "adaptive"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/adaptive/**",
+        "apps/mobile/lib/features/today/**",
+        "apps/mobile/lib/features/home/**"
+      ],
+      "functions": [],
+      "tests": [
+        "apps/mobile/test/features/adaptive_*_test.dart",
+        "apps/mobile/test/features/today_home_layout_test.dart",
+        "apps/mobile/test/features/home_quick_actions_test.dart"
+      ],
+      "docs": [
+        "docs/product/adaptive-experience-plan.md",
+        "docs/discovery/figma-extract/40-adaptive-experience.md"
+      ],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "platform.notifications",
+      "name": {
+        "vi": "Thông báo",
+        "en": "Notifications"
+      },
+      "pillar": "platform",
+      "aliases": [
+        "thông báo",
+        "push",
+        "inbox"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01",
+        "ch02",
+        "ch03",
+        "ch04"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/notifications/**"
+      ],
+      "functions": [
+        "firebase/functions/src/notification*.ts",
+        "firebase/functions/src/notifications.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/notifications_test.dart"
+      ],
+      "docs": [
+        "docs/notifications/*.md"
+      ],
+      "figma": [],
+      "decisions": [
+        "P-174"
+      ],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "platform.widgets_live",
+      "name": {
+        "vi": "Widget & Live Activity",
+        "en": "Widgets & Live Activities"
+      },
+      "pillar": "platform",
+      "aliases": [
+        "widget",
+        "live activity",
+        "dynamic island",
+        "màn hình khoá"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "unverified",
+      "release": "not_released",
+      "confidence": "medium",
+      "modules": [
+        "apps/mobile/ios/widget/**",
+        "apps/mobile/lib/features/glance/**"
+      ],
+      "functions": [],
+      "tests": [
+        "apps/mobile/test/features/glance_test.dart",
+        "apps/mobile/test/features/glance_plan_test.dart"
+      ],
+      "docs": [],
+      "figma": [],
+      "decisions": [
+        "D-004"
+      ],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "platform.watch",
+      "name": {
+        "vi": "Apple Watch",
+        "en": "Apple Watch"
+      },
+      "pillar": "platform",
+      "aliases": [
+        "watch",
+        "đồng hồ"
+      ],
+      "hubKey": null,
+      "capabilities": [],
+      "platforms": [
+        "watch"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "in_development",
+      "implementation": "partial",
+      "verification": "unverified",
+      "release": "not_released",
+      "confidence": "low",
+      "modules": [
+        "apps/mobile/ios/watch/**"
+      ],
+      "functions": [],
+      "tests": [],
+      "docs": [
+        "docs/product/apple-watch-plan.md",
+        "docs/discovery/figma-extract/23-apple-watch.md"
+      ],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "platform.premium",
+      "name": {
+        "vi": "Premium",
+        "en": "Premium"
+      },
+      "pillar": "platform",
+      "aliases": [
+        "premium",
+        "gói",
+        "paywall",
+        "nâng cấp"
+      ],
+      "hubKey": null,
+      "capabilities": [],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01",
+        "ch02",
+        "ch03",
+        "ch04"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/premium/**"
+      ],
+      "functions": [
+        "firebase/functions/src/billing.ts",
+        "firebase/functions/src/entitlements.ts",
+        "firebase/functions/src/premium-v2.ts",
+        "firebase/functions/src/premium-ops.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/premium*_test.dart"
+      ],
+      "docs": [
+        "docs/product/premium-v2-plan.md",
+        "docs/product/features-premium-hub-plan.md",
+        "docs/product/plans-credits-analysis.md",
+        "docs/operations/premium-rollout.md"
+      ],
+      "figma": [],
+      "decisions": [
+        "D-089",
+        "D-147"
+      ],
+      "dependsOn": [],
+      "note": "Purchase flow not live before launch (D-147)."
+    },
+    {
+      "id": "platform.onboarding",
+      "name": {
+        "vi": "Bắt đầu & đăng nhập",
+        "en": "Onboarding & sign-in"
+      },
+      "pillar": "platform",
+      "aliases": [
+        "onboarding",
+        "đăng nhập",
+        "hồ sơ bé"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/onboarding/**",
+        "apps/mobile/lib/features/auth/**",
+        "apps/mobile/lib/features/baby/**"
+      ],
+      "functions": [
+        "firebase/functions/src/babies.ts",
+        "firebase/functions/src/auth-mail.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/onboarding_screens_test.dart",
+        "apps/mobile/test/features/baby_test.dart",
+        "apps/mobile/test/features/email_link_test.dart"
+      ],
+      "docs": [],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "platform.account_storage",
+      "name": {
+        "vi": "Tài khoản & lưu trữ",
+        "en": "Account & storage"
+      },
+      "pillar": "platform",
+      "aliases": [
+        "tài khoản",
+        "lưu trữ",
+        "xoá dữ liệu",
+        "xuất dữ liệu"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "medium",
+      "modules": [
+        "apps/mobile/lib/features/me/**"
+      ],
+      "functions": [
+        "firebase/functions/src/account.ts",
+        "firebase/functions/src/quota.ts",
+        "firebase/functions/src/export-download.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/me_test.dart",
+        "apps/mobile/test/features/account_merge_test.dart"
+      ],
+      "docs": [],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "platform.app_update",
+      "name": {
+        "vi": "Cập nhật ứng dụng",
+        "en": "App update"
+      },
+      "pillar": "platform",
+      "aliases": [
+        "cập nhật",
+        "app update"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/app_update/**"
+      ],
+      "functions": [
+        "firebase/functions/src/app-update.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/app_update_test.dart"
+      ],
+      "docs": [
+        "docs/development/app-updates.md"
+      ],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "platform.feedback",
+      "name": {
+        "vi": "Góp ý & đánh giá",
+        "en": "Feedback & rating"
+      },
+      "pillar": "platform",
+      "aliases": [
+        "góp ý",
+        "feedback",
+        "đánh giá"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/feedback/**"
+      ],
+      "functions": [
+        "firebase/functions/src/feedback.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/feedback_test.dart",
+        "apps/mobile/test/features/review_prompt_test.dart"
+      ],
+      "docs": [
+        "docs/discovery/figma-extract/26-feedback-rating.md"
+      ],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "platform.appearance",
+      "name": {
+        "vi": "Giao diện Ngày & Đêm",
+        "en": "Light & Night care"
+      },
+      "pillar": "platform",
+      "aliases": [
+        "night care",
+        "chế độ đêm"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "unverified",
+      "release": "not_released",
+      "confidence": "medium",
+      "modules": [
+        "apps/mobile/lib/features/appearance/**"
+      ],
+      "functions": [],
+      "tests": [],
+      "docs": [],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "platform.offline_sync",
+      "name": {
+        "vi": "Ngoại tuyến & đồng bộ",
+        "en": "Offline & sync"
+      },
+      "pillar": "platform",
+      "aliases": [
+        "offline",
+        "đồng bộ"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "partial",
+      "verification": "unverified",
+      "release": "not_released",
+      "confidence": "low",
+      "modules": [
+        "apps/mobile/lib/features/care/care_repository.dart"
+      ],
+      "functions": [],
+      "tests": [
+        "apps/mobile/test/features/pending_local_test.dart"
+      ],
+      "docs": [],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [],
+      "note": ""
+    },
+    {
+      "id": "platform.product_analytics",
+      "name": {
+        "vi": "Đo lường sản phẩm",
+        "en": "Product analytics"
+      },
+      "pillar": "platform",
+      "aliases": [
+        "analytics",
+        "đo lường"
+      ],
+      "hubKey": null,
+      "capabilities": [
+        "module.basic"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "chapters": [
+        "ch01"
+      ],
+      "lifecycle": "built",
+      "implementation": "implemented",
+      "verification": "code_read",
+      "release": "not_released",
+      "confidence": "high",
+      "modules": [
+        "apps/mobile/lib/features/analytics/**"
+      ],
+      "functions": [
+        "firebase/functions/src/product-analytics*.ts"
+      ],
+      "tests": [
+        "apps/mobile/test/features/product_analytics_test.dart"
+      ],
+      "docs": [
+        "docs/product-analytics/*.md"
+      ],
+      "figma": [],
+      "decisions": [],
+      "dependsOn": [],
+      "note": ""
+    }
+  ]
+}

@@ -49,6 +49,8 @@ export const staffFunctions = [
   'content',
   'system',
   'features',
+  /** Sản phẩm (D-155): product knowledge — Xem · Sửa (drafts, sync) · Duyệt · Toàn quyền. */
+  'product',
   'staff',
   'audit',
   'qa',
@@ -90,6 +92,7 @@ export const staffRoleTemplates: Record<BuiltinStaffRole, StaffLevels> = {
     content: 'edit',
     system: 'view',
     features: 'view',
+    product: 'view',
     audit: 'view',
     qa: 'edit',
   },
@@ -110,10 +113,11 @@ export const staffRoleTemplates: Record<BuiltinStaffRole, StaffLevels> = {
     dataJobs: 'edit',
     system: 'edit',
     features: 'edit',
+    product: 'edit',
     audit: 'view',
     qa: 'full',
   },
-  analyst: { ...none, overview: 'view', analyticsExport: 'edit', qa: 'edit' },
+  analyst: { ...none, overview: 'view', analyticsExport: 'edit', product: 'view', qa: 'edit' },
   expert: { ...none, reference: 'approve', content: 'approve', qa: 'edit' },
   qa: { ...none, qa: 'full' },
 };
@@ -224,6 +228,12 @@ export const staffActions = [
   'notifications.timeline',
   /** Kill switches, retry of failed deliveries. */
   'notifications.ops',
+  /** Sản phẩm (D-155): browse product knowledge. */
+  'product.view',
+  /** Write section drafts, submit a sync. */
+  'product.edit',
+  /** Approve sections and change sets (not one's own, except the Owner). */
+  'product.approve',
 ] as const;
 export type StaffAction = (typeof staffActions)[number];
 
@@ -282,6 +292,9 @@ export const staffActionLevel: Record<StaffAction, readonly [StaffFunction, Staf
   // A family's timeline shows unmasked activity metadata: "view", not "viewMasked".
   'notifications.timeline': ['families', 'view'],
   'notifications.ops': ['system', 'edit'],
+  'product.view': ['product', 'view'],
+  'product.edit': ['product', 'edit'],
+  'product.approve': ['product', 'approve'],
 };
 
 export function staffCan(levels: StaffLevels, action: StaffAction): boolean {
@@ -383,6 +396,7 @@ export const auditCategories = [
   'analytics',
   'premium',
   'notifications',
+  'product',
 ] as const;
 export type AuditCategory = (typeof auditCategories)[number];
 export const listAuditSchema = z.object({

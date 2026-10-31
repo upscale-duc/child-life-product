@@ -8,6 +8,7 @@ import {
 import type { SupportedLocale } from '@child-life/web-config';
 import {
   BookOpen,
+  Boxes,
   BadgeCheck,
   BellRing,
   CalendarHeart,
@@ -112,6 +113,7 @@ import { NutritionScreen } from './screens/Nutrition';
 import { JobsScreen } from './screens/Jobs';
 import { NotificationsScreen } from './screens/notifications';
 import { OverviewScreen } from './screens/Overview';
+import { ProductHubScreen } from './screens/product';
 import { QaScreen } from './screens/Qa';
 import { ReferenceScreen } from './screens/Reference';
 import { RhythmScreen } from './screens/Rhythm';
@@ -122,7 +124,7 @@ import { StorageScreen } from './screens/Storage';
 import { SupportScreen } from './screens/Support';
 import { SystemScreen } from './screens/System';
 
-type Group = 'main' | 'ops' | 'content' | 'system' | 'develop';
+type Group = 'main' | 'product' | 'ops' | 'content' | 'system' | 'develop';
 type NavItem = {
   route: Route;
   icon: LucideIcon;
@@ -137,6 +139,8 @@ type NavItem = {
 const nav: NavItem[] = [
   { route: 'overview', icon: LayoutDashboard, group: 'main', can: 'overview.view' },
   { route: 'analytics', icon: ChartColumn, group: 'main', can: 'analytics.view' },
+  // Sản phẩm (D-155): product knowledge, read by product, engineering and analysts.
+  { route: 'product', icon: Boxes, group: 'product', can: 'product.view' },
   { route: 'families', icon: Users, group: 'ops', can: 'families.view' },
   { route: 'support', icon: LifeBuoy, badge: 'tickets', group: 'ops', can: 'support.view' },
   { route: 'storage', icon: HardDrive, badge: 'storage', group: 'ops', can: 'storage.view' },
@@ -173,7 +177,7 @@ const nav: NavItem[] = [
   { route: 'audit', icon: ScrollText, group: 'system', can: 'audit.view' },
   { route: 'qa', icon: ClipboardCheck, group: 'develop', can: 'qa.view' },
 ];
-const groups: Group[] = ['main', 'ops', 'content', 'system', 'develop'];
+const groups: Group[] = ['main', 'product', 'ops', 'content', 'system', 'develop'];
 
 const canOpen = (levels: StaffLevels, route: Route) => {
   const item = nav.find((n) => n.route === route);
@@ -401,6 +405,8 @@ function Screen({ route }: { route: Route }) {
       return <SystemScreen />;
     case 'features':
       return <FeatureHubScreen />;
+    case 'product':
+      return <ProductHubScreen />;
     case 'notifications':
       return <NotificationsScreen />;
     case 'appUpdate':

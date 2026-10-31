@@ -21,6 +21,20 @@ import {
   printExportUrl,
 } from './print-studio.js';
 import { engagementHealth } from './engagement-health.js';
+import {
+  actSection as productActSection,
+  changeSetDetail as productChangeSetDetail,
+  listChangeSets as productChangeSets,
+  productDecisions,
+  productFeature,
+  productFeatures,
+  productOverview,
+  productPlans,
+  productSource,
+  productSources,
+  reviewChangeSet as productReviewChangeSet,
+  saveSection as productSaveSection,
+} from './product-hub.js';
 import { observeEngagementContent } from './engagement-observers.js';
 import {
   refreshEngagement,
@@ -2502,6 +2516,43 @@ export const staffPremiumOverview = staffCall('staffPremiumOverview', (s, d) =>
 );
 export const staffSetFamilyPlan = staffCall('staffSetFamilyPlan', (s, d) =>
   setFamilyPlan(getFirestore(), s, d, new Date()),
+);
+
+// Sản phẩm · Product Hub (D-155, docs/product-hub): staff-only product knowledge. Change sets are
+// submitted by `scripts/product-hub-sync.ts` and applied only after a second person approves.
+export const productHubOverview = staffCall('productHubOverview', (s) =>
+  productOverview(getFirestore(), s),
+);
+export const productHubFeatures = staffCall('productHubFeatures', (s) =>
+  productFeatures(getFirestore(), s),
+);
+export const productHubFeature = staffCall('productHubFeature', (s, d) =>
+  productFeature(getFirestore(), s, d),
+);
+export const productHubSaveSection = staffCall('productHubSaveSection', (s, d) =>
+  productSaveSection(getFirestore(), s, d, new Date()),
+);
+export const productHubSectionAct = staffCall('productHubSectionAct', (s, d) =>
+  productActSection(getFirestore(), s, d, new Date()),
+);
+export const productHubPlans = staffCall('productHubPlans', (s) => productPlans(getFirestore(), s));
+export const productHubSources = staffCall('productHubSources', (s, d) =>
+  productSources(getFirestore(), s, d),
+);
+export const productHubSource = staffCall('productHubSource', (s, d) =>
+  productSource(getFirestore(), s, d),
+);
+export const productHubDecisions = staffCall('productHubDecisions', (s, d) =>
+  productDecisions(getFirestore(), s, d),
+);
+export const productHubChangeSets = staffCall('productHubChangeSets', (s) =>
+  productChangeSets(getFirestore(), s),
+);
+export const productHubChangeSet = staffCall('productHubChangeSet', (s, d) =>
+  productChangeSetDetail(getFirestore(), s, d),
+);
+export const productHubReviewChangeSet = staffCall('productHubReviewChangeSet', (s, d) =>
+  productReviewChangeSet(getFirestore(), s, d, new Date()),
 );
 
 // "Tính năng & Premium" hub (D-089 / P-172): catalogue, tiers, overrides, "toàn bộ Premium".
