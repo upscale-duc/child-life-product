@@ -1,8 +1,9 @@
 import { type FeatureSection, type FeatureSectionKey } from '@child-life/contracts';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, MessageSquareText } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { toast } from 'sonner';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { ApiError, useApi, useLoad } from '../../api';
@@ -22,11 +23,21 @@ import {
   useLocalName,
 } from './kit';
 import type { FeatureView } from './types';
+import { Thread } from './Copilot';
 
 /** Errors of the Sản phẩm callables that have their own words. */
 export function productErrorId(e: unknown): string {
   if (!(e instanceof ApiError)) return 'error.generic';
-  const own = ['own-work', 'not-pending', 'no-draft', 'pending-exists', 'no-changes'];
+  const own = [
+    'own-work',
+    'not-pending',
+    'no-draft',
+    'pending-exists',
+    'no-changes',
+    'copilot-limit-hour',
+    'copilot-limit-day',
+    'copilot-limit-global',
+  ];
   return e.reason && own.includes(e.reason) ? `ph.error.${e.reason}` : errorMessageId(e);
 }
 
@@ -52,6 +63,7 @@ export function FeatureView({ data, onChanged = () => undefined }: { data: Featu
   const name = useLocalName();
   const f = data.feature;
   const [tab, setTab] = useState<FeatureTab>('overview');
+  const [asking, setAsking] = useState(false);
   const section = (k: FeatureSectionKey) => data.sections.find((s) => s.key === k)!;
   const sections = (keys: FeatureSectionKey[]) =>
     keys.map((k) => (
@@ -67,7 +79,30 @@ export function FeatureView({ data, onChanged = () => undefined }: { data: Featu
         </Button>
         <h2 className="text-lg font-semibold">{name(f.name, f.id)}</h2>
         <span className="font-mono text-xs text-muted-foreground">{f.id}</span>
+        <span className="ml-auto">
+          <Button onClick={() => setAsking(true)}>
+            <MessageSquareText className="size-4" />
+            <FormattedMessage id="ph.copilot.askFeature" />
+          </Button>
+        </span>
       </div>
+      {asking && typeof document !== 'undefined' && (
+        <Sheet open onOpenChange={(o) => !o && setAsking(false)}>
+          <SheetContent
+            side="right"
+            aria-describedby={undefined}
+            closeLabel={intl.formatMessage({ id: 'action.close' })}
+            className="w-full gap-0 overflow-y-auto overscroll-contain sm:max-w-2xl"
+          >
+            <SheetTitle className="border-b px-5 py-4 pr-12 text-base">
+              <FormattedMessage id="ph.copilot.titleFeature" values={{ feature: f.id }} />
+            </SheetTitle>
+            <div className="p-4">
+              <Thread scope={f.id} initial={[]} />
+            </div>
+          </SheetContent>
+        </Sheet>
+      )}
 
       {/* Four fields, never one status (doc 05 §3). */}
       <dl className="grid grid-cols-2 gap-3 rounded-xl border bg-card px-4 py-3 text-sm sm:grid-cols-4 xl:grid-cols-7">

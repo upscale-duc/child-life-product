@@ -30,6 +30,11 @@ structure without asking developers.
 
 ## Phase 2 — AI Product Copilot
 
+**Progress (2026-10-31):** PH2.0–PH2.3 built on Claude (D-157): search artifact rebuilt at each
+approval, `productCopilotAsk` with server-side grounding, conversations, "Lưu thành…" drafts,
+Copilot tab and feature sheet, knowledge search in Sources. Fake suite: retrieval recall@8 = 1.0
+on 24 questions; emulator suite 8 cases. PH2.4 live eval: a small run after deploy.
+
 **Success criterion:** the Product Owner asks how a feature works and gets an evidence-grounded
 answer.
 

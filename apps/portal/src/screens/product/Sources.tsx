@@ -10,7 +10,7 @@ import { shortDate } from '../../format';
 import { Button, Loaded, Pill, Segmented, SelectMenu, TableScroll } from '../../ui';
 import { productErrorId } from './Feature';
 import { AuthorityPill, ConflictText, Meta, PathText, linkClass, shortRev } from './kit';
-import type { ChangeSetView, ChangeSetsView, SourceView, SourcesView } from './types';
+import type { ChangeSetView, ChangeSetsView, SearchView, SourceView, SourcesView } from './types';
 
 type Part = 'library' | 'review';
 
@@ -28,8 +28,85 @@ export function SourcesLoader() {
           { value: 'review', label: intl.formatMessage({ id: 'ph.sources.review' }) },
         ]}
       />
-      {part === 'library' ? <LibraryLoader /> : <ReviewLoader />}
+      {part === 'library' ? (
+        <>
+          <KnowledgeSearch />
+          <LibraryLoader />
+        </>
+      ) : (
+        <ReviewLoader />
+      )}
     </div>
+  );
+}
+
+/** "Tìm trong tri thức": the Copilot's search over approved documents and decisions. */
+export function KnowledgeSearch() {
+  const intl = useIntl();
+  const api = useApi();
+  const navigate = useNavigate();
+  const [q, setQ] = useState('');
+  const [result, setResult] = useState<SearchView | null>(null);
+  const [busy, setBusy] = useState(false);
+  const run = async () => {
+    if (q.trim().length < 2) return;
+    setBusy(true);
+    try {
+      setResult(await api.call<SearchView>('productHubSearch', { q: q.trim() }));
+    } catch (e) {
+      toast.error(intl.formatMessage({ id: productErrorId(e) }));
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <Section title={<FormattedMessage id="ph.search.title" />}>
+      <form
+        className="flex flex-wrap items-center gap-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          void run();
+        }}
+      >
+        <SearchInput value={q} onChange={setQ} placeholder={intl.formatMessage({ id: 'ph.search.placeholder' })} className="sm:w-96" />
+        <Button type="submit" disabled={busy || q.trim().length < 2}>
+          <FormattedMessage id="ph.search.go" />
+        </Button>
+      </form>
+      {result && !result.built && (
+        <Meta>
+          <FormattedMessage id="ph.search.notBuilt" />
+        </Meta>
+      )}
+      {result?.built && result.hits.length === 0 && (
+        <Meta>
+          <FormattedMessage id="ph.search.none" />
+        </Meta>
+      )}
+      {result?.built && result.hits.length > 0 && (
+        <ul className="mt-3 grid gap-3">
+          {result.hits.map((h) => (
+            <li key={h.id} className="grid gap-1 text-[13px]">
+              <div className="flex flex-wrap items-center gap-2">
+                <AuthorityPill authority={h.authority as SourceAuthority} />
+                <span className="font-medium">{h.title}</span>
+              </div>
+              {h.path && <PathText path={h.anchor ? `${h.path}#${h.anchor}` : h.path} />}
+              <span className="text-muted-foreground [overflow-wrap:anywhere]">{h.excerpt}</span>
+              {h.features.length > 0 && (
+                <span className="flex flex-wrap gap-2">
+                  {h.features.map((f) => (
+                    <button key={f} type="button" className={`${linkClass} font-mono`} onClick={() => navigate('product', `features/${f}`)}>
+                      {f}
+                    </button>
+                  ))}
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </Section>
   );
 }
 

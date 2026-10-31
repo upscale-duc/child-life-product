@@ -288,7 +288,14 @@ export async function changeSetDetail(db: Firestore, staff: Staff | null, data: 
  * Approve applies the change set; reject leaves the knowledge as it was. Approved sections whose
  * sources changed are marked stale with the paths — their text is never touched (Scenario D).
  */
-export async function reviewChangeSet(db: Firestore, staff: Staff | null, data: unknown, now: Date) {
+export async function reviewChangeSet(
+  db: Firestore,
+  staff: Staff | null,
+  data: unknown,
+  now: Date,
+  /** Runs after an approval is applied (the Copilot's search index); a failure never undoes it. */
+  afterApply?: () => Promise<unknown>,
+) {
   const s = requireStaff(staff, 'product.approve');
   const req = parse(productReviewChangeSetSchema, data);
   const ref = db.collection(C.changeSets).doc(req.id);
@@ -395,7 +402,15 @@ export async function reviewChangeSet(db: Firestore, staff: Staff | null, data: 
     now,
   );
   await batch.commit();
-  return { status: 'approved' as const, staleSections: staleCount };
+  let indexed = true;
+  if (afterApply) {
+    try {
+      await afterApply();
+    } catch {
+      indexed = false;
+    }
+  }
+  return { status: 'approved' as const, staleSections: staleCount, indexed };
 }
 
 // ---------- Features ----------

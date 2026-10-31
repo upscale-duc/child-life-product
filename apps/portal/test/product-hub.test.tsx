@@ -21,6 +21,8 @@ import { ProductHubScreen, productPlaceOf } from '../src/screens/product/index';
 import { OverviewView } from '../src/screens/product/Overview';
 import { PlansView } from '../src/screens/product/Plans';
 import { ChangeSetDetail, LibraryView, ReviewQueue } from '../src/screens/product/Sources';
+import { AnswerView, Thread } from '../src/screens/product/Copilot';
+import type { CopilotAnswer } from '@child-life/contracts';
 import type {
   ChangeSetView,
   FeatureRow,
@@ -162,10 +164,11 @@ describe('routes and access', () => {
     expect(allowedRoute(levelsForRoles(['analyst']), 'product')).toBe('product');
     expect(allowedRoute(levelsForRoles(['support']), 'product')).not.toBe('product');
   });
-  it('shows only the Phase 1 tabs', () => {
+  it('shows the built tabs only (Copilot from Phase 2; no Journeys yet)', () => {
     const html = text(render(<ProductHubScreen initial={{ tab: 'plans' }} />));
-    for (const t of ['Tổng quan', 'Tính năng', 'Gói & quyền', 'Nguồn tri thức']) expect(html).toContain(t);
-    expect(html).not.toContain('Copilot');
+    for (const t of ['Tổng quan', 'Tính năng', 'Copilot', 'Gói & quyền', 'Nguồn tri thức']) expect(html).toContain(t);
+    expect(html).not.toContain('Hành trình');
+    expect(productPlaceOf('/product/copilot/abcDEF12345')).toEqual({ tab: 'copilot', conversation: 'abcDEF12345' });
   });
 });
 
@@ -348,5 +351,47 @@ describe('sources and review', () => {
     const html = render(<ChangeSetDetail data={cs} />, ['admin'], 'vi', 's_eng');
     expect(text(html)).toContain('Người gửi không tự duyệt');
     expect(html).toMatch(/<button[^>]*disabled[^>]*>[^<]*<[^>]*>?[^<]*Duyệt và áp dụng|disabled=""[^>]*>Duyệt và áp dụng/);
+  });
+});
+
+describe('copilot', () => {
+  const base: CopilotAnswer = {
+    mode: 'model',
+    reason: null,
+    answer: 'Tự lưu tạm dừng và mời mở Cài đặt.',
+    features: ['remember.auto_save'],
+    claims: [
+      { text: 'Tạm dừng khi bị thu hồi quyền', type: 'fact', cites: ['S1'], downgraded: false },
+      { text: 'Chỉ có trên iOS', type: 'assumption', cites: ['S2'], downgraded: true },
+    ],
+    confidence: 'mixed',
+    missingEvidence: ['Chưa kiểm trên iPhone thật'],
+    implications: '',
+    suggestions: [],
+    citations: [
+      { id: 'S1', kind: 'feature', label: 'remember.auto_save · facts', path: 'docs/product-hub/registry/features.json', anchor: 'remember.auto_save', authority: 'code', status: 'n/a', date: null, revision: '33b6a667', feature: 'remember.auto_save', excerpt: 'facts' },
+      { id: 'S2', kind: 'chunk', label: 'plan', path: 'docs/product/auto-save-plan.md', anchor: 'x', authority: 'draft_spec', status: 'n/a', date: '2026-10-13', revision: '33b6a667', feature: null, excerpt: 'plan' },
+    ],
+    freshness: { oldestCited: '2026-10-13', staleCited: [] },
+    model: 'claude-opus-5-5',
+  };
+  it('shows claims by type with sources, the confidence and the missing evidence', () => {
+    const html = text(render(<AnswerView answer={base} question="q" scope="remember.auto_save" messageId="m1" />));
+    expect(html).toContain('Dữ kiện');
+    expect(html).toContain('Giả định');
+    expect(html).toContain('Chưa có nguồn đủ mạnh, nên ghi là giả định');
+    expect(html).toContain('Một phần có bằng chứng');
+    expect(html).toContain('Chưa kiểm trên iPhone thật');
+    expect(html).toContain('Lưu thành…');
+  });
+  it('without a model answer it says why and lists the sources', () => {
+    const html = text(render(<AnswerView answer={{ ...base, mode: 'sources', reason: 'unconfigured', claims: [], answer: '' }} question="q" scope="global" messageId="m1" />));
+    expect(html).toContain('Copilot chưa được bật');
+    expect(html).toContain('docs/product/auto-save-plan.md#x');
+  });
+  it('an empty thread offers suggested questions and states what is sent', () => {
+    const html = text(render(<Thread scope="global" initial={[]} />));
+    expect(html).toContain('Free và Premium khác nhau ở những tính năng nào?');
+    expect(html).toContain('không có dữ liệu gia đình');
   });
 });

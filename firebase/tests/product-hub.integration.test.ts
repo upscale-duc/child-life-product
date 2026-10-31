@@ -214,7 +214,7 @@ describe('sections, coverage and freshness', () => {
       expect.objectContaining({ heading: 'Cho ăn › Rules', change: 'changed' }),
     ]);
     const result = await reviewChangeSet(db, admin, { id, decision: 'approve' }, now);
-    expect(result).toEqual({ status: 'approved', staleSections: 1 });
+    expect(result).toEqual({ status: 'approved', staleSections: 1, indexed: true });
 
     const f = await productFeature(db, analyst, { id: 'care.feeding' });
     const rules = f.sections.find((s) => s.key === 'rules')!;

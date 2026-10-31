@@ -35,6 +35,19 @@ import {
   reviewChangeSet as productReviewChangeSet,
   saveSection as productSaveSection,
 } from './product-hub.js';
+import { COPILOT_MODEL } from '@child-life/contracts';
+import { claudeCopilotModel } from './product-copilot-claude.js';
+import {
+  askCopilot as productAskCopilot,
+  createDraft as productCreateDraft,
+  deleteConversation as productDeleteConversation,
+  getConversation as productGetConversation,
+  listConversations as productListConversations,
+  listDrafts as productListDrafts,
+  rebuildSearchArtifact,
+  searchKnowledge as productSearchKnowledge,
+  type ArtifactStore,
+} from './product-copilot.js';
 import { observeEngagementContent } from './engagement-observers.js';
 import {
   refreshEngagement,
@@ -2552,7 +2565,60 @@ export const productHubChangeSet = staffCall('productHubChangeSet', (s, d) =>
   productChangeSetDetail(getFirestore(), s, d),
 );
 export const productHubReviewChangeSet = staffCall('productHubReviewChangeSet', (s, d) =>
-  productReviewChangeSet(getFirestore(), s, d, new Date()),
+  productReviewChangeSet(getFirestore(), s, d, new Date(), () =>
+    rebuildSearchArtifact(getFirestore(), productSearchStore, new Date()),
+  ),
+);
+
+// Sản phẩm · Copilot (D-155, Phase 2): the search artifact in Storage (staff-only by the Storage
+// Rules' catch-all), conversations private to their owner, drafts that never become decisions.
+const productSearchStore: ArtifactStore = {
+  save: (bytes) =>
+    getStorage()
+      .bucket()
+      .file('productHub/index/current.json.gz')
+      .save(bytes, { contentType: 'application/gzip', resumable: false }),
+  read: async () => {
+    const file = getStorage().bucket().file('productHub/index/current.json.gz');
+    const [exists] = await file.exists();
+    return exists ? (await file.download())[0] : null;
+  },
+};
+// The Copilot runs on Claude (owner, 2026-10-31); without the key it answers with sources only.
+const anthropicKey = defineSecret('ANTHROPIC_API_KEY');
+export const productCopilotAsk = staffCall(
+  'productCopilotAsk',
+  (s, d) => {
+    const key = anthropicKey.value();
+    const model =
+      key && key !== 'unset'
+        ? claudeCopilotModel(key, COPILOT_MODEL, (usage) => recordAiCall(getFirestore(), usage))
+        : null;
+    return productAskCopilot(getFirestore(), s, d, new Date(), {
+      store: productSearchStore,
+      model,
+      log: (message, detail) => logger.warn(message, detail),
+    });
+  },
+  { secrets: [anthropicKey] },
+);
+export const productHubSearch = staffCall('productHubSearch', (s, d) =>
+  productSearchKnowledge(getFirestore(), s, d, productSearchStore),
+);
+export const productCopilotConversations = staffCall('productCopilotConversations', (s) =>
+  productListConversations(getFirestore(), s, new Date()),
+);
+export const productCopilotConversation = staffCall('productCopilotConversation', (s, d) =>
+  productGetConversation(getFirestore(), s, d),
+);
+export const productCopilotDelete = staffCall('productCopilotDelete', (s, d) =>
+  productDeleteConversation(getFirestore(), s, d),
+);
+export const productHubCreateDraft = staffCall('productHubCreateDraft', (s, d) =>
+  productCreateDraft(getFirestore(), s, d, new Date()),
+);
+export const productHubDrafts = staffCall('productHubDrafts', (s) =>
+  productListDrafts(getFirestore(), s),
 );
 
 // "Tính năng & Premium" hub (D-089 / P-172): catalogue, tiers, overrides, "toàn bộ Premium".

@@ -9,9 +9,11 @@
   modules.
 - **Read-only.** No tools that write, call URLs or run code. "Save as draft" is a portal action
   on an answer, executed by a normal callable, not by the model.
-- **Server-side only.** Reuses the provider adapter pattern in `firebase/functions/src/ai.ts`
-  (D-003), the `OPENAI_API_KEY` secret and `observedAiFetch` telemetry. A separate prompt module
-  `product-copilot.ts` with its own `promptVersion`.
+- **Server-side only, on Claude (D-157).** `firebase/functions/src/product-copilot-claude.ts`
+  calls the Anthropic Messages API with `@anthropic-ai/sdk` and the `ANTHROPIC_API_KEY` secret;
+  telemetry goes to the same `aiUsage` aggregates as the other AI calls (operation
+  `productCopilot`). Prompt, retrieval and grounding live in `product-copilot.ts`
+  (`product-copilot-v1`). Lumi and the other AI features stay on OpenAI.
 
 ## 2. Request flow
 
@@ -68,10 +70,14 @@ when `insufficient`, the missing-evidence list with "Tạo việc cần kiểm t
 
 ## 5. Cost and limits
 
-- Model: `OPENAI_MODEL` (currently `gpt-4.1-mini`, D-146). One call per question (no
-  multi-step agent loop in v1).
-- Rough cost: ~12 k input + 0.6 k output tokens ≈ $0.006 per question at list price (check at
-  build time). 30 questions/day ≈ $5/month.
+- Model: `claude-opus-5-5` (D-157), effort `medium`, structured output, refusal fallback
+  `fallbacks: "default"`. One call per question (no agent loop, no tools).
+- The rules and the feature registry form the cached prefix; retrieved blocks and the question
+  follow. Rough cost: ~15–20 k input tokens at $4/M (the cached part at $0.20/M) plus ~1–3 k
+  output tokens at $20/M including thinking ≈ $0.05–0.12 per question. 30 questions/day ≈
+  $45–110/month — watch the `productCopilot` rows in AI usage.
+- Without the key, or when Claude errors or declines, the answer is the most relevant sources
+  (mode `sources`), never an invented reply.
 - Limits (config `config/limits.productCopilot`, Q-PH-05): 20 questions/staff/hour, 200/day,
   global daily cap; refusals say when it resets. Telemetry carries no question text in logs.
 - Conversations kept 180 days by default (TTL), deletable by their owner.

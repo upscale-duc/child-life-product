@@ -168,3 +168,49 @@ export interface ChangeSetView {
   features: Array<{ change: string; id: string; name: { vi: string; en: string } | null; deadGlobs: string[] }>;
   conflicts: ProductConflictRecord[];
 }
+
+// ---------- Copilot (Phase 2) ----------
+
+export type { CopilotAnswer, CopilotCitation, CopilotMessage } from '@child-life/contracts';
+
+export interface ConversationsView {
+  conversations: Array<{ id: string; scope: string; title: string; lastAt: string | null; messages: number }>;
+}
+export interface ConversationView {
+  id: string;
+  scope: string;
+  title: string;
+  messages: import('@child-life/contracts').CopilotMessage[];
+}
+export interface AskResult {
+  conversationId: string;
+  questionId: string;
+  message: import('@child-life/contracts').CopilotMessage;
+}
+export interface SearchView {
+  built: boolean;
+  hits: Array<{
+    id: string;
+    kind: string;
+    title: string;
+    path: string | null;
+    anchor: string | null;
+    authority: string;
+    date: string | null;
+    features: string[];
+    excerpt: string;
+  }>;
+}
+export interface DraftsView {
+  drafts: Array<{
+    id: string;
+    type: string;
+    feature: string | null;
+    title: string;
+    body: string;
+    evidence: string[];
+    status: string;
+    createdBy: string;
+    createdAt: string | null;
+  }>;
+}

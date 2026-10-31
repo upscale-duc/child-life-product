@@ -3,6 +3,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { subPath, useNavigate } from '../../context';
 import { Page } from '../../ui';
 import { CatalogLoader } from './Catalog';
+import { CopilotScreen } from './Copilot';
 import { FeatureLoader } from './Feature';
 import { OverviewLoader } from './Overview';
 import { PlansLoader } from './Plans';
@@ -10,16 +11,17 @@ import { ChangeSetLoader, SourceLoader, SourcesLoader } from './Sources';
 
 /**
  * Sản phẩm · Product Hub (D-155, `docs/product-hub/04-information-architecture-and-ux.md`).
- * Phase 1 tabs: Tổng quan, Tính năng (catalog + feature page), Gói & quyền (read only) and Nguồn
- * tri thức (library + review queue). Copilot, Journeys, Decisions and Insights come in later
+ * Tabs: Tổng quan, Tính năng (catalog + feature page), Copilot (Phase 2), Gói & quyền (read only)
+ * and Nguồn tri thức (library + review queue). Journeys, Decisions and Insights come in later
  * phases and are not shown until they exist.
  */
-export const productTabs = ['overview', 'features', 'plans', 'sources'] as const;
+export const productTabs = ['overview', 'features', 'copilot', 'plans', 'sources'] as const;
 export type ProductTab = (typeof productTabs)[number];
 
 export type ProductPlace =
   | { tab: 'overview' }
   | { tab: 'features'; feature: string | null }
+  | { tab: 'copilot'; conversation: string | null }
   | { tab: 'plans' }
   | { tab: 'sources'; source: string | null; changeSet: string | null };
 
@@ -28,6 +30,7 @@ export function productPlaceOf(pathname: string): ProductPlace {
   const [first, second, third] = subPath('product', pathname);
   if (first === 'features') return { tab: 'features', feature: second ?? null };
   if (first === 'plans') return { tab: 'plans' };
+  if (first === 'copilot') return { tab: 'copilot', conversation: second ?? null };
   if (first === 'sources') {
     if (second === 'review' && third) return { tab: 'sources', source: null, changeSet: third };
     return { tab: 'sources', source: second ?? null, changeSet: null };
@@ -57,6 +60,7 @@ export function ProductHubScreen({ initial }: { initial?: ProductPlace }) {
       {place.tab === 'overview' && <OverviewLoader />}
       {place.tab === 'features' &&
         (place.feature ? <FeatureLoader id={place.feature} /> : <CatalogLoader />)}
+      {place.tab === 'copilot' && <CopilotScreen conversation={place.conversation} />}
       {place.tab === 'plans' && <PlansLoader />}
       {place.tab === 'sources' &&
         (place.changeSet ? (

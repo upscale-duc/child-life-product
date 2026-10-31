@@ -13,7 +13,8 @@
 //   pnpm exec tsx scripts/product-hub-sync.ts --project child-life-dev --as you@childlife.app --submit
 //
 // Flags: --rev <git rev> (default HEAD) · --worktree (read files on disk, dry run only) ·
-// --offline (no Firestore; diff against an empty state) · --replace-pending · --out <file.json>.
+// --offline (no Firestore; diff against an empty state) · --replace-pending · --out <file.json> ·
+// --rebuild-index (only rebuild the Copilot's search index from what is approved; no diff).
 // Prod (child-life-ecosystem) needs CHILD_LIFE_PROD_APPROVED=yes, as scripts/deploy.sh.
 
 import { execFileSync, spawnSync } from 'node:child_process';
@@ -24,6 +25,8 @@ import { productRegistrySchema } from '@child-life/contracts';
 import { initializeApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
+import { getStorage } from 'firebase-admin/storage';
+import { rebuildSearchArtifact } from '../src/product-copilot.js';
 import { appliedState, submitChangeSet } from '../src/product-hub.js';
 import {
   buildChangeSet,
@@ -137,6 +140,20 @@ function readWorktree() {
 
 async function main() {
   const project = arg('project') ?? 'child-life-dev';
+  if (flag('rebuild-index')) {
+    initializeApp({ projectId: project, storageBucket: `${project}.firebasestorage.app` });
+    const file = getStorage().bucket().file('productHub/index/current.json.gz');
+    const { docs } = await rebuildSearchArtifact(
+      getFirestore(),
+      {
+        save: (bytes) => file.save(bytes, { contentType: 'application/gzip', resumable: false }),
+        read: async () => ((await file.exists())[0] ? (await file.download())[0] : null),
+      },
+      new Date(),
+    );
+    console.log(`Search index rebuilt on ${project}: ${docs} documents.`);
+    return;
+  }
   const submit = flag('submit');
   const worktree = flag('worktree');
   if (submit && worktree) fail('--worktree is for dry runs; commit and sync a revision to submit.');

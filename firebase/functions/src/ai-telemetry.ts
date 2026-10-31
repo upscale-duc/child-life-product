@@ -5,7 +5,16 @@ import { localDateIn } from '@child-life/contracts';
 export interface AiCallUsage {
   callId: string;
   operation:
-    'extract' | 'understand' | 'word' | 'images' | 'summary' | 'story' | 'storyAssist' | 'expenses';
+    | 'extract'
+    | 'understand'
+    | 'word'
+    | 'images'
+    | 'summary'
+    | 'story'
+    | 'storyAssist'
+    | 'expenses'
+    // Sản phẩm · Copilot (D-155): staff questions about product knowledge, on Claude.
+    | 'productCopilot';
   model: string;
   promptVersion: string;
   status: 'ok' | 'http' | 'network' | 'timeout' | 'invalid';

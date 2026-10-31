@@ -432,3 +432,116 @@ export const productDecisionsQuerySchema = z.object({
   kind: z.enum(decisionKinds).optional(),
   feature: productFeatureIdSchema.optional(),
 });
+
+// ---------- Copilot (Phase 2, doc 07) ----------
+
+/**
+ * Sản phẩm · Copilot on Claude (owner, 2026-10-31: "tôi muốn dùng claude API key"). Staff-only,
+ * server-side, reads product knowledge only — never family data. One model call per question;
+ * the server checks every citation, and a "fact" without strong evidence becomes an assumption.
+ */
+export const COPILOT_MODEL = 'claude-opus-5-5';
+export const COPILOT_PROMPT_VERSION = 'product-copilot-v1';
+/** D-155 #5: per staff member per hour and per day; a global daily cap protects the budget. */
+export const COPILOT_LIMITS = {
+  perHour: 20,
+  perDay: 200,
+  globalPerDay: 1000,
+  retentionDays: 180,
+  historyTurns: 3,
+} as const;
+
+export const copilotClaimTypes = ['fact', 'assumption', 'recommendation'] as const;
+export type CopilotClaimType = (typeof copilotClaimTypes)[number];
+export const copilotConfidences = ['verified', 'mixed', 'insufficient'] as const;
+export type CopilotConfidence = (typeof copilotConfidences)[number];
+
+export const copilotScopeSchema = z.union([z.literal('global'), productFeatureIdSchema]);
+const conversationIdSchema = z.string().regex(/^[A-Za-z0-9]{10,40}$/);
+export const productCopilotAskSchema = z.object({
+  conversationId: conversationIdSchema.optional(),
+  scope: copilotScopeSchema,
+  question: z.string().trim().min(2).max(1000),
+  locale: z.enum(['vi', 'en']),
+});
+export const productConversationRefSchema = z.object({ id: conversationIdSchema });
+
+/** What the model must return (validated again on the server). */
+export const copilotModelAnswerSchema = z.object({
+  answer: z.string().max(8000),
+  features: z.array(z.string().max(60)).max(20),
+  claims: z
+    .array(
+      z.object({
+        text: z.string().max(1500),
+        type: z.enum(copilotClaimTypes),
+        cites: z.array(z.string().max(10)).max(12),
+      }),
+    )
+    .max(24),
+  missingEvidence: z.array(z.string().max(500)).max(10),
+  implications: z.string().max(2000),
+  suggestions: z.array(z.string().max(600)).max(8),
+});
+export type CopilotModelAnswer = z.infer<typeof copilotModelAnswerSchema>;
+
+export type CopilotBlockKind = 'chunk' | 'decision' | 'section' | 'feature' | 'registry' | 'conflict';
+export interface CopilotCitation {
+  id: string;
+  kind: CopilotBlockKind;
+  label: string;
+  path: string | null;
+  anchor: string | null;
+  authority: SourceAuthority | 'code' | 'approved_section';
+  status: 'approved' | 'draft' | 'stale' | 'n/a';
+  date: string | null;
+  revision: string | null;
+  feature: string | null;
+  excerpt: string;
+}
+
+export interface CopilotAnswer {
+  /** `model`: Claude answered; `sources`: no model answer (not configured, error, refusal). */
+  mode: 'model' | 'sources';
+  reason: 'unconfigured' | 'error' | 'refused' | null;
+  answer: string;
+  features: string[];
+  claims: Array<{ text: string; type: CopilotClaimType; cites: string[]; downgraded: boolean }>;
+  confidence: CopilotConfidence;
+  missingEvidence: string[];
+  implications: string;
+  suggestions: string[];
+  citations: CopilotCitation[];
+  freshness: { oldestCited: string | null; staleCited: string[] };
+  model: string | null;
+}
+
+export interface CopilotMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  text: string;
+  at: string;
+  answer: CopilotAnswer | null;
+}
+
+export const productDraftTypes = [
+  'opportunity',
+  'ux_improvement',
+  'rule_clarification',
+  'investigation',
+  'hypothesis',
+] as const;
+export type ProductDraftType = (typeof productDraftTypes)[number];
+export const productCreateDraftSchema = z.object({
+  type: z.enum(productDraftTypes),
+  feature: productFeatureIdSchema.nullable().default(null),
+  title: z.string().trim().min(3).max(160),
+  body: z.string().trim().min(1).max(8000),
+  evidence: z.array(sectionSourceSchema).max(24).default([]),
+  conversationId: conversationIdSchema.optional(),
+  messageId: z.string().max(40).optional(),
+});
+export const productHubSearchSchema = z.object({
+  q: z.string().trim().min(2).max(200),
+  feature: productFeatureIdSchema.optional(),
+});
