@@ -90,6 +90,10 @@ enum WidgetId {
   growth('growth', [Goal.growthVaccines]),
   familyView('family_view', [Goal.family]),
 
+  /// Hiểu con · "Điều đáng chú ý" (D-151 #4): at most one insight a day, right after the tiles;
+  /// draws nothing on a day without one.
+  insight('insight', [Goal.trackCare]),
+
   /// P-181 "Ai đang trông bé": the chip under the title (rendered there, not in the list). On by
   /// age up to 6 (bé cần người trông và bàn giao nhiều), from 6 only with the Gia đình goal or
   /// the person's own switch (owner, 2026-10-25).
@@ -117,6 +121,7 @@ enum WidgetId {
 const bandDefaults = <AgeBand, List<WidgetId>>{
   AgeBand.b0_1: [
     WidgetId.tiles,
+    WidgetId.insight,
     WidgetId.forYou,
     WidgetId.solids,
     WidgetId.reminders,
@@ -127,6 +132,7 @@ const bandDefaults = <AgeBand, List<WidgetId>>{
   AgeBand.b1_3: [
     WidgetId.recentMemories,
     WidgetId.tiles,
+    WidgetId.insight,
     WidgetId.forYou,
     WidgetId.solids,
     WidgetId.reminders,

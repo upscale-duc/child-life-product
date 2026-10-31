@@ -294,5 +294,37 @@ void main() {
       await tester.scrollUntilVisible(find.text('Nhịp ngủ 30 ngày'), 300);
       expect(find.text('Nhịp ngủ 30 ngày'), findsOneWidget);
     });
+
+    testWidgets('sleep: a shorter longest night never reads "tăng"', (
+      tester,
+    ) async {
+      // The mock week with its night sleeps reversed: 6 h 30 on 2 Oct down to 3 h 30 on 8 Oct.
+      final week = [
+        for (final r in mockWeek())
+          if (!(r.type == CareType.sleep && r.occurredAt.hour == 22)) r,
+        for (var d = 2; d <= 8; d++)
+          rec(
+            CareType.sleep,
+            vn(d - 1, 22, 0),
+            mai,
+            endedAt: vn(
+              d - 1,
+              22,
+              0,
+            ).add(Duration(minutes: 390 - 30 * (d - 2))),
+          ),
+      ];
+      await pumpRouted(
+        tester,
+        const SleepStatsScreen(),
+        overrides: careOverrides(range: week),
+      );
+      final insight = find.text(
+        'Giấc đêm dài nhất ngắn lại từ 6 giờ 30 phút còn 3 giờ 30 phút trong 7 ngày.',
+      );
+      await tester.scrollUntilVisible(insight, 300);
+      expect(insight, findsOneWidget);
+      expect(find.textContaining('tăng từ'), findsNothing);
+    });
   });
 }

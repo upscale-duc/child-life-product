@@ -178,6 +178,14 @@ service cloud.firestore {
         allow create, update: if signedIn() && request.auth.uid == uid && activeMember(babyId) &&
           validExperience(request.resource.data, babyId);
       }
+
+      // Hiểu con (D-151): this person's "Có ích / Chưa có ích" and the kinds they hid, per baby.
+      // Purged with the account (recursive) or the baby (collection group on babyId).
+      match /insightPrefs/{babyId} {
+        allow read, delete: if signedIn() && request.auth.uid == uid;
+        allow create, update: if signedIn() && request.auth.uid == uid && activeMember(babyId) &&
+          !isRelative(babyId) && validInsightPrefs(request.resource.data, babyId);
+      }
     }
 
     // "Thông báo" EN07 (D-076 #2; G-056 keys first): mirrors `notificationSettingsDocSchema`, every
@@ -232,10 +240,20 @@ service cloud.firestore {
     // person's arrangement of one child's Hôm nay. Ids are the contract's widget and goal ids.
     function validWidgetList(l) {
       // care_duty: P-181 "Ai đang trông bé" (missing here, every save that listed it was refused).
-      return l is list && l.size() <= 14 && l.toSet().size() == l.size() &&
+      // insight: Hiểu con · "Điều đáng chú ý" (D-151 #4).
+      return l is list && l.size() <= 15 && l.toSet().size() == l.size() &&
         l.hasOnly(['tiles', 'forYou', 'solids', 'reminders', 'quickActions', 'vaccine', 'spending',
           'rhythm', 'recent_memories', 'moment_today', 'create_from_memories', 'growth',
-          'family_view', 'care_duty']);
+          'family_view', 'care_duty', 'insight']);
+    }
+
+    function validInsightPrefs(d, babyId) {
+      return d.keys().hasOnly(['babyId', 'muted', 'votes', 'updatedAt']) &&
+        d.babyId == babyId &&
+        d.muted is list && d.muted.size() <= 3 &&
+        d.muted.hasOnly(['night_longest', 'night_total', 'night_feeds']) &&
+        d.votes is map && d.votes.size() <= 60 &&
+        d.updatedAt == request.time;
     }
 
     function validExperience(d, babyId) {
@@ -597,6 +615,13 @@ service cloud.firestore {
       }
       match /facts/{factId} {
         allow read: if canReadCare(babyId);
+        allow write: if false;
+      }
+
+      // Hiểu con (D-150, D-151 #6): written by Functions only; parents and caregivers who read
+      // care. Relatives do not see insights in V1. A Free household's document holds no figures.
+      match /insights/{docId} {
+        allow read: if canReadCare(babyId) && !isRelative(babyId);
         allow write: if false;
       }
 

@@ -29,6 +29,9 @@ describe('Lumi Phase 2 questions', () => {
     // L10: the day's figures, not a running timer or the overview.
     ['hôm nay bé ngủ được bao lâu?', 'care_summary'],
     ['how much did baby drink today?', 'care_summary'],
+    // Hiểu con (D-151 #7): the detail's Lumi button, in both languages.
+    ['Điều đáng chú ý về giấc ngủ đêm được tính thế nào?', 'insight_basis'],
+    ['How was "Worth noticing" about night sleep worked out?', 'insight_basis'],
   ])('%s → %s', (text, tool) => expect(assistantReadsIn(text).map((r) => r.tool)).toEqual([tool]));
 
   it.each([

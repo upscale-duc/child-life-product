@@ -27,6 +27,7 @@ export * from './reference.js';
 export * from './family-actions.js';
 export * from './entitlements.js';
 export * from './rhythm.js';
+export * from './insights.js';
 export * from './personalization.js';
 export * from './quota.js';
 export * from './ai-summary.js';

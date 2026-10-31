@@ -2609,6 +2609,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String nightLongestShorter(int days, String from, String to) {
+    return 'Longest night sleep went from $from down to $to over $days days.';
+  }
+
+  @override
   String nightLongestSame(String duration) {
     return 'Longest night sleep: $duration.';
   }
@@ -11400,7 +11405,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get careDevelop => 'Understanding your baby';
+  String get careDevelop => 'Development & stages';
 
   @override
   String get careKnowledge => 'Baby-care know-how';
@@ -20837,7 +20842,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exCareTools => 'Care tracking';
 
   @override
-  String get exUnderstand => 'Understanding & development';
+  String get exUnderstand => 'Development & stages';
 
   @override
   String get exCare => 'Feeds, sleep, diapers';
@@ -25587,4 +25592,236 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ksQuoteBirthday => 'Another year, so much to remember';
+
+  @override
+  String get hcTitle => 'Know your baby';
+
+  @override
+  String hcUpdated(String time) {
+    return 'From your family\'s logs · updated $time';
+  }
+
+  @override
+  String get hcNotable => 'Worth noticing';
+
+  @override
+  String get hcLongestUp => 'Longest night stretch is getting longer';
+
+  @override
+  String get hcLongestDown => 'Longest night stretch is getting shorter';
+
+  @override
+  String get hcTotalUp => 'More night sleep lately';
+
+  @override
+  String get hcTotalDown => 'Less night sleep lately';
+
+  @override
+  String get hcFeedsUp => 'More night feeds lately';
+
+  @override
+  String get hcFeedsDown => 'Fewer night feeds lately';
+
+  @override
+  String hcVsBefore(String value, String baseline) {
+    return 'Avg $value · week before $baseline';
+  }
+
+  @override
+  String get hcFeedOne => '1 feed';
+
+  @override
+  String hcFeedMany(String n) {
+    return '$n feeds';
+  }
+
+  @override
+  String hcMore(String amount) {
+    return '$amount more';
+  }
+
+  @override
+  String hcLess(String amount) {
+    return '$amount less';
+  }
+
+  @override
+  String hcBasedOn(int valid, int total) {
+    return 'Based on $valid of $total nights logged';
+  }
+
+  @override
+  String get hcLegendBefore => 'Week before';
+
+  @override
+  String get hcLegendRecent => 'Recent';
+
+  @override
+  String get hcLegendAverage => 'Average';
+
+  @override
+  String hcNightsLogged(int valid, int total) {
+    return '$valid/$total nights logged';
+  }
+
+  @override
+  String hcChartA11y(String value, String baseline, int valid, int total) {
+    return 'Recent average $value, the week before $baseline, $valid of $total nights logged';
+  }
+
+  @override
+  String get hcSleep => 'Sleep';
+
+  @override
+  String get hcFeeds => 'Feeding';
+
+  @override
+  String hcKicker(String category, String range) {
+    return '$category · $range';
+  }
+
+  @override
+  String hcAvgRecent(int n, String baseline) {
+    return 'Average of the last $n nights. The week before: $baseline.';
+  }
+
+  @override
+  String get hcBasis => 'Based on';
+
+  @override
+  String hcLeftOut(String dates) {
+    return 'Not counted: $dates (not fully logged)';
+  }
+
+  @override
+  String hcNightWindow(String from, String to) {
+    return 'Night: $from to $to';
+  }
+
+  @override
+  String get hcMeasureLongest => 'The longest single sleep each night';
+
+  @override
+  String get hcMeasureTotal => 'Total sleep during the night';
+
+  @override
+  String get hcMeasureFeeds => 'Bottle and breast feeds during the night';
+
+  @override
+  String hcComparedWith(int n) {
+    return 'Compared with the $n nights before';
+  }
+
+  @override
+  String hcLoggedBy(String names) {
+    return 'Logged by $names';
+  }
+
+  @override
+  String get hcSeeSleepStats => 'See sleep statistics';
+
+  @override
+  String get hcSeeFeedStats => 'See feeding statistics';
+
+  @override
+  String get hcDisclaimer =>
+      'Figures come from your family\'s logs and don\'t replace your doctor\'s advice.';
+
+  @override
+  String get hcUpdating => 'Recalculating with the latest changes';
+
+  @override
+  String get hcUpdatingBody => 'New figures in a few minutes.';
+
+  @override
+  String hcSparseTitle(String name) {
+    return 'Not enough nights yet to see $name\'s pattern';
+  }
+
+  @override
+  String get hcSparseBody =>
+      'Keep logging as usual. Once there are enough logged nights, Child Life will tell you what\'s changing.';
+
+  @override
+  String hcSparseProgress(int valid, int needed) {
+    return '$valid/$needed fully logged nights';
+  }
+
+  @override
+  String get hcNothing =>
+      'No notable change in night sleep or night feeds this week.';
+
+  @override
+  String get hcByActivity => 'By activity';
+
+  @override
+  String hcSleepPerDay(String duration) {
+    return 'Avg $duration a day';
+  }
+
+  @override
+  String hcFeedsPerDay(String count) {
+    return 'Avg $count feeds a day';
+  }
+
+  @override
+  String hcBottlePerDay(String ml) {
+    return 'bottle $ml ml';
+  }
+
+  @override
+  String hcDiapersPerDay(String count) {
+    return 'Avg $count a day';
+  }
+
+  @override
+  String hcTeaserSleep(String name) {
+    return 'Something changed in $name\'s night sleep this week';
+  }
+
+  @override
+  String hcTeaserFeeds(String name) {
+    return 'Something changed in $name\'s night feeds this week';
+  }
+
+  @override
+  String get hcOpen => 'Open Know your baby';
+
+  @override
+  String get hcNoLogs7 => 'Nothing logged in the last 7 days';
+
+  @override
+  String get hcAskLumi => 'Ask Lumi about this';
+
+  @override
+  String get hcAskLumiNote => 'This question uses no AI credits';
+
+  @override
+  String get hcAskLumiSleep =>
+      'How was \"Worth noticing\" about night sleep worked out?';
+
+  @override
+  String get hcAskLumiFeeds =>
+      'How was \"Worth noticing\" about night feeds worked out?';
+
+  @override
+  String get hcFeedbackTitle => 'Was this useful?';
+
+  @override
+  String get hcHelpful => 'Useful';
+
+  @override
+  String get hcNotHelpful => 'Not useful';
+
+  @override
+  String get hcMute => 'Don\'t show this kind again';
+
+  @override
+  String get hcThanks => 'Thanks for letting us know';
+
+  @override
+  String get hcMuted => 'This kind is hidden';
+
+  @override
+  String get hcWeekNotable => 'Most worth noticing';
 }

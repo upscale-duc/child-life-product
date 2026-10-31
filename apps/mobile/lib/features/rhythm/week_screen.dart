@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../insights/insight_widgets.dart' show WeekInsightBlock;
 import '../../app/navigation.dart' show SafePushContext;
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
@@ -174,6 +175,8 @@ class WeekSummaryScreen extends ConsumerWidget {
           ),
         ],
         const SizedBox(height: ClSpace.s6),
+        // AI06 (D-150, D-151): the week's top insight, Premium only.
+        WeekInsightBlock(weekStart: week.start, weekEnd: week.end),
         // D-116: no "Từ nhật ký của cả nhà" under the title; every figure here is from the log.
         _SectionTitle(title: l10n.rhWeekRecordedTitle),
         const SizedBox(height: ClSpace.s3),

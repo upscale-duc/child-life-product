@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../insights/insight_repository.dart' show InsightAccess, insightAccess;
 import '../../app/navigation.dart' show SafePushContext;
 import '../../app/route_guard.dart';
 import '../../core/design/cl_theme.dart';
@@ -196,6 +197,28 @@ List<Widget> careHubSections(
       subtitle: l10n.careStatsSub,
       onTap: () => _showStatsPicker(context),
     ),
+    // Hiểu con (D-150, D-151): next to Thống kê; a Free household's reader sees the invite
+    // (D-147); relatives see neither (D-151 #6).
+    if (insightAccess(me, ref.watch(selectedCapabilitiesProvider))
+        case final access when access != InsightAccess.none)
+      _Tile(
+        key: Key(
+          access == InsightAccess.full ? 'careInsights' : 'careInsightsInvite',
+        ),
+        icon: ClIcons.spark,
+        tint: cl.care.sleep.soft,
+        title: l10n.hcTitle,
+        subtitle: access == InsightAccess.full ? null : l10n.pmInPremium,
+        onTap: access == InsightAccess.full
+            ? () => context.push(Routes.insights)
+            : () => unawaited(
+                openPaywall(
+                  context,
+                  entry: PaywallEntry.rhythm,
+                  card: PremiumEntry.rhythm,
+                ),
+              ),
+      ),
     _Tile(
       icon: ClIcons.clock,
       tint: cl.colors.mintSoft,

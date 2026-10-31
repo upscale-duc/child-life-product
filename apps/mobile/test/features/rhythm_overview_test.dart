@@ -40,6 +40,14 @@ final _seen = <String, Object>{
 
 /// Brings [f] on screen (in whichever scrollable holds it), taps it and settles.
 Future<void> _tap(WidgetTester t, Finder f) async {
+  // Lazy lists (Chăm sóc) build rows below the fold only once scrolled to.
+  if (f.evaluate().isEmpty) {
+    await t.scrollUntilVisible(
+      f,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+  }
   await t.ensureVisible(f);
   await t.pumpAndSettle();
   await t.tap(f);

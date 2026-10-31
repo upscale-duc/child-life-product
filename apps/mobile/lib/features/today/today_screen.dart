@@ -37,6 +37,7 @@ import '../family/family_labels.dart';
 import '../home/home_shell.dart';
 import '../notifications/notification_bell.dart';
 import '../premium/premium_repository.dart' show selectedCapabilitiesProvider;
+import '../insights/insight_widgets.dart' show InsightTodayCard;
 import '../rhythm/coming_up_card.dart' show ComingUpCard;
 import '../rhythm/rhythm_labels.dart' show capitalized, memberLabel;
 import '../reminders/reminder_screens.dart' show ReminderPeek;
@@ -446,6 +447,7 @@ class TodayScreen extends ConsumerWidget {
                             ],
                             WidgetId.growth => [const AxGrowth()],
                             WidgetId.familyView => [const AxFamilyView()],
+                            WidgetId.insight => [const InsightTodayCard()],
                             // Drawn first, as "n việc cần làm" (D-135).
                             WidgetId.careDuty => const <Widget>[],
                             _ => sectionParts(

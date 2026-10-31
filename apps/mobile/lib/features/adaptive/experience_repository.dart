@@ -259,6 +259,8 @@ final availableWidgetsProvider = Provider.family<Set<WidgetId>, String>((
     if (ref.watch(sdOnTodayProvider)) WidgetId.solids,
     WidgetId.rhythm,
     if (!relative) ...{
+      // Hiểu con (D-151 #4, #6): parents and caregivers who read care.
+      if (familyCan(me, FamilyAction.historyRead)) WidgetId.insight,
       WidgetId.reminders,
       WidgetId.vaccine,
       if (allowedActions(me).isNotEmpty) WidgetId.quickActions,

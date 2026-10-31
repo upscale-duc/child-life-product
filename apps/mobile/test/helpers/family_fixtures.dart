@@ -19,6 +19,8 @@ import 'package:child_life/features/reminders/reminder_models.dart';
 import 'package:child_life/features/reminders/reminder_notifications.dart';
 import 'package:child_life/features/reminders/reminder_repository.dart';
 import 'package:child_life/features/me/me_models.dart';
+import 'package:child_life/features/insights/insight_models.dart';
+import 'package:child_life/features/insights/insight_repository.dart';
 import 'package:child_life/features/me/me_repository.dart';
 import 'package:child_life/features/notifications/notification_repository.dart';
 import 'package:child_life/features/reminders/rule_models.dart';
@@ -39,6 +41,7 @@ import 'care_plan_fixtures.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'first_aid_fixtures.dart';
+import 'insight_fixtures.dart';
 import 'milestone_fixtures.dart';
 import 'notification_fixtures.dart';
 import 'reminder_fixtures.dart';
@@ -316,6 +319,14 @@ List<Override> familyOverrides({
       (ref, id) => recordsStream?.call() ?? Stream.value(records),
     ),
     growthRecordsProvider.overrideWith((ref, id) => Stream.value(growth)),
+    // Hiểu con: nothing computed and no feedback unless a test says so (insight_fixtures.dart).
+    insightStateProvider.overrideWith(
+      (ref, id) =>
+          Stream.value(InsightState.fromJson(ref.watch(testInsightDocProvider))),
+    ),
+    insightPrefsProvider.overrideWith(
+      (ref, key) => Stream.value(ref.watch(testInsightPrefsProvider)),
+    ),
     onlineProvider.overrideWith((ref) => Stream.value(online)),
     careClockProvider.overrideWith(
       (ref) => Stream.value(now ?? DateTime.now()),

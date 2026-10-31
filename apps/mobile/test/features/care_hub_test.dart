@@ -149,7 +149,7 @@ void main() {
       double y(String text) => tester.getTopLeft(find.text(text)).dy;
       for (final t in [
         'Chăm hằng ngày',
-        'Hiểu con & phát triển',
+        'Phát triển & giai đoạn',
         'Kiến thức chăm bé',
       ]) {
         await tester.scrollUntilVisible(
@@ -174,12 +174,12 @@ void main() {
         -200,
         scrollable: find.byType(Scrollable).first,
       );
-      expect(y('Dinh dưỡng'), lessThan(y('Hiểu con & phát triển')));
+      expect(y('Dinh dưỡng'), lessThan(y('Phát triển & giai đoạn')));
       expect(y('Ăn dặm'), lessThan(y('Dinh dưỡng')));
       // D-113: frequency order, History and Stats first.
       expect(y('Lịch sử'), lessThan(y('Thống kê')));
       expect(y('Thống kê'), lessThan(y('Nhắc nhở')));
-      expect(y('Ăn dặm'), lessThan(y('Hiểu con & phát triển')));
+      expect(y('Ăn dặm'), lessThan(y('Phát triển & giai đoạn')));
       expect(find.text('Từ 6 tháng'), findsOneWidget);
     });
 

@@ -116,6 +116,7 @@ import {
   RhythmError,
   setDueDate as saveDueDate,
 } from './rhythm.js';
+import { queueInsights, runInsightQueue } from './insights.js';
 import {
   personalizedDay,
   updatePersonalization,
@@ -789,7 +790,24 @@ export const onCareRecordWrite = onDocumentWritten(
     );
     // The rhythm facts read care records too (plan §7.1: dataVersion on every care write).
     await bumpDataVersion(getFirestore(), event.params.babyId, new Date());
+    // Hiểu con (D-151): the next morning, or 10 min after an edit of a night already counted.
+    await queueInsights(
+      getFirestore(),
+      event.params.babyId,
+      change.before.exists ? change.before : null,
+      change.after.exists ? change.after : null,
+      new Date(),
+    );
     logger.debug('care summaries recomputed', { days: days.length });
+  },
+);
+
+/** Hiểu con · "Điều đáng chú ý" (D-150, D-151): computes the babies whose turn has come. */
+export const insightScheduler = onSchedule(
+  { schedule: 'every 15 minutes', timeZone: 'Asia/Ho_Chi_Minh', maxInstances: 1 },
+  async () => {
+    const r = await runInsightQueue(getFirestore(), new Date());
+    if (r.computed + r.skipped + r.idle > 0) logger.info('insights computed', r);
   },
 );
 

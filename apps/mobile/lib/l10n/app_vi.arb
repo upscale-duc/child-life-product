@@ -3667,6 +3667,21 @@
       }
     }
   },
+  "nightLongestShorter": "Giấc đêm dài nhất ngắn lại từ {from} còn {to} trong {days} ngày.",
+  "@nightLongestShorter": {
+    "description": "20h insight when the longest night sleep went down over the window.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
   "nightLongestSame": "Giấc đêm dài nhất: {duration}.",
   "@nightLongestSame": {
     "description": "20h insight without a trend.",
@@ -15903,7 +15918,7 @@
       }
     }
   },
-  "careDevelop": "Hiểu con & phát triển",
+  "careDevelop": "Phát triển & giai đoạn",
   "@careDevelop": {
     "description": "Chăm sóc section (owner, 2026-10-14, D-069)"
   },
@@ -28983,7 +28998,7 @@
   "@exCareTools": {
     "description": "AX21 group."
   },
-  "exUnderstand": "Hiểu con & phát triển",
+  "exUnderstand": "Phát triển & giai đoạn",
   "@exUnderstand": {
     "description": "Group for Mốc phát triển and the Chăm sóc hub (engineering, G-110)."
   },
@@ -35465,5 +35480,389 @@
   "ksQuoteBirthday": "Thêm một tuổi, thêm bao điều để nhớ",
   "@ksQuoteBirthday": {
     "description": "Default \"Lời nhắn\" on a birthday card from 2 to 12 years (D-143). EN is an engineering draft for owner review."
+  },
+  "hcTitle": "Hiểu con",
+  "@hcTitle": {
+    "description": "Hiểu con: feature and screen title (D-151 #2)."
+  },
+  "hcUpdated": "Từ ghi nhận của gia đình · cập nhật {time}",
+  "@hcUpdated": {
+    "description": "Hiểu con: under the title; time of the computation.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "hcNotable": "Điều đáng chú ý",
+  "@hcNotable": {
+    "description": "Insight card label and section title (D-151 #2)."
+  },
+  "hcLongestUp": "Khoảng ngủ đêm dài nhất đang dài hơn",
+  "@hcLongestUp": {
+    "description": "S1 title, longer than the week before."
+  },
+  "hcLongestDown": "Khoảng ngủ đêm dài nhất đang ngắn hơn",
+  "@hcLongestDown": {
+    "description": "S1 title, shorter than the week before."
+  },
+  "hcTotalUp": "Đêm gần đây ngủ nhiều hơn",
+  "@hcTotalUp": {
+    "description": "S2 title, more than the week before."
+  },
+  "hcTotalDown": "Đêm gần đây ngủ ít hơn",
+  "@hcTotalDown": {
+    "description": "S2 title, less than the week before."
+  },
+  "hcFeedsUp": "Đêm gần đây bú nhiều cữ hơn",
+  "@hcFeedsUp": {
+    "description": "F3 title, more than the week before."
+  },
+  "hcFeedsDown": "Đêm gần đây bú ít cữ hơn",
+  "@hcFeedsDown": {
+    "description": "F3 title, fewer than the week before."
+  },
+  "hcVsBefore": "TB {value} · tuần trước {baseline}",
+  "@hcVsBefore": {
+    "description": "Insight summary line: recent average and the week before.",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "baseline": {
+        "type": "String"
+      }
+    }
+  },
+  "hcFeedOne": "1 cữ",
+  "@hcFeedOne": {
+    "description": "A night-feed average of exactly one."
+  },
+  "hcFeedMany": "{n} cữ",
+  "@hcFeedMany": {
+    "description": "A night-feed average other than one (\"2\", \"1,4\").",
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "hcMore": "nhiều hơn {amount}",
+  "@hcMore": {
+    "description": "Spoken form of the +delta chip.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "hcLess": "ít hơn {amount}",
+  "@hcLess": {
+    "description": "Spoken form of the −delta chip.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "hcBasedOn": "Dựa trên {valid}/{total} đêm có ghi",
+  "@hcBasedOn": {
+    "description": "Coverage line of an insight (instead of a confidence level).",
+    "placeholders": {
+      "valid": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "hcLegendBefore": "Tuần trước",
+  "@hcLegendBefore": {
+    "description": "Chart legend: the baseline nights."
+  },
+  "hcLegendRecent": "Gần đây",
+  "@hcLegendRecent": {
+    "description": "Chart legend: the recent nights."
+  },
+  "hcLegendAverage": "Trung bình",
+  "@hcLegendAverage": {
+    "description": "Chart legend: the dashed average lines."
+  },
+  "hcNightsLogged": "{valid}/{total} đêm có ghi",
+  "@hcNightsLogged": {
+    "description": "Chart legend end and the first basis row.",
+    "placeholders": {
+      "valid": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "hcChartA11y": "Gần đây trung bình {value}, tuần trước {baseline}, {valid} trên {total} đêm có ghi",
+  "@hcChartA11y": {
+    "description": "Screen-reader summary of the comparison chart.",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "baseline": {
+        "type": "String"
+      },
+      "valid": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "hcSleep": "Giấc ngủ",
+  "@hcSleep": {
+    "description": "Insight detail: category above the title."
+  },
+  "hcFeeds": "Bú",
+  "@hcFeeds": {
+    "description": "Insight detail: category above the title."
+  },
+  "hcKicker": "{category} · {range}",
+  "@hcKicker": {
+    "description": "Insight detail: category and the recent nights.",
+    "placeholders": {
+      "category": {
+        "type": "String"
+      },
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "hcAvgRecent": "Trung bình {n} đêm gần đây. Tuần trước: {baseline}.",
+  "@hcAvgRecent": {
+    "description": "Insight detail: under the big value.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "baseline": {
+        "type": "String"
+      }
+    }
+  },
+  "hcBasis": "Dựa trên",
+  "@hcBasis": {
+    "description": "Insight detail: basis section title."
+  },
+  "hcLeftOut": "Đêm {dates} chưa ghi đủ nên không tính",
+  "@hcLeftOut": {
+    "description": "Basis row: recent nights left out.",
+    "placeholders": {
+      "dates": {
+        "type": "String"
+      }
+    }
+  },
+  "hcNightWindow": "Đêm từ {from} đến {to}",
+  "@hcNightWindow": {
+    "description": "Basis row: the night window (D-151 #1).",
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "hcMeasureLongest": "Khoảng ngủ liền dài nhất mỗi đêm",
+  "@hcMeasureLongest": {
+    "description": "Basis row: what S1 measures."
+  },
+  "hcMeasureTotal": "Tổng giờ ngủ trong đêm",
+  "@hcMeasureTotal": {
+    "description": "Basis row: what S2 measures."
+  },
+  "hcMeasureFeeds": "Số cữ bú bình và bú mẹ trong đêm",
+  "@hcMeasureFeeds": {
+    "description": "Basis row: what F3 measures."
+  },
+  "hcComparedWith": "So với {n} đêm trước đó",
+  "@hcComparedWith": {
+    "description": "Basis row: the baseline.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hcLoggedBy": "Ghi bởi {names}",
+  "@hcLoggedBy": {
+    "description": "Basis row: who logged the recent nights (never ranked).",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "hcSeeSleepStats": "Xem thống kê giấc ngủ",
+  "@hcSeeSleepStats": {
+    "description": "Insight detail primary button (sleep kinds)."
+  },
+  "hcSeeFeedStats": "Xem thống kê bú",
+  "@hcSeeFeedStats": {
+    "description": "Insight detail primary button (night feeds)."
+  },
+  "hcDisclaimer": "Thông tin tính từ ghi nhận của gia đình, không thay cho lời khuyên của bác sĩ.",
+  "@hcDisclaimer": {
+    "description": "Hiểu con: the one health note per screen (D-102)."
+  },
+  "hcUpdating": "Đang tính lại theo ghi nhận vừa sửa",
+  "@hcUpdating": {
+    "description": "A record of the window changed: figures hidden until the server recomputes."
+  },
+  "hcUpdatingBody": "Vài phút nữa sẽ có số mới.",
+  "@hcUpdatingBody": {
+    "description": "Second line of the recalculating notice."
+  },
+  "hcSparseTitle": "Chưa đủ đêm để thấy nhịp của {name}",
+  "@hcSparseTitle": {
+    "description": "AI04: not enough logged nights.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "hcSparseBody": "Cứ ghi như bình thường. Khi đủ đêm có ghi, Child Life sẽ cho bạn biết điều gì đang thay đổi.",
+  "@hcSparseBody": {
+    "description": "AI04 body."
+  },
+  "hcSparseProgress": "{valid}/{needed} đêm có ghi đủ",
+  "@hcSparseProgress": {
+    "description": "AI04 progress label.",
+    "placeholders": {
+      "valid": {
+        "type": "int"
+      },
+      "needed": {
+        "type": "int"
+      }
+    }
+  },
+  "hcNothing": "Tuần này giấc ngủ đêm và cữ bú đêm không có thay đổi đáng chú ý.",
+  "@hcNothing": {
+    "description": "Hiểu con: enough nights, nothing worth saying."
+  },
+  "hcByActivity": "Theo từng việc",
+  "@hcByActivity": {
+    "description": "Hiểu con: per-activity section (last 7 complete days)."
+  },
+  "hcSleepPerDay": "TB {duration} mỗi ngày",
+  "@hcSleepPerDay": {
+    "description": "Per-activity row: sleep.",
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "hcFeedsPerDay": "TB {count} cữ mỗi ngày",
+  "@hcFeedsPerDay": {
+    "description": "Per-activity row: bottle and breast feeds.",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "hcBottlePerDay": "bình {ml} ml",
+  "@hcBottlePerDay": {
+    "description": "Per-activity row: bottle ml a day, after the feed count.",
+    "placeholders": {
+      "ml": {
+        "type": "String"
+      }
+    }
+  },
+  "hcDiapersPerDay": "TB {count} lần mỗi ngày",
+  "@hcDiapersPerDay": {
+    "description": "Per-activity row: diapers.",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "hcTeaserSleep": "Có một thay đổi về giấc ngủ đêm của {name} tuần này",
+  "@hcTeaserSleep": {
+    "description": "Free invite on Hôm nay (D-151 #9): the kind only, no figures.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "hcTeaserFeeds": "Có một thay đổi về cữ bú đêm của {name} tuần này",
+  "@hcTeaserFeeds": {
+    "description": "Free invite on Hôm nay (D-151 #9): the kind only, no figures.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "hcOpen": "Mở Hiểu con",
+  "@hcOpen": {
+    "description": "Screen-reader hint on the Hôm nay card."
+  },
+  "hcNoLogs7": "Chưa có ghi trong 7 ngày qua",
+  "@hcNoLogs7": {
+    "description": "Per-activity row with no record in the week (missing is never zero)."
+  },
+  "hcAskLumi": "Hỏi Lumi về điều này",
+  "@hcAskLumi": {
+    "description": "Insight detail: opens Lumi with the \"how is it worked out\" question (D-151 #7)."
+  },
+  "hcAskLumiNote": "Câu hỏi này không tốn lượt hỗ trợ AI",
+  "@hcAskLumiNote": {
+    "description": "Under the Lumi button: the prefilled question is read by the rules (0 credits)."
+  },
+  "hcAskLumiSleep": "Điều đáng chú ý về giấc ngủ đêm được tính thế nào?",
+  "@hcAskLumiSleep": {
+    "description": "Prefilled Lumi question (sleep insights); must keep \"Điều đáng chú ý\" / \"Worth noticing\" (the rule read)."
+  },
+  "hcAskLumiFeeds": "Điều đáng chú ý về cữ bú đêm được tính thế nào?",
+  "@hcAskLumiFeeds": {
+    "description": "Prefilled Lumi question (night feeds); must keep \"Điều đáng chú ý\" / \"Worth noticing\" (the rule read)."
+  },
+  "hcFeedbackTitle": "Thông tin này có ích không?",
+  "@hcFeedbackTitle": {
+    "description": "Insight detail: feedback block title."
+  },
+  "hcHelpful": "Có ích",
+  "@hcHelpful": {
+    "description": "Insight feedback choice."
+  },
+  "hcNotHelpful": "Chưa có ích",
+  "@hcNotHelpful": {
+    "description": "Insight feedback choice."
+  },
+  "hcMute": "Không hiện loại thông tin này nữa",
+  "@hcMute": {
+    "description": "Insight feedback: hide this kind of insight for me."
+  },
+  "hcThanks": "Cảm ơn bạn đã cho biết",
+  "@hcThanks": {
+    "description": "Toast after insight feedback."
+  },
+  "hcMuted": "Đã ẩn loại thông tin này",
+  "@hcMuted": {
+    "description": "Toast after muting an insight kind."
+  },
+  "hcWeekNotable": "Điều đáng chú ý nhất",
+  "@hcWeekNotable": {
+    "description": "Tổng kết tuần: the week's top insight (AI06)."
   }
 }

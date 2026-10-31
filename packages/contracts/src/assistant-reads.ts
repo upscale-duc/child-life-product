@@ -19,6 +19,8 @@ export const assistantReadTools = [
   'stage',
   'library_search',
   'first_aid',
+  /** Hiểu con (D-151 #7): how the current "Điều đáng chú ý" was worked out, from its evidence. */
+  'insight_basis',
 ] as const;
 export type AssistantReadTool = (typeof assistantReadTools)[number];
 export interface AssistantReadRequest {
@@ -93,6 +95,8 @@ export function assistantReadsIn(text: string): AssistantReadRequest[] {
     return tool('library_search');
   if (/\b(so cuu|first aid|sac|hoc|choking|nga|fell|fever|sot|burn|bong)\b/u.test(t))
     return tool('first_aid');
+  // Hiểu con (D-151 #7): "Điều đáng chú ý … được tính thế nào?" (the detail's Lumi button).
+  if (/\b(dieu dang chu y|worth noticing)\b/u.test(t)) return tool('insight_basis');
   const found: AssistantReadRequest[] = [];
   if (
     /\b(chi tieu|tieu bao nhieu|da chi|het bao nhieu|spend|spent|spending|expenses|budget|ngan sach)\b/u.test(

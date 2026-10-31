@@ -1,3 +1,4 @@
+import '../care/care_calc.dart' show careNightFromHour, careNightToHour;
 import '../care/care_models.dart';
 import '../care/care_repository.dart' show inBabyZone;
 
@@ -11,9 +12,10 @@ import '../care/care_repository.dart' show inBabyZone;
 
 const comingUpLookbackDays = 14;
 
-/// The family's night window (lumi-plan §7.1: default 19:00–06:00, baby's time zone).
-const nightFromHour = 19;
-const nightToHour = 6;
+/// The family's night window: the app's one window, 18:00–06:00 in the baby's zone (D-151 #1,
+/// replacing lumi-plan §7.1's 19:00).
+const nightFromHour = careNightFromHour;
+const nightToHour = careNightToHour;
 
 /// A usual range of minutes from this baby's log.
 class RoutineRange {
@@ -116,7 +118,7 @@ bool _overlaps(CareRecord r, List<CareRecord> all) => all.any(
       o.endedAt!.isAfter(r.occurredAt),
 );
 
-/// Daytime sleeps (start 06:00–19:00, 10 min – 3 h), as `routinePatterns`' `day_sleep`.
+/// Daytime sleeps (start 06:00–18:00, 10 min – 3 h), as `routinePatterns`' `day_sleep`.
 RoutineRange? daySleepRange(
   List<CareRecord> records,
   DateTime now,

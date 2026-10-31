@@ -104,6 +104,7 @@ class CareRecord {
     this.endSide,
     this.createdAt,
     this.clientCreatedAt,
+    this.updatedAt,
     this.deleted = false,
     this.pending = false,
   });
@@ -140,6 +141,10 @@ class CareRecord {
   /// Server time of the first save ("Ghi lúc"); null until it reaches the server.
   final DateTime? createdAt;
   final DateTime? clientCreatedAt;
+
+  /// Server time of the last save (create or edit); null while a save is pending. Hiểu con hides
+  /// an insight once a record of its window was saved after it was computed (D-151).
+  final DateTime? updatedAt;
   final bool deleted;
 
   /// Saved on this device, waiting to sync ("Chờ đồng bộ", 9a / 9b).
@@ -198,6 +203,7 @@ class CareRecord {
       endSide: endSide,
       createdAt: createdAt,
       clientCreatedAt: clientCreatedAt,
+      updatedAt: updatedAt,
       deleted: deleted,
       pending: pending,
     );
@@ -347,6 +353,7 @@ class CareRecord {
       endSide: Side.values.asNameMap()[data['endSide']],
       createdAt: dateOf(json['createdAt']),
       clientCreatedAt: dateOf(json['clientCreatedAt']),
+      updatedAt: dateOf(json['updatedAt']),
       deleted: json['deleted'] == true,
       pending: doc.metadata.hasPendingWrites,
     );

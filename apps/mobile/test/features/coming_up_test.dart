@@ -271,7 +271,7 @@ void main() {
         )!.until,
         vn(25, 12),
       );
-      // Asked 15:30 for a 13:00 nap: no second ask after 19:00.
+      // Asked 15:30 for a 13:00 nap: no second ask after 18:00 (the night window, D-151 #1).
       expect(
         wakeCheckTimes(
           records: const [],
@@ -279,7 +279,7 @@ void main() {
           now: vn(25, 13),
           zone: zone,
         )!.until,
-        vn(25, 19),
+        vn(25, 18),
       );
     });
 

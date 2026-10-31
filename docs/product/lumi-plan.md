@@ -212,7 +212,7 @@ time, not to judge how long the baby sleeps.
   notification scheduled when the timer starts or changes. Nothing goes through the server, so no
   child data leaves the phone (the D-077 device sync keeps it across cold starts).
 - **When: from this baby's own sleeps.** The sleep is a nap or a night by its start in the baby's
-  zone and the family's night window (default 19:00–06:00). The expected length is the median of
+  zone and the family's night window (18:00–06:00, the app's one window since D-151 #1; was 19:00). The expected length is the median of
   the same kind over the last 14 days, needing at least 5 of them; it asks at
   **max(median × 1.3, median + 20 min)**, so most babies are already awake and the parent has had
   time to stop it themselves. With fewer than 5 similar sleeps: a nap asks after 2 h 30; a night

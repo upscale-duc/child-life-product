@@ -2471,6 +2471,11 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
+  String nightLongestShorter(int days, String from, String to) {
+    return 'Giấc đêm dài nhất ngắn lại từ $from còn $to trong $days ngày.';
+  }
+
+  @override
   String nightLongestSame(String duration) {
     return 'Giấc đêm dài nhất: $duration.';
   }
@@ -10650,7 +10655,7 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get careDevelop => 'Hiểu con & phát triển';
+  String get careDevelop => 'Phát triển & giai đoạn';
 
   @override
   String get careKnowledge => 'Kiến thức chăm bé';
@@ -19613,7 +19618,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get exCareTools => 'Theo dõi chăm sóc';
 
   @override
-  String get exUnderstand => 'Hiểu con & phát triển';
+  String get exUnderstand => 'Phát triển & giai đoạn';
 
   @override
   String get exCare => 'Theo dõi bú, ngủ, tã';
@@ -24207,4 +24212,236 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get ksQuoteBirthday => 'Thêm một tuổi, thêm bao điều để nhớ';
+
+  @override
+  String get hcTitle => 'Hiểu con';
+
+  @override
+  String hcUpdated(String time) {
+    return 'Từ ghi nhận của gia đình · cập nhật $time';
+  }
+
+  @override
+  String get hcNotable => 'Điều đáng chú ý';
+
+  @override
+  String get hcLongestUp => 'Khoảng ngủ đêm dài nhất đang dài hơn';
+
+  @override
+  String get hcLongestDown => 'Khoảng ngủ đêm dài nhất đang ngắn hơn';
+
+  @override
+  String get hcTotalUp => 'Đêm gần đây ngủ nhiều hơn';
+
+  @override
+  String get hcTotalDown => 'Đêm gần đây ngủ ít hơn';
+
+  @override
+  String get hcFeedsUp => 'Đêm gần đây bú nhiều cữ hơn';
+
+  @override
+  String get hcFeedsDown => 'Đêm gần đây bú ít cữ hơn';
+
+  @override
+  String hcVsBefore(String value, String baseline) {
+    return 'TB $value · tuần trước $baseline';
+  }
+
+  @override
+  String get hcFeedOne => '1 cữ';
+
+  @override
+  String hcFeedMany(String n) {
+    return '$n cữ';
+  }
+
+  @override
+  String hcMore(String amount) {
+    return 'nhiều hơn $amount';
+  }
+
+  @override
+  String hcLess(String amount) {
+    return 'ít hơn $amount';
+  }
+
+  @override
+  String hcBasedOn(int valid, int total) {
+    return 'Dựa trên $valid/$total đêm có ghi';
+  }
+
+  @override
+  String get hcLegendBefore => 'Tuần trước';
+
+  @override
+  String get hcLegendRecent => 'Gần đây';
+
+  @override
+  String get hcLegendAverage => 'Trung bình';
+
+  @override
+  String hcNightsLogged(int valid, int total) {
+    return '$valid/$total đêm có ghi';
+  }
+
+  @override
+  String hcChartA11y(String value, String baseline, int valid, int total) {
+    return 'Gần đây trung bình $value, tuần trước $baseline, $valid trên $total đêm có ghi';
+  }
+
+  @override
+  String get hcSleep => 'Giấc ngủ';
+
+  @override
+  String get hcFeeds => 'Bú';
+
+  @override
+  String hcKicker(String category, String range) {
+    return '$category · $range';
+  }
+
+  @override
+  String hcAvgRecent(int n, String baseline) {
+    return 'Trung bình $n đêm gần đây. Tuần trước: $baseline.';
+  }
+
+  @override
+  String get hcBasis => 'Dựa trên';
+
+  @override
+  String hcLeftOut(String dates) {
+    return 'Đêm $dates chưa ghi đủ nên không tính';
+  }
+
+  @override
+  String hcNightWindow(String from, String to) {
+    return 'Đêm từ $from đến $to';
+  }
+
+  @override
+  String get hcMeasureLongest => 'Khoảng ngủ liền dài nhất mỗi đêm';
+
+  @override
+  String get hcMeasureTotal => 'Tổng giờ ngủ trong đêm';
+
+  @override
+  String get hcMeasureFeeds => 'Số cữ bú bình và bú mẹ trong đêm';
+
+  @override
+  String hcComparedWith(int n) {
+    return 'So với $n đêm trước đó';
+  }
+
+  @override
+  String hcLoggedBy(String names) {
+    return 'Ghi bởi $names';
+  }
+
+  @override
+  String get hcSeeSleepStats => 'Xem thống kê giấc ngủ';
+
+  @override
+  String get hcSeeFeedStats => 'Xem thống kê bú';
+
+  @override
+  String get hcDisclaimer =>
+      'Thông tin tính từ ghi nhận của gia đình, không thay cho lời khuyên của bác sĩ.';
+
+  @override
+  String get hcUpdating => 'Đang tính lại theo ghi nhận vừa sửa';
+
+  @override
+  String get hcUpdatingBody => 'Vài phút nữa sẽ có số mới.';
+
+  @override
+  String hcSparseTitle(String name) {
+    return 'Chưa đủ đêm để thấy nhịp của $name';
+  }
+
+  @override
+  String get hcSparseBody =>
+      'Cứ ghi như bình thường. Khi đủ đêm có ghi, Child Life sẽ cho bạn biết điều gì đang thay đổi.';
+
+  @override
+  String hcSparseProgress(int valid, int needed) {
+    return '$valid/$needed đêm có ghi đủ';
+  }
+
+  @override
+  String get hcNothing =>
+      'Tuần này giấc ngủ đêm và cữ bú đêm không có thay đổi đáng chú ý.';
+
+  @override
+  String get hcByActivity => 'Theo từng việc';
+
+  @override
+  String hcSleepPerDay(String duration) {
+    return 'TB $duration mỗi ngày';
+  }
+
+  @override
+  String hcFeedsPerDay(String count) {
+    return 'TB $count cữ mỗi ngày';
+  }
+
+  @override
+  String hcBottlePerDay(String ml) {
+    return 'bình $ml ml';
+  }
+
+  @override
+  String hcDiapersPerDay(String count) {
+    return 'TB $count lần mỗi ngày';
+  }
+
+  @override
+  String hcTeaserSleep(String name) {
+    return 'Có một thay đổi về giấc ngủ đêm của $name tuần này';
+  }
+
+  @override
+  String hcTeaserFeeds(String name) {
+    return 'Có một thay đổi về cữ bú đêm của $name tuần này';
+  }
+
+  @override
+  String get hcOpen => 'Mở Hiểu con';
+
+  @override
+  String get hcNoLogs7 => 'Chưa có ghi trong 7 ngày qua';
+
+  @override
+  String get hcAskLumi => 'Hỏi Lumi về điều này';
+
+  @override
+  String get hcAskLumiNote => 'Câu hỏi này không tốn lượt hỗ trợ AI';
+
+  @override
+  String get hcAskLumiSleep =>
+      'Điều đáng chú ý về giấc ngủ đêm được tính thế nào?';
+
+  @override
+  String get hcAskLumiFeeds =>
+      'Điều đáng chú ý về cữ bú đêm được tính thế nào?';
+
+  @override
+  String get hcFeedbackTitle => 'Thông tin này có ích không?';
+
+  @override
+  String get hcHelpful => 'Có ích';
+
+  @override
+  String get hcNotHelpful => 'Chưa có ích';
+
+  @override
+  String get hcMute => 'Không hiện loại thông tin này nữa';
+
+  @override
+  String get hcThanks => 'Cảm ơn bạn đã cho biết';
+
+  @override
+  String get hcMuted => 'Đã ẩn loại thông tin này';
+
+  @override
+  String get hcWeekNotable => 'Điều đáng chú ý nhất';
 }

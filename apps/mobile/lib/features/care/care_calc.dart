@@ -285,8 +285,13 @@ List<({DateTime start, DateTime end})> windowDays(
   return list;
 }
 
-/// Night = 18:00–06:00 in the baby's zone (20g / 20h).
-bool isNightHour(int hour) => hour >= 18 || hour < 6;
+/// The one night window of the app: 18:00–06:00 in the baby's zone (20g / 20h, R-086; D-151 #1
+/// extends it to "Sắp tới", "Bé dậy chưa?" and Lumi). Mirrors contracts `careNightWindow`.
+const careNightFromHour = 18;
+const careNightToHour = 6;
+
+bool isNightHour(int hour) =>
+    hour >= careNightFromHour || hour < careNightToHour;
 
 @immutable
 class LongestGap {

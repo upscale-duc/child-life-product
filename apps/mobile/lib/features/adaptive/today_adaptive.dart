@@ -660,6 +660,7 @@ String widgetTitle(AppLocalizations l10n, WidgetId id) => switch (id) {
   WidgetId.createFromMemories => l10n.axWidgetCreate,
   WidgetId.growth => l10n.axGrowthTitle,
   WidgetId.familyView => l10n.axFamilyTitle,
+  WidgetId.insight => l10n.hcNotable,
   WidgetId.careDuty => l10n.axWidgetCareDuty,
 };
 

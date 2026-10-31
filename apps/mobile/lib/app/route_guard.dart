@@ -56,6 +56,9 @@ abstract final class Routes {
   /// U1 "Chuẩn bị đi khám" (sprint Premium, owner 2026-10-30): a summary for the doctor.
   static const visitReport = '/care/visit';
 
+  /// Hiểu con · "Điều đáng chú ý" (D-150, D-151): the screen and one insight, `/{kind}`.
+  static const insights = '/care/insights';
+
   /// Sổ tiêm chủng (VX 0 – VX 9a): the book, setup, a milestone, a dose, a vaccine.
   static const vaccines = '/care/vaccines';
   static const vaccineSetup = '/care/vaccines/setup';

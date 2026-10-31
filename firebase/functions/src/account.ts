@@ -585,6 +585,8 @@ async function babyStep(
       await deleteQuery(db, db.collectionGroup('settings').where('babyId', '==', babyId));
       // P-175: every viewer's Hôm nay arrangement for this baby.
       await deleteQuery(db, db.collectionGroup('experience').where('babyId', '==', babyId));
+      // Hiểu con (D-151): every viewer's feedback and hidden kinds for this baby.
+      await deleteQuery(db, db.collectionGroup('insightPrefs').where('babyId', '==', babyId));
       // Assistant chats, tasks, drafts and photos about this baby (every member's).
       await purgeAssistantForBaby(db, deps.store, babyId, now);
       return;

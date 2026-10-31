@@ -4196,6 +4196,12 @@ abstract class AppLocalizations {
   /// **'Giấc đêm dài nhất tăng từ {from} lên {to} trong {days} ngày.'**
   String nightLongestInsight(int days, String from, String to);
 
+  /// 20h insight when the longest night sleep went down over the window.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc đêm dài nhất ngắn lại từ {from} còn {to} trong {days} ngày.'**
+  String nightLongestShorter(int days, String from, String to);
+
   /// 20h insight without a trend.
   ///
   /// In vi, this message translates to:
@@ -17650,7 +17656,7 @@ abstract class AppLocalizations {
   /// Chăm sóc section (owner, 2026-10-14, D-069)
   ///
   /// In vi, this message translates to:
-  /// **'Hiểu con & phát triển'**
+  /// **'Phát triển & giai đoạn'**
   String get careDevelop;
 
   /// Chăm sóc section (owner, 2026-10-14, D-069)
@@ -32727,7 +32733,7 @@ abstract class AppLocalizations {
   /// Group for Mốc phát triển and the Chăm sóc hub (engineering, G-110).
   ///
   /// In vi, this message translates to:
-  /// **'Hiểu con & phát triển'**
+  /// **'Phát triển & giai đoạn'**
   String get exUnderstand;
 
   /// Khám phá row.
@@ -40211,6 +40217,372 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Thêm một tuổi, thêm bao điều để nhớ'**
   String get ksQuoteBirthday;
+
+  /// Hiểu con: feature and screen title (D-151 #2).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hiểu con'**
+  String get hcTitle;
+
+  /// Hiểu con: under the title; time of the computation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ ghi nhận của gia đình · cập nhật {time}'**
+  String hcUpdated(String time);
+
+  /// Insight card label and section title (D-151 #2).
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều đáng chú ý'**
+  String get hcNotable;
+
+  /// S1 title, longer than the week before.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoảng ngủ đêm dài nhất đang dài hơn'**
+  String get hcLongestUp;
+
+  /// S1 title, shorter than the week before.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoảng ngủ đêm dài nhất đang ngắn hơn'**
+  String get hcLongestDown;
+
+  /// S2 title, more than the week before.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đêm gần đây ngủ nhiều hơn'**
+  String get hcTotalUp;
+
+  /// S2 title, less than the week before.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đêm gần đây ngủ ít hơn'**
+  String get hcTotalDown;
+
+  /// F3 title, more than the week before.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đêm gần đây bú nhiều cữ hơn'**
+  String get hcFeedsUp;
+
+  /// F3 title, fewer than the week before.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đêm gần đây bú ít cữ hơn'**
+  String get hcFeedsDown;
+
+  /// Insight summary line: recent average and the week before.
+  ///
+  /// In vi, this message translates to:
+  /// **'TB {value} · tuần trước {baseline}'**
+  String hcVsBefore(String value, String baseline);
+
+  /// A night-feed average of exactly one.
+  ///
+  /// In vi, this message translates to:
+  /// **'1 cữ'**
+  String get hcFeedOne;
+
+  /// A night-feed average other than one ("2", "1,4").
+  ///
+  /// In vi, this message translates to:
+  /// **'{n} cữ'**
+  String hcFeedMany(String n);
+
+  /// Spoken form of the +delta chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'nhiều hơn {amount}'**
+  String hcMore(String amount);
+
+  /// Spoken form of the −delta chip.
+  ///
+  /// In vi, this message translates to:
+  /// **'ít hơn {amount}'**
+  String hcLess(String amount);
+
+  /// Coverage line of an insight (instead of a confidence level).
+  ///
+  /// In vi, this message translates to:
+  /// **'Dựa trên {valid}/{total} đêm có ghi'**
+  String hcBasedOn(int valid, int total);
+
+  /// Chart legend: the baseline nights.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần trước'**
+  String get hcLegendBefore;
+
+  /// Chart legend: the recent nights.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gần đây'**
+  String get hcLegendRecent;
+
+  /// Chart legend: the dashed average lines.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trung bình'**
+  String get hcLegendAverage;
+
+  /// Chart legend end and the first basis row.
+  ///
+  /// In vi, this message translates to:
+  /// **'{valid}/{total} đêm có ghi'**
+  String hcNightsLogged(int valid, int total);
+
+  /// Screen-reader summary of the comparison chart.
+  ///
+  /// In vi, this message translates to:
+  /// **'Gần đây trung bình {value}, tuần trước {baseline}, {valid} trên {total} đêm có ghi'**
+  String hcChartA11y(String value, String baseline, int valid, int total);
+
+  /// Insight detail: category above the title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giấc ngủ'**
+  String get hcSleep;
+
+  /// Insight detail: category above the title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bú'**
+  String get hcFeeds;
+
+  /// Insight detail: category and the recent nights.
+  ///
+  /// In vi, this message translates to:
+  /// **'{category} · {range}'**
+  String hcKicker(String category, String range);
+
+  /// Insight detail: under the big value.
+  ///
+  /// In vi, this message translates to:
+  /// **'Trung bình {n} đêm gần đây. Tuần trước: {baseline}.'**
+  String hcAvgRecent(int n, String baseline);
+
+  /// Insight detail: basis section title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dựa trên'**
+  String get hcBasis;
+
+  /// Basis row: recent nights left out.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đêm {dates} chưa ghi đủ nên không tính'**
+  String hcLeftOut(String dates);
+
+  /// Basis row: the night window (D-151 #1).
+  ///
+  /// In vi, this message translates to:
+  /// **'Đêm từ {from} đến {to}'**
+  String hcNightWindow(String from, String to);
+
+  /// Basis row: what S1 measures.
+  ///
+  /// In vi, this message translates to:
+  /// **'Khoảng ngủ liền dài nhất mỗi đêm'**
+  String get hcMeasureLongest;
+
+  /// Basis row: what S2 measures.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tổng giờ ngủ trong đêm'**
+  String get hcMeasureTotal;
+
+  /// Basis row: what F3 measures.
+  ///
+  /// In vi, this message translates to:
+  /// **'Số cữ bú bình và bú mẹ trong đêm'**
+  String get hcMeasureFeeds;
+
+  /// Basis row: the baseline.
+  ///
+  /// In vi, this message translates to:
+  /// **'So với {n} đêm trước đó'**
+  String hcComparedWith(int n);
+
+  /// Basis row: who logged the recent nights (never ranked).
+  ///
+  /// In vi, this message translates to:
+  /// **'Ghi bởi {names}'**
+  String hcLoggedBy(String names);
+
+  /// Insight detail primary button (sleep kinds).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem thống kê giấc ngủ'**
+  String get hcSeeSleepStats;
+
+  /// Insight detail primary button (night feeds).
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem thống kê bú'**
+  String get hcSeeFeedStats;
+
+  /// Hiểu con: the one health note per screen (D-102).
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông tin tính từ ghi nhận của gia đình, không thay cho lời khuyên của bác sĩ.'**
+  String get hcDisclaimer;
+
+  /// A record of the window changed: figures hidden until the server recomputes.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang tính lại theo ghi nhận vừa sửa'**
+  String get hcUpdating;
+
+  /// Second line of the recalculating notice.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vài phút nữa sẽ có số mới.'**
+  String get hcUpdatingBody;
+
+  /// AI04: not enough logged nights.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa đủ đêm để thấy nhịp của {name}'**
+  String hcSparseTitle(String name);
+
+  /// AI04 body.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cứ ghi như bình thường. Khi đủ đêm có ghi, Child Life sẽ cho bạn biết điều gì đang thay đổi.'**
+  String get hcSparseBody;
+
+  /// AI04 progress label.
+  ///
+  /// In vi, this message translates to:
+  /// **'{valid}/{needed} đêm có ghi đủ'**
+  String hcSparseProgress(int valid, int needed);
+
+  /// Hiểu con: enough nights, nothing worth saying.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tuần này giấc ngủ đêm và cữ bú đêm không có thay đổi đáng chú ý.'**
+  String get hcNothing;
+
+  /// Hiểu con: per-activity section (last 7 complete days).
+  ///
+  /// In vi, this message translates to:
+  /// **'Theo từng việc'**
+  String get hcByActivity;
+
+  /// Per-activity row: sleep.
+  ///
+  /// In vi, this message translates to:
+  /// **'TB {duration} mỗi ngày'**
+  String hcSleepPerDay(String duration);
+
+  /// Per-activity row: bottle and breast feeds.
+  ///
+  /// In vi, this message translates to:
+  /// **'TB {count} cữ mỗi ngày'**
+  String hcFeedsPerDay(String count);
+
+  /// Per-activity row: bottle ml a day, after the feed count.
+  ///
+  /// In vi, this message translates to:
+  /// **'bình {ml} ml'**
+  String hcBottlePerDay(String ml);
+
+  /// Per-activity row: diapers.
+  ///
+  /// In vi, this message translates to:
+  /// **'TB {count} lần mỗi ngày'**
+  String hcDiapersPerDay(String count);
+
+  /// Free invite on Hôm nay (D-151 #9): the kind only, no figures.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có một thay đổi về giấc ngủ đêm của {name} tuần này'**
+  String hcTeaserSleep(String name);
+
+  /// Free invite on Hôm nay (D-151 #9): the kind only, no figures.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có một thay đổi về cữ bú đêm của {name} tuần này'**
+  String hcTeaserFeeds(String name);
+
+  /// Screen-reader hint on the Hôm nay card.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở Hiểu con'**
+  String get hcOpen;
+
+  /// Per-activity row with no record in the week (missing is never zero).
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có ghi trong 7 ngày qua'**
+  String get hcNoLogs7;
+
+  /// Insight detail: opens Lumi with the "how is it worked out" question (D-151 #7).
+  ///
+  /// In vi, this message translates to:
+  /// **'Hỏi Lumi về điều này'**
+  String get hcAskLumi;
+
+  /// Under the Lumi button: the prefilled question is read by the rules (0 credits).
+  ///
+  /// In vi, this message translates to:
+  /// **'Câu hỏi này không tốn lượt hỗ trợ AI'**
+  String get hcAskLumiNote;
+
+  /// Prefilled Lumi question (sleep insights); must keep "Điều đáng chú ý" / "Worth noticing" (the rule read).
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều đáng chú ý về giấc ngủ đêm được tính thế nào?'**
+  String get hcAskLumiSleep;
+
+  /// Prefilled Lumi question (night feeds); must keep "Điều đáng chú ý" / "Worth noticing" (the rule read).
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều đáng chú ý về cữ bú đêm được tính thế nào?'**
+  String get hcAskLumiFeeds;
+
+  /// Insight detail: feedback block title.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông tin này có ích không?'**
+  String get hcFeedbackTitle;
+
+  /// Insight feedback choice.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có ích'**
+  String get hcHelpful;
+
+  /// Insight feedback choice.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có ích'**
+  String get hcNotHelpful;
+
+  /// Insight feedback: hide this kind of insight for me.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không hiện loại thông tin này nữa'**
+  String get hcMute;
+
+  /// Toast after insight feedback.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cảm ơn bạn đã cho biết'**
+  String get hcThanks;
+
+  /// Toast after muting an insight kind.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã ẩn loại thông tin này'**
+  String get hcMuted;
+
+  /// Tổng kết tuần: the week's top insight (AI06).
+  ///
+  /// In vi, this message translates to:
+  /// **'Điều đáng chú ý nhất'**
+  String get hcWeekNotable;
 }
 
 class _AppLocalizationsDelegate

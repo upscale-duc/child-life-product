@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
+import '../insights/insight_widgets.dart' show InsightStatsLine;
 import '../../core/appearance/appearance_providers.dart';
 import '../../core/design/cl_theme.dart';
 import '../../core/design/tokens.g.dart';
@@ -515,6 +516,8 @@ class FeedStatsScreen extends ConsumerWidget {
             : (s.days.fold(0, (t, d) => t + d.breastMinutes) / s.days.length)
                   .round();
         return [
+          // AI05 (D-150, D-151): this statistic's insight, in context (Premium; nothing else).
+          const InsightStatsLine(sleep: false),
           // v1.0 improvement 20g: cữ / ml bú bình / phút bú mẹ per day.
           // SY-5: every number of "Hôm nay" here counts from 18:00 yesterday (the night's
           // feeds), unlike Hôm nay's midnight day; one line says so for all three tiles.
@@ -1305,8 +1308,13 @@ class SleepStatsScreen extends ConsumerWidget {
             ? l10n.durationAndSleep(hm(d), r.$1)
             : l10n.durationAndSleeps(hm(d), '${r.$1}–${r.$2}');
         final today = window == StatsWindow.today;
-        final grew = s.firstNightLongest != s.lastNightLongest && days > 1;
+        // The trend sentence takes its direction from the data (Hiểu con analysis C11).
+        final trend = days > 1
+            ? s.lastNightLongest.compareTo(s.firstNightLongest)
+            : 0;
         return [
+          // AI05 (D-150, D-151): this statistic's insight, in context (Premium; nothing else).
+          const InsightStatsLine(sleep: true),
           _Kpis([
             (
               compactDuration(l10n, s.perDay),
@@ -1344,17 +1352,21 @@ class SleepStatsScreen extends ConsumerWidget {
                 ],
               ),
               if (s.lastNightLongest > Duration.zero)
-                _Insight(
-                  grew
-                      ? l10n.nightLongestInsight(
-                          days,
-                          durationLabel(l10n, s.firstNightLongest.inMinutes),
-                          durationLabel(l10n, s.lastNightLongest.inMinutes),
-                        )
-                      : l10n.nightLongestSame(
-                          durationLabel(l10n, s.lastNightLongest.inMinutes),
-                        ),
-                ),
+                _Insight(switch (trend) {
+                  > 0 => l10n.nightLongestInsight(
+                    days,
+                    durationLabel(l10n, s.firstNightLongest.inMinutes),
+                    durationLabel(l10n, s.lastNightLongest.inMinutes),
+                  ),
+                  < 0 => l10n.nightLongestShorter(
+                    days,
+                    durationLabel(l10n, s.firstNightLongest.inMinutes),
+                    durationLabel(l10n, s.lastNightLongest.inMinutes),
+                  ),
+                  _ => l10n.nightLongestSame(
+                    durationLabel(l10n, s.lastNightLongest.inMinutes),
+                  ),
+                }),
             ],
           ),
           _Card(

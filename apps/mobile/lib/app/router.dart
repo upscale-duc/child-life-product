@@ -18,6 +18,8 @@ import '../features/auto_save/auto_save_home.dart';
 import '../features/auto_save/auto_save_review.dart';
 import '../features/auto_save/auto_save_setup.dart';
 import '../features/care/visit_report.dart' show VisitReportScreen;
+import '../features/insights/insight_models.dart' show InsightKind;
+import '../features/insights/insight_screens.dart';
 import '../features/care/care_models.dart';
 import '../features/care/care_hub_screen.dart';
 import '../features/care/care_screens.dart';
@@ -525,6 +527,22 @@ final routerProvider = Provider<GoRouter>((ref) {
                   _route(
                     path: 'visit',
                     builder: (_, _) => const VisitReportScreen(),
+                  ),
+                  // Hiểu con (D-150, D-151): the screen and one insight.
+                  _route(
+                    path: 'insights',
+                    builder: (_, _) => const InsightsScreen(),
+                    routes: [
+                      _route(
+                        path: ':kind',
+                        builder: (_, s) => switch (InsightKind.fromWire(
+                          s.pathParameters['kind'],
+                        )) {
+                          final kind? => InsightDetailScreen(kind: kind),
+                          null => const InsightsScreen(),
+                        },
+                      ),
+                    ],
                   ),
                   // Sổ tiêm chủng (VX 0 – VX 9a).
                   _route(

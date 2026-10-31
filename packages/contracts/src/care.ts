@@ -200,6 +200,13 @@ export const authorSchema = z.object({
  */
 export const labelRelations = ['mother', 'father', 'grandmother', 'grandfather'] as const;
 
+/**
+ * The one night window of the app, in the baby's zone (R-086 "Đêm 18:00–06:00"; D-151 #1 extends
+ * it to "Sắp tới", "Bé dậy chưa?", Lumi and Hiểu con). Day is the rest: 06:00–18:00. Mirrored in
+ * the app as `careNightFromHour` / `careNightToHour` (`care_calc.dart`).
+ */
+export const careNightWindow = { fromHour: 18, toHour: 6 } as const;
+
 /** Day summary kept by the server per baby-local date (`babies/{b}/days/{YYYY-MM-DD}`). */
 export interface DaySummary {
   date: string;

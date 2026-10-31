@@ -41,6 +41,8 @@ import {
 import { noticePart } from './assistant-talk.js';
 import { solidsContext } from './assistant-solids.js';
 import { growthPercentile } from './assistant-growth.js';
+import { insightBasis, insightCaveat } from './assistant-insight.js';
+import { checkCapability } from './entitlements.js';
 
 /** Admin SDK reads are authorised BEFORE touching a module's data; mirror Firestore Rules. */
 export function allowsAssistantRead(tool: AssistantReadTool, member: MemberGrant): boolean {
@@ -56,6 +58,9 @@ export function allowsAssistantRead(tool: AssistantReadTool, member: MemberGrant
       return member.role === 'coParent' || member.role === 'caregiver';
     case 'spending_month':
       return member.role === 'coParent' || member.extraRights?.viewSpending === true;
+    // Hiểu con (D-151 #6): parents and caregivers who read care; relatives not in V1.
+    case 'insight_basis':
+      return member.role !== 'relative' && familyCan(member, 'history.read');
     default:
       return familyCan(member, 'history.read');
   }
@@ -104,6 +109,7 @@ function card(
     library_search: ['Mở Thư viện', 'Open Library'],
     first_aid: ['Mở Sơ cứu', 'Open First aid'],
     sleep_facts: ['Mở thống kê giấc ngủ', 'Open sleep statistics'],
+    insight_basis: ['Mở Hiểu con', 'Open Know your baby'],
   };
   return readCardSchema.parse({
     type: 'read_card',
@@ -974,6 +980,45 @@ export async function firstAidRead(x: Input): Promise<AssistantPart[]> {
   ];
 }
 
+/** Hiểu con (D-150 Premium, D-151 #7): the current insights and how each was worked out. */
+async function insightRead(x: Input): Promise<AssistantPart[]> {
+  const vi = x.locale === 'vi';
+  const title = vi ? 'Điều đáng chú ý' : 'Worth noticing';
+  if (!checkCapability(x.s.ctx, 'rhythm.advanced', x.anchor, 'history.read').allowed)
+    return [
+      card(
+        x,
+        'insight_basis',
+        title,
+        [
+          {
+            label: '',
+            value: vi ? 'Hiểu con có trong Premium.' : 'Know your baby is part of Premium.',
+          },
+        ],
+        '/care/insights',
+        [],
+      ),
+    ];
+  const doc = await x.db.doc(`babies/${x.s.babyId}/insights/current`).get();
+  const basis = insightBasis(doc.data(), vi);
+  if (basis.kind !== 'items')
+    return [
+      card(x, 'insight_basis', title, [{ label: '', value: basis.text }], '/care/insights', []),
+    ];
+  return [
+    card(
+      x,
+      'insight_basis',
+      title,
+      basis.rows,
+      basis.link,
+      [`insights:${basis.computedAt}`],
+      insightCaveat(vi),
+    ),
+  ];
+}
+
 export async function assistantRead(
   x: Input,
   request: AssistantReadRequest,
@@ -1056,6 +1101,8 @@ export async function assistantRead(
         ),
       ];
     }
+    case 'insight_basis':
+      return insightRead(x);
     case 'vaccine_next':
       return vaccines(x);
     case 'reminders_today':

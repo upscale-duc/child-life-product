@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { addDaysIso } from './rhythm.js';
 import { localDateIn } from './baby.js';
-import { dayBoundsIn } from './care.js';
+import { careNightWindow, dayBoundsIn } from './care.js';
 import type { Activity, Recommendation } from './personalization.js';
 
 /** P-172: explicit, expiring inputs. Never infer a clinical fact from missing logs. */
@@ -263,8 +263,8 @@ export function routinePatterns(
           Date.parse(other.end!) > Date.parse(r.at),
       );
       return !overlap &&
-        hour >= 6 &&
-        hour < 19 &&
+        hour >= careNightWindow.toHour &&
+        hour < careNightWindow.fromHour &&
         minutes >= 10 &&
         minutes <= 180 &&
         Date.parse(r.end!) <= now.getTime()
