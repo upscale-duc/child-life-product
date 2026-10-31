@@ -355,9 +355,13 @@ export interface ReadResult {
 
 const fmtMin = (n: number) => String(Math.round(n));
 
-/** Live records touching [date] in the scope's zone, up to [until] (a running day stops at now). */
-async function recordsOfDay(db: Firestore, s: TrustedScope, date: string, until: Date) {
-  const { start, end } = dayBoundsIn(s.zone, date);
+/**
+ * Live records touching the [days] ending on [date] in the scope's zone, up to [until] (a running
+ * day stops at now).
+ */
+async function recordsOfDay(db: Firestore, s: TrustedScope, date: string, until: Date, days = 1) {
+  const { start } = dayBoundsIn(s.zone, addDaysIso(date, 1 - days));
+  const { end } = dayBoundsIn(s.zone, date);
   const stop = new Date(Math.min(end.getTime(), until.getTime()));
   const snap = await db
     .collection(`babies/${s.babyId}/records`)
@@ -401,12 +405,23 @@ export async function careSummaryTool(
   anchor: Date,
   dayOffset: number,
   locale: 'vi' | 'en',
-): Promise<ReadResult & { summary: CareSummary }> {
+  days = 1,
+): Promise<ReadResult & { summary: CareSummary; first: string }> {
   const date = addDaysIso(localDateIn(s.zone, anchor), dayOffset);
-  const { records, until } = await recordsOfDay(db, s, date, anchor);
+  const first = addDaysIso(date, 1 - days);
+  const { records, until } = await recordsOfDay(db, s, date, anchor, days);
   const { summary, sourceIds } = careSummary(records, date, until.toISOString(), 'unknown');
   const vi = locale === 'vi';
-  const day = dayOffset === 0 ? (vi ? 'hôm nay' : 'today') : date;
+  const day =
+    days > 1
+      ? vi
+        ? `${days} ngày ${first} – ${date}`
+        : `${days} days ${first} – ${date}`
+      : dayOffset === 0
+        ? vi
+          ? 'hôm nay'
+          : 'today'
+        : date;
   const clock = localClock(s.zone, until);
   const facts = [
     {
@@ -432,6 +447,7 @@ export async function careSummaryTool(
     tool: 'care_summary',
     facts,
     summary,
+    first,
     parts: [{ type: 'source_summary', schemaVersion: 1, summary, sourceIds }],
   };
 }

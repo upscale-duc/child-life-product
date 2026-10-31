@@ -226,14 +226,16 @@ async function timerRows(
   return { rows, ids };
 }
 
+/** "tuần vừa rồi", "7 ngày qua", "last week": the last seven days, today included. */
+export const asksAboutWeek = (text: string) =>
+  /\b(7 ngay|bay ngay|tuan nay|tuan qua|tuan vua roi|tuan vua qua|tuan roi|tuan truoc|week|7 days|last seven)\b/u.test(
+    foldVi(text),
+  );
+
 async function daily(x: Input, request: AssistantReadRequest): Promise<AssistantPart[]> {
   const vi = x.locale === 'vi',
     tool = request.tool;
-  const days = /\b(7 ngay|bay ngay|tuan nay|tuan qua|week|7 days|last seven)\b/u.test(
-    foldVi(x.text),
-  )
-    ? 7
-    : 1;
+  const days = asksAboutWeek(x.text) ? 7 : 1;
   const p = await periodRecords(x, request.dayOffset, tool === 'day_overview' ? 1 : days);
   const today = localDateIn(x.s.zone, x.anchor);
   const date = shortDate(p.date, today),
@@ -1102,9 +1104,21 @@ export async function assistantRead(
   switch (request.tool) {
     case 'care_summary': {
       const vi = x.locale === 'vi';
-      const r = await careSummaryTool(x.db, x.s, x.anchor, request.dayOffset, x.locale);
+      // A week question is the last seven days to now, whatever day the model picked.
+      const week = asksAboutWeek(x.text);
+      const r = await careSummaryTool(
+        x.db,
+        x.s,
+        x.anchor,
+        week ? 0 : request.dayOffset,
+        x.locale,
+        week ? 7 : 1,
+      );
       const a = r.summary;
       const today = localDateIn(x.s.zone, x.anchor);
+      const period = week
+        ? `${shortDate(r.first, today)} – ${shortDate(a.date, today)}`
+        : shortDate(a.date, today);
       // Owner 2026-10-31: label/value rows, zero modules left out, minutes as hours. The model
       // still reads the sentences in `r.facts`.
       const rows = [
@@ -1128,7 +1142,7 @@ export async function assistantRead(
         card(
           x,
           request.tool,
-          `${vi ? 'Bú và ngủ đã ghi' : 'Logged feeds and sleep'} · ${shortDate(a.date, today)}`,
+          `${vi ? 'Bú và ngủ đã ghi' : 'Logged feeds and sleep'} · ${period}`,
           rows.length
             ? rows
             : [

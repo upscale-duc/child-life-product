@@ -93,3 +93,19 @@ Classification (D-112): **read card RESTRUCTURE**; all other reply components KE
   gating failure); read group 47/47. No live (paid) run: model-facing text unchanged.
 - Replay fixtures (`assistant_replay/fixtures/rd-*`) still hold the old row text (server snapshots);
   re-export them with the next fake run that owns those files.
+
+## Follow-up after the device check (2026-10-31)
+
+Owner screenshot: "Tuần vừa rồi của con thế nào" → a CH08 card for 25/10 "đến 00:00", a
+"✓ Câu hỏi không tạo cữ bú mới" line, and a sentence repeating the card ("2026-10-25 … 822 phút").
+
+| Problem | Fix |
+|---|---|
+| "Câu hỏi không tạo cữ bú mới" under the CH08 card (V1 reassurance; a question never creates a record) | Removed (D-110, Redundant). The `asNoRecordCreated` ARB key is left unused because others have uncommitted ARB edits; remove it with the next ARB change |
+| Text reply repeated the card in raw form (ISO date, minutes) | `assistant-worker.ts`: facts become a sentence only for results without their own card (usage still answers in words) |
+| A week question read one day (the model picked dayOffset −6) | `asksAboutWeek` (`assistant-reads.ts`): "tuần vừa rồi / tuần trước / tuần này / 7 ngày / last week" → the read card over the last seven days to now, titled "Bú và ngủ đã ghi · 25/10 – 31/10" (dates shown, so the period is never ambiguous) |
+| A finished day showed "đến 00:00" | CH08 card shows "đến HH:mm" only while the snapshot is inside that day |
+
+Tests: `assistant_chat_test` (CH08: note gone; finished day without "đến 00:00"), `ch08_summary`
+goldens ×4 regenerated (only the note line removed), integration +1 week case (12 pass), functions
+vitest 169, replay 787, fake e2e 0 new failures (read 47/47).

@@ -744,11 +744,39 @@ void main() {
         _text('Tính trên các cữ đã ghi — có thể chưa đầy đủ.'),
         findsOneWidget,
       );
-      expect(_text('Câu hỏi không tạo cữ bú mới'), findsOneWidget);
+      expect(_text('Câu hỏi không tạo cữ bú mới'), findsNothing);
       expect(_text('Hôm nay 15/10 · đến 14:20'), findsOneWidget);
       await tester.tap(_text('Mở nhật ký nguồn'));
       await tester.pumpAndSettle();
       expect(visits.last.location, '/care/history');
+    });
+
+    testWidgets('a finished day shows its date, not "đến 00:00"', (
+      tester,
+    ) async {
+      final part = summaryPart();
+      final summary = {...part['summary']! as Map<String, Object?>};
+      summary['date'] = '2026-10-14';
+      summary['until'] = '2026-10-14T17:00:00.000Z'; // 00:00 on 15/10, Hà Nội
+      await _pump(
+        tester,
+        repo: FakeAssistantRepository(
+          tasks: {
+            taskA: snapshotWith(
+              task: taskJson(),
+              messages: [
+                userMessage('Hôm qua con bú thế nào?'),
+                assistantMessage([
+                  {...part, 'summary': summary},
+                ]),
+              ],
+            ),
+          },
+        ),
+        prefs: _thread([taskA]),
+      );
+      expect(_text('Hôm qua 14/10'), findsOneWidget);
+      expect(find.textContaining('đến 00:00'), findsNothing);
     });
   });
 

@@ -245,6 +245,17 @@ describe('Phase 2 end-to-end read shortcuts', () => {
     expect(r.cards[0]!.rows[1]!.value).toBe('130 ml');
     expect(r.cards[0]!.action.link).toBe('/care/history?filter=pump');
   });
+  it('answers a week question with the last seven days of feeds and sleep, not one day', async () => {
+    await record('wk1', 'bottle', '2026-10-14T03:00:00Z', { amountMl: 100 });
+    await record('wk2', 'bottle', '2026-10-17T03:00:00Z', { amountMl: 150 });
+    await record('wk3', 'bottle', '2026-10-20T00:00:00Z', { amountMl: 120 });
+    await record('wkOut', 'bottle', '2026-10-13T03:00:00Z', { amountMl: 999 });
+    const [c] = answerCards(await read('care_summary', 'Tuần vừa rồi của con thế nào'));
+    expect(c!.title).toBe('Bú và ngủ đã ghi · 14/10 – 20/10');
+    expect(c!.rows[0]!.value).toBe('3 cữ · 370 ml');
+    const [day] = answerCards(await read('care_summary', 'Hôm nay con bú thế nào'));
+    expect(day!.title).toBe('Bú và ngủ đã ghi · 20/10');
+  });
   it('reads all three timers without making a second timer or saving a record', async () => {
     await db.doc(`babies/${B}/timers/pump`).set({ startedAt: ts('2026-10-20T00:20:00Z') });
     const sleeping = await ask('Bé ngủ được bao lâu rồi?');

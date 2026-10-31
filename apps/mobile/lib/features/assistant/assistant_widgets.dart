@@ -12,6 +12,7 @@ import '../../core/widgets/cl_feedback.dart';
 import '../../core/widgets/cl_icon.dart';
 import '../../core/widgets/cl_pressable.dart';
 import '../../l10n/app_localizations.dart';
+import '../care/care_repository.dart' show inBabyZone;
 import 'assistant_labels.dart';
 import 'assistant_models.dart';
 import 'assistant_rules.dart';
@@ -1618,7 +1619,11 @@ class AsSummaryCard extends StatelessWidget {
     final cl = context.cl;
     final locale = Localizations.localeOf(context).toLanguageTag();
     final date = DateTime.tryParse(summary.date) ?? now;
-    final until = summary.until;
+    // A finished day is counted to its end: "đến 00:00" would read as the next midnight.
+    final until = switch (summary.until) {
+      final u? when DateUtils.isSameDay(inBabyZone(zone, u), date) => u,
+      _ => null,
+    };
     final day = dayLabel(
       l10n,
       locale,
@@ -1770,19 +1775,6 @@ class AsSummaryCard extends StatelessWidget {
               const SizedBox(height: 4),
               AsLink(label: l10n.asOpenSourceLog, onPressed: onOpenSource),
             ],
-          ],
-        ),
-        const SizedBox(height: 6),
-        Row(
-          children: [
-            ClIcon(ClIcons.check, size: 12, color: cl.colors.inkMuted),
-            const SizedBox(width: 4),
-            Flexible(
-              child: Text(
-                l10n.asNoRecordCreated,
-                style: cl.text.caption.copyWith(color: cl.colors.inkMuted),
-              ),
-            ),
           ],
         ),
       ],

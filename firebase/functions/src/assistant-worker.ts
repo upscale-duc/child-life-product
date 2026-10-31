@@ -2,7 +2,12 @@ import { milestoneInvitePart, milestoneSaidIn } from './assistant-milestone.js';
 import { vaccineGivenIn, vaccineParts } from './assistant-vaccine.js';
 import { recurringRuleIn, ruleEditorLink } from './assistant-recurring.js';
 import { assistantReadsIn, privateReadTool } from '@child-life/contracts';
-import { assistantRead, firstAidRead, allowsAssistantRead } from './assistant-reads.js';
+import {
+  assistantRead,
+  asksAboutWeek,
+  firstAidRead,
+  allowsAssistantRead,
+} from './assistant-reads.js';
 import { Timestamp, type Firestore } from 'firebase-admin/firestore';
 import {
   assistantPartTypes,
@@ -1094,8 +1099,9 @@ async function processMessage(
   const notices: TextNotice[] = [...plan.notices];
   const readDenied: AssistantPart[] = [];
   const seen = new Set<string>();
+  const week = asksAboutWeek(text);
   for (const r of reads) {
-    const key = `${r.tool}:${r.dayOffset}`;
+    const key = `${r.tool}:${week && r.tool === 'care_summary' ? 'week' : r.dayOffset}`;
     if (seen.has(key)) continue;
     seen.add(key);
     // LUMI-14: the credit balance is never the answer to a question about the baby.
@@ -1119,6 +1125,11 @@ async function processMessage(
     }
     switch (r.tool) {
       case 'care_summary':
+        // The CH08 card shows one day; a week question gets the seven-day read card.
+        if (week) {
+          parts.push(...(await assistantRead({ db, s, anchor, locale: t.locale, text }, r)));
+          break;
+        }
         results.push(await careSummaryTool(db, s, anchor, r.dayOffset, t.locale));
         break;
       case 'sleep_facts':
@@ -1130,7 +1141,8 @@ async function processMessage(
     }
   }
   for (const r of results) parts.push(...r.parts);
-  const facts = results.flatMap((r) => r.facts);
+  // Owner 2026-10-31: a result with its own card is not repeated as a sentence under it.
+  const facts = results.filter((r) => r.parts.length === 0).flatMap((r) => r.facts);
   if (facts.length > 0) {
     const wording = facts.map((f) => f.text).join(' ');
     parts.push({ type: 'text', schemaVersion: 1, text: wording });
