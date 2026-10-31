@@ -254,6 +254,15 @@ describe('buildChangeSet', () => {
     expect(moved?.type === 'source' && moved.before?.path).toBe('docs/notes.md');
   });
 
+  it('a row inserted above does not mark the decisions below as changed', () => {
+    const map = (extra: string) =>
+      md('docs/product/business-map.md', `## Owner decisions (2026-10-10)\n| ID | Decision | R | C |\n| --- | --- | --- | --- |\n${extra}| **D-001** | **First**. | — | — |\n| **D-002** | **Second**. | — | — |\n`, `b_${extra.length}`);
+    const state = applied(buildChangeSet(snapshot([...baseFiles(), map('')]), emptyState).items);
+    const next = buildChangeSet(snapshot([...baseFiles(), map('| **D-000** | **Zero**. | — | — |\n')], 'r2'), state);
+    const decisions = next.items.flatMap((i) => (i.type === 'decision' ? [`${i.change}:${i.decision.id}`] : []));
+    expect(decisions).toEqual(['added:D-000']);
+  });
+
   it('refuses a credential-looking file and reports it', () => {
     const files = [...baseFiles(), md('docs/leak.md', '# Keys\n\n-----BEGIN PRIVATE KEY-----\n')];
     const cs = buildChangeSet(snapshot(files), emptyState);

@@ -610,13 +610,16 @@ export interface AppliedState {
 
 export const emptyState: AppliedState = { sources: [], decisions: {}, features: {}, conflicts: [] };
 
-/** A stable hash of a record without its time stamps, to tell "changed" from "unchanged". */
+/**
+ * A stable hash of what a record says, to tell "changed" from "unchanged": time stamps, the
+ * revision, stored bookkeeping (`hash`, `removed`) and a decision's line number are left out, so a
+ * row inserted above it in the business map does not mark every decision below as changed.
+ */
 export function recordHash(record: object): string {
   const rest: Record<string, unknown> = { ...(record as Record<string, unknown>) };
-  delete rest.syncedAt;
-  delete rest.revision;
+  for (const k of ['syncedAt', 'revision', 'hash', 'removed', 'removedAt', 'changeSet']) delete rest[k];
   const src = rest.source as Record<string, unknown> | undefined;
-  const cleaned = src ? { ...rest, source: { ...src, commit: undefined } } : rest;
+  const cleaned = src ? { ...rest, source: { ...src, commit: undefined, line: undefined } } : rest;
   return sha256(JSON.stringify(cleaned, Object.keys(flatKeys(cleaned)).sort()));
 }
 function flatKeys(o: unknown, acc: Record<string, true> = {}): Record<string, true> {

@@ -96,8 +96,11 @@ export async function appliedState(db: Firestore): Promise<AppliedState> {
       authority: d.get('authority') as ProductSourceRecord['authority'],
       features: (d.get('features') as string[] | undefined) ?? [],
     })),
-    decisions: Object.fromEntries(decisions.docs.map((d) => [d.id, d.get('hash') as string])),
-    features: Object.fromEntries(features.docs.map((d) => [d.id, d.get('hash') as string])),
+    // Recomputed from what is stored, so a change to the hash rule never floods a review.
+    decisions: Object.fromEntries(decisions.docs.map((d) => [d.id, recordHash(d.data())])),
+    features: Object.fromEntries(
+      features.docs.filter((d) => d.get('removed') !== true).map((d) => [d.id, recordHash(d.data())]),
+    ),
     conflicts: conflicts.docs.map((d) => d.id),
   };
 }
