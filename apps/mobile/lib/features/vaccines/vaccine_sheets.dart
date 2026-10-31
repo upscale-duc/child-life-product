@@ -598,10 +598,17 @@ Future<void> showDoseFormSheet(
   required DoseItem item,
   DateTime? day,
   VaccinePlace? place,
+  String? facility,
 }) => showClSheet<void>(
   context: context,
-  builder: (_) =>
-      _FormSheet(me: me, book: book, item: item, day: day, place: place),
+  builder: (_) => _FormSheet(
+    me: me,
+    book: book,
+    item: item,
+    day: day,
+    place: place,
+    facility: facility,
+  ),
 );
 
 class _FormSheet extends ConsumerStatefulWidget {
@@ -611,6 +618,7 @@ class _FormSheet extends ConsumerStatefulWidget {
     required this.item,
     this.day,
     this.place,
+    this.facility,
   });
 
   final Membership me;
@@ -618,6 +626,9 @@ class _FormSheet extends ConsumerStatefulWidget {
   final DoseItem item;
   final DateTime? day;
   final VaccinePlace? place;
+
+  /// "Nơi tiêm" as said to Lumi (L5), when the dose has none yet.
+  final String? facility;
 
   @override
   ConsumerState<_FormSheet> createState() => _FormSheetState();
@@ -638,7 +649,9 @@ class _FormSheetState extends ConsumerState<_FormSheet> {
   late TimeOfDay? _time = _parseClock(_given?.givenTime);
   late VaccinePlace _place =
       widget.place ?? _given?.place ?? VaccinePlace.service;
-  late final _facility = TextEditingController(text: _given?.facility);
+  late final _facility = TextEditingController(
+    text: _given?.facility ?? widget.facility,
+  );
   late final _reaction = TextEditingController(text: _given?.reaction);
   late String? _photo = _given?.photoPath;
   bool _uploading = false;

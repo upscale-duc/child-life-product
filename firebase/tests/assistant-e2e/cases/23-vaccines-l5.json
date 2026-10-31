@@ -1,0 +1,50 @@
+{
+  "group": "vaccine.dose",
+  "note": "Lumi L5 (vaccines, 2026-10-31): a shot said as given opens Sổ tiêm chủng's own \"Ghi mũi tiêm\" form on that dose, filled with the day and place (rules, no model, 0 credits); Lumi never saves it. A dose already in the book links to its page; relatives are told they only view; questions and plans stay reads.",
+  "cases": [
+    {
+      "id": "l5v-01-dtp-given-today",
+      "title": "\"bé vừa tiêm 6in1 ở VNVC\": the book's form on the next 6in1 dose; nothing saved; no model",
+      "turns": [{ "say": "bé vừa tiêm 6in1 ở VNVC", "model": null }],
+      "expect": { "kinds": [], "codes": ["VACCINE_DOSE"], "saved": 0, "credits": 0, "calls": 0 }
+    },
+    {
+      "id": "l5v-02-two-vaccines",
+      "title": "\"sáng nay bé tiêm phế cầu mũi 1 và uống rota mũi 1\": one button per vaccine",
+      "turns": [{ "say": "sáng nay bé tiêm phế cầu mũi 1 và uống rota mũi 1", "model": null }],
+      "expect": { "kinds": [], "codes": ["VACCINE_DOSE"], "saved": 0, "credits": 0, "calls": 0 }
+    },
+    {
+      "id": "l5v-03-already-given",
+      "title": "6in1 dose 1 is already in the book: \"hôm qua bé tiêm 6in1 mũi 1\" links to that dose",
+      "world": { "seed": ["dtp1Given"] },
+      "turns": [{ "say": "hôm qua bé tiêm 6in1 mũi 1", "model": null }],
+      "expect": { "kinds": [], "codes": ["VACCINE_DOSE"], "saved": 0, "credits": 0, "calls": 0 }
+    },
+    {
+      "id": "l5v-04-no-name",
+      "title": "\"bé vừa tiêm xong\": Lumi asks which shot and offers the book",
+      "turns": [{ "say": "bé vừa tiêm xong", "model": null }],
+      "expect": { "kinds": [], "codes": ["VACCINE_DOSE"], "saved": 0, "credits": 0, "calls": 0 }
+    },
+    {
+      "id": "l5v-05-relative-views-only",
+      "title": "a Người thân says a shot was given: told they only view the book, no button",
+      "as": "GRANDMA",
+      "turns": [{ "say": "bé vừa tiêm rota", "model": null }],
+      "expect": {
+        "kinds": [],
+        "notCodes": ["VACCINE_DOSE"],
+        "saved": 0,
+        "credits": 0,
+        "calls": 0
+      }
+    },
+    {
+      "id": "l5v-06-question-stays-read",
+      "title": "\"khi nào bé tiêm mũi tiếp theo?\": the vaccine_next read, never a dose",
+      "turns": [{ "say": "khi nào bé tiêm mũi tiếp theo?", "model": null }],
+      "expect": { "notCodes": ["VACCINE_DOSE"], "reads": ["vaccine_next"], "saved": 0, "calls": 0 }
+    }
+  ]
+}

@@ -69,6 +69,7 @@ import '../features/feedback/feedback_repository.dart';
 import '../features/feedback/feedback_screens.dart';
 import '../features/first_aid/first_aid_screens.dart';
 import '../features/utilities/utilities_screen.dart';
+import '../features/vaccines/vaccine_models.dart';
 import '../features/vaccines/vaccine_screens.dart';
 import '../features/onboarding/setup_screens.dart';
 import '../features/onboarding/welcome_screens.dart';
@@ -528,7 +529,16 @@ final routerProvider = Provider<GoRouter>((ref) {
                   // Sổ tiêm chủng (VX 0 – VX 9a).
                   _route(
                     path: 'vaccines',
-                    builder: (_, _) => const VaccineBookScreen(),
+                    // Lumi L5: `?log=dtp_2&on=…&place=…&facility=…` opens that dose's form.
+                    builder: (_, s) {
+                      final q = s.uri.queryParameters;
+                      return VaccineBookScreen(
+                        logKey: q['log'],
+                        logOn: DateTime.tryParse(q['on'] ?? ''),
+                        logPlace: VaccinePlace.values.asNameMap()[q['place']],
+                        logFacility: q['facility'],
+                      );
+                    },
                     routes: [
                       _route(
                         path: 'setup',

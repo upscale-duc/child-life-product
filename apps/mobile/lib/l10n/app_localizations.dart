@@ -27558,6 +27558,18 @@ abstract class AppLocalizations {
   /// **'Đặt nhắc'**
   String get asSetRule;
 
+  /// Button on Lumi's reply about a shot when no single dose can be opened (no vaccine named, the series already complete, a dose the schedule lacks): opens the vaccination book. L5 lumi-plan. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở Sổ tiêm chủng'**
+  String get asOpenVaccines;
+
+  /// Button on Lumi's reply when the dose said is already recorded in the vaccination book: opens that dose's page. L5 lumi-plan. EN is an engineering draft for owner review.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem mũi tiêm'**
+  String get asViewDose;
+
   /// Title of Lumi's draft editor for a solids meal (L5): the dish and its time, saved to the Ăn dặm diary. EN is an engineering draft for owner review.
   ///
   /// In vi, this message translates to:

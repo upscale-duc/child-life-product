@@ -347,7 +347,10 @@ enum NoticeCode with WireEnum {
   followUp('FOLLOW_UP'),
 
   /// Lumi L5: "nhắc cữ bú mỗi 3 tiếng" — `link` opens the rule editor filled with it.
-  ruleSuggested('RULE_SUGGESTED');
+  ruleSuggested('RULE_SUGGESTED'),
+
+  /// Lumi L5: "bé vừa tiêm 6in1 mũi 2" — `link` opens that dose in Sổ tiêm chủng (to log or view).
+  vaccineDose('VACCINE_DOSE');
 
   const NoticeCode(this.wire);
   @override

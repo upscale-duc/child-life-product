@@ -266,6 +266,8 @@ export const assistantNoticeCodes = [
    * `/care/reminders/rules/new`); the person picks who is reminded and saves it there.
    */
   'RULE_SUGGESTED',
+  // Lumi L5: "bé vừa tiêm 6in1 mũi 2" — the dose its link opens in Sổ tiêm chủng (to log or view).
+  'VACCINE_DOSE',
 ] as const;
 export type AssistantNoticeCode = (typeof assistantNoticeCodes)[number];
 

@@ -1,3 +1,4 @@
+import { vaccineGivenIn, vaccineParts } from './assistant-vaccine.js';
 import { recurringRuleIn, ruleEditorLink } from './assistant-recurring.js';
 import { assistantReadsIn, privateReadTool } from '@child-life/contracts';
 import { assistantRead, firstAidRead, allowsAssistantRead } from './assistant-reads.js';
@@ -482,6 +483,24 @@ async function process(
       : null;
   if (rule) {
     const parts = [rulePart(rule, ruleEditorLink(rule), s.member.role === 'coParent', t.locale)];
+    return {
+      outcome: { kind: 'answer', parts },
+      errorCode: null,
+      drafts: [],
+      parts,
+      clarification: null,
+      modelCalls: 0,
+      releaseReady: true,
+      dialogue,
+    };
+  }
+  // Lumi L5: "bé vừa tiêm 6in1 mũi 2" opens that dose's form in Sổ tiêm chủng (rules, 0 credits).
+  const shot =
+    t.modality === 'text' && (t.round ?? 0) === 0 && answers.length === 0
+      ? vaccineGivenIn(text, localDateIn(s.zone, anchor))
+      : null;
+  if (shot) {
+    const parts = await vaccineParts(db, s, shot, t.locale, anchor);
     return {
       outcome: { kind: 'answer', parts },
       errorCode: null,

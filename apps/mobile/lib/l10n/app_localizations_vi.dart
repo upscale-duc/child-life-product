@@ -16451,6 +16451,11 @@ class AppLocalizationsVi extends AppLocalizations {
   String get asEditMeal => 'Sửa bữa ăn';
 
   @override
+  String get asOpenVaccines => 'Mở Sổ tiêm chủng';
+
+  @override
+  String get asViewDose => 'Xem mũi tiêm';
+
   String get asHistoryAskMeal => 'Kể bữa ăn với Lumi: “trưa nay ăn cháo bí đỏ”';
 
   @override

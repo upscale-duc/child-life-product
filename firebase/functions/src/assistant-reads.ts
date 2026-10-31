@@ -383,21 +383,44 @@ async function growth(x: Input): Promise<AssistantPart[]> {
   ];
 }
 
-async function vaccines(x: Input): Promise<AssistantPart[]> {
-  const vi = x.locale === 'vi';
-  const [plan, records, reference] = await Promise.all([
-    x.db.doc(`babies/${x.s.babyId}/vaccinePlan/main`).get(),
-    x.db.collection(`babies/${x.s.babyId}/vaccines`).get(),
-    x.db.doc('publicConfig/reference_vaccines').get(),
-  ]);
-  const country = x.s.ctx.family.country;
+/** A schedule row as the reads and Lumi L5 use it (built in, a country's, or published). */
+export interface ScheduleRow {
+  id: string;
+  name: { vi: string; en: string };
+  short: { vi: string; en: string };
+  months: number[];
+  only5in1?: boolean | undefined;
+  dtpSeries?: boolean | undefined;
+}
+
+/**
+ * The schedule the family's book shows: its country's own (D-084), else the published Vietnam
+ * table (P-138), else the one built in.
+ */
+export async function vaccineDefsFor(
+  db: Firestore,
+  country: string | null | undefined,
+): Promise<readonly ScheduleRow[]> {
   const countryPlan = countryScheduleOf(country);
+  if (countryPlan) return countryPlan.defs;
+  const reference = await db.doc('publicConfig/reference_vaccines').get();
   const published = referencePublicSchema.safeParse(reference.data());
   const parsed =
     published.success && published.data.dataset === 'vaccines.schedule'
       ? referenceRowsSchemas['vaccines.schedule'].safeParse(published.data.rows)
       : null;
-  const defs = countryPlan?.defs ?? (parsed?.success ? parsed.data : vaccineSchedule);
+  return parsed?.success ? parsed.data : vaccineSchedule;
+}
+
+async function vaccines(x: Input): Promise<AssistantPart[]> {
+  const vi = x.locale === 'vi';
+  const country = x.s.ctx.family.country;
+  const countryPlan = countryScheduleOf(country);
+  const [plan, records, defs] = await Promise.all([
+    x.db.doc(`babies/${x.s.babyId}/vaccinePlan/main`).get(),
+    x.db.collection(`babies/${x.s.babyId}/vaccines`).get(),
+    vaccineDefsFor(x.db, country),
+  ]);
   const from = plan.get('scheduleFrom') as string | undefined;
   const today = localDateIn(x.s.zone, x.anchor);
   const rows: Row[] = [],

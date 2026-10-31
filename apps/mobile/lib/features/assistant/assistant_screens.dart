@@ -2359,6 +2359,22 @@ class _ThreadView {
           null => null,
         },
       ),
+      // Lumi L5: the book's own form on the dose said (saved there), or the dose / the book.
+      NoticeCode.vaccineDose => AsNoticeCard(
+        icon: ClIcons.heart,
+        text: text,
+        action: switch (vaccineRoute(link)) {
+          final route? => AsLink(
+            label: route.startsWith('${Routes.vaccineDose}/')
+                ? l10n.asViewDose
+                : route.contains('log=')
+                ? l10n.vxRecordTitle
+                : l10n.asOpenVaccines,
+            onPressed: () => GoRouter.of(context).pushSafe(route),
+          ),
+          null => null,
+        },
+      ),
       NoticeCode.medicineNotScheduled => AsNoticeCard(
         icon: ClIcons.bell,
         text: text,
@@ -4871,6 +4887,34 @@ String? ruleEditorRoute(String? link) {
   }
   return Uri(
     path: Routes.ruleNew,
+    queryParameters: q.isEmpty ? null : q,
+  ).toString();
+}
+
+/// Lumi L5: a shot reply's link — the book (`/care/vaccines`, with `log`, `on`, `place`,
+/// `facility` in their shapes to open the form on that dose) or a dose page; null for anything
+/// else.
+String? vaccineRoute(String? link) {
+  final uri = link == null ? null : Uri.tryParse(link);
+  if (uri == null || uri.hasScheme || uri.hasAuthority) return null;
+  final dose = RegExp(r'^/care/vaccines/dose/([a-z0-9]{2,12}_[1-9])$');
+  if (dose.firstMatch(uri.path) case final m?) {
+    return uri.hasQuery ? null : '${Routes.vaccineDose}/${m.group(1)}';
+  }
+  if (uri.path != Routes.vaccines) return null;
+  final shapes = {
+    'log': RegExp(r'^[a-z0-9]{2,12}_[1-9]$'),
+    'on': RegExp(r'^\d{4}-\d{2}-\d{2}$'),
+    'place': RegExp(r'^(hospital|service|station)$'),
+    'facility': RegExp(r'^[^\u0000-\u001f]{1,80}$'),
+  };
+  final q = uri.queryParameters;
+  if (!q.entries.every((e) => shapes[e.key]?.hasMatch(e.value) ?? false)) {
+    return null;
+  }
+  if (q.isNotEmpty && (q['log'] == null || q['on'] == null)) return null;
+  return Uri(
+    path: Routes.vaccines,
     queryParameters: q.isEmpty ? null : q,
   ).toString();
 }

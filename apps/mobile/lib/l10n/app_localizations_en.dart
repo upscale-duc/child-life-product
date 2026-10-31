@@ -17540,6 +17540,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get asEditMeal => 'Edit meal';
 
   @override
+  String get asOpenVaccines => 'Open vaccination book';
+
+  @override
+  String get asViewDose => 'View shot';
+
   String get asHistoryAskMeal =>
       'Tell Lumi about a meal: “Pumpkin porridge at lunch”';
 

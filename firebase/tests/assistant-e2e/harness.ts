@@ -519,6 +519,28 @@ async function seedPreset(name: string) {
     case 'solidsOn':
       await db.doc(`babies/${B}/solids/settings`).set({ enabled: true, method: 'mixed' });
       return;
+    // Lumi L5: 6in1 dose 1 already in Sổ tiêm chủng.
+    case 'dtp1Given':
+      await db.doc(`babies/${B}/vaccines/dtp_1`).set({
+        babyId: B,
+        vaccineId: 'dtp',
+        dose: 1,
+        status: 'given',
+        givenOn: '2026-09-15',
+        givenTime: null,
+        place: 'service',
+        facility: null,
+        reaction: null,
+        declineReason: null,
+        plannedOn: null,
+        photoPath: null,
+        createdBy: UID.MOM,
+        author: { name: 'Mai', relation: 'mother', relationCustom: null },
+        createdAt: Timestamp.fromDate(localAt('D-30 09:00')),
+        updatedAt: Timestamp.fromDate(localAt('D-30 09:00')),
+        updatedBy: UID.MOM,
+      });
+      return;
     default:
       throw new Error(`unknown seed ${name}`);
   }

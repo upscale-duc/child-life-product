@@ -73,6 +73,15 @@
 - **Khác kế hoạch:** nhắc lặp không thành thẻ nháp lưu ngay trong chat như bữa ăn, vì nó cần chọn người nhận và giờ yên lặng; màn "Nhắc mới" của app đã làm việc đó. Nhắc lặp cho việc ngoài chăm sóc (vitamin, tắm) cần một loại nhắc mới: quyết định của chủ sản phẩm.
 - **Kiểm chứng:** Functions unit 524 đạt (+9 `assistant-recurring`); app: test Lumi, replay và nhắc nhở 986 đạt (+ test điền sẵn, test link); e2e model giả 353/354 (chỉ `ga-11` baseline), gồm 4 ca mới `22-recurring-l5.json`; model thật 2 ca, 1 lượt gọi (7 767 token vào, 107 ra). Ảnh `as/ch06r_rule` (Light/Night × vi/en).
 
+## L5 mũi tiêm qua Lumi (31/10)
+
+- **Làm gì:** "bé vừa tiêm 6in1 mũi 2 ở VNVC", "hôm qua cho bé uống rota", "sáng nay bé tiêm phế cầu mũi 1 và uống rota mũi 1" → mỗi mũi một thẻ "Mình chuẩn bị sẵn 6in1 · mũi 2, tiêm hôm nay (31/10) tại VNVC…" với nút **Ghi mũi tiêm**. Nút mở Sổ tiêm chủng và form "Ghi mũi tiêm" của chính Sổ, điền sẵn ngày, nơi tiêm (Bệnh viện / Dịch vụ / Trạm y tế) và tên cơ sở; người dùng thêm phản ứng, ảnh nếu muốn và bấm **Lưu mũi tiêm** ở đó (Lumi không tự lưu).
+- **Mũi nào:** tên gọi thường dùng (6in1, Hexaxim, 5 trong 1, Rota, phế cầu, Synflorix, MMR, thuỷ đậu, viêm não Nhật Bản…) khớp với lịch của gia đình (lịch quốc gia nếu có). Không nói mũi thứ mấy thì lấy mũi đầu tiên chưa ghi; "mũi nhắc" là mũi cuối.
+- **Các trường hợp khác:** mũi đã có trong Sổ → "đã có trong Sổ tiêm chủng (tiêm ngày 15/9)" + nút **Xem mũi tiêm**; không nói tên mũi → Lumi hỏi mũi nào + nút **Mở Sổ tiêm chủng**; Người thân → được nói chỉ xem được Sổ. Câu hỏi và kế hoạch ("khi nào tiêm mũi tiếp?", "mai đi tiêm") vẫn là phần đọc lịch như trước; câu có thêm việc khác ("bú 120ml rồi đi tiêm") để model đọc.
+- **Đọc bằng quy tắc**, không gọi model, 0 lượt (`assistant-vaccine.ts`).
+- **Khác kế hoạch:** như nhắc lặp, mũi tiêm không thành thẻ nháp lưu trong chat; form của Sổ đã có nơi tiêm, phản ứng, ảnh, gợi ý ghi chi phí và quyền sửa theo vai trò (P-133), nên dùng lại thay vì làm bản thứ hai.
+- **Kiểm chứng:** Functions unit 546 đạt (+22 `assistant-vaccine`); app: test Lumi, replay, Tiêm chủng và ảnh golden 657 đạt (+3 test mới: link, form điền sẵn mở một lần, mũi đã tiêm mở trang mũi); e2e model giả 359/360 (chỉ `ga-11` baseline), gồm 6 ca mới `23-vaccines-l5.json`; không cần chạy model thật (đường này không gọi model). Ảnh `as/ch06v_vaccine` (Light/Night × vi/en).
+
 ## Ghi chú
 
 - **23 ca e2e cũ đã cập nhật.**

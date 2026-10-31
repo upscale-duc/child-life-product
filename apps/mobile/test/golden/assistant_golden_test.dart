@@ -223,6 +223,34 @@ final _cases = <String, _Case>{
     ),
     prefs: () => _thread([taskA]),
   ),
+  // Lumi L5: a shot said as given → the book's form on that dose ("Ghi mũi tiêm").
+  'ch06v_vaccine': _c(
+    repo: () => _repo(
+      tasks: {
+        taskA: snapshotWith(
+          task: taskJson(),
+          messages: [
+            userMessage('bé vừa tiêm 6in1 mũi 2 ở VNVC'),
+            assistantMessage([
+              {
+                'type': 'text',
+                'schemaVersion': 1,
+                'text':
+                    'Mình chuẩn bị sẵn 6in1 · mũi 2, tiêm hôm nay (8/10) tại '
+                    'VNVC. Chạm Ghi mũi tiêm để xem lại và lưu vào Sổ tiêm '
+                    'chủng.',
+                'code': 'VACCINE_DOSE',
+                'link':
+                    '/care/vaccines?log=dtp_2&on=2026-10-08&place=service'
+                    '&facility=VNVC',
+              },
+            ]),
+          ],
+        ),
+      },
+    ),
+    prefs: () => _thread([taskA]),
+  ),
   'ch07_partial': _c(
     height: 900,
     repo: () => _repo(

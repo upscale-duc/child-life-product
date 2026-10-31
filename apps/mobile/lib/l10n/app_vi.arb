@@ -24339,6 +24339,14 @@
   "asEditGrowth": "Sửa cân đo",
   "@asEditGrowth": {
     "description": "Lumi fixes 2026-10-16 (LUMI-01 pump / diaper / growth from chat, LUMI-07, LUMI-09, LUMI-11, LUMI-13). EN is an engineering draft for owner review."
+  "asOpenVaccines": "Mở Sổ tiêm chủng",
+  "@asOpenVaccines": {
+    "description": "Button on Lumi's reply about a shot when no single dose can be opened (no vaccine named, the series already complete, a dose the schedule lacks): opens the vaccination book. L5 lumi-plan. EN is an engineering draft for owner review."
+  },
+  "asViewDose": "Xem mũi tiêm",
+  "@asViewDose": {
+    "description": "Button on Lumi's reply when the dose said is already recorded in the vaccination book: opens that dose's page. L5 lumi-plan. EN is an engineering draft for owner review."
+  },
   },
   "asFieldWeight": "Cân nặng",
   "@asFieldWeight": {

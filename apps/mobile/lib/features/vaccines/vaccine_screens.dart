@@ -205,7 +205,20 @@ void openDose(
 /// Tiêm chủng: the next shot, the view switch and the counter, then the matrix by vaccine
 /// (VX 1) or the timeline by month of age (VX 1b); overdue doses turn red (VX 9).
 class VaccineBookScreen extends ConsumerStatefulWidget {
-  const VaccineBookScreen({super.key});
+  const VaccineBookScreen({
+    super.key,
+    this.logKey,
+    this.logOn,
+    this.logPlace,
+    this.logFacility,
+  });
+
+  /// Lumi L5 ("bé vừa tiêm 6in1 mũi 2"): the dose whose "Ghi mũi tiêm" form opens once, filled
+  /// with the day, place and facility said; saved there by the person, never by Lumi.
+  final String? logKey;
+  final DateTime? logOn;
+  final VaccinePlace? logPlace;
+  final String? logFacility;
 
   @override
   ConsumerState<VaccineBookScreen> createState() => _VaccineBookScreenState();
@@ -213,6 +226,37 @@ class VaccineBookScreen extends ConsumerStatefulWidget {
 
 class _VaccineBookScreenState extends ConsumerState<VaccineBookScreen> {
   var _offeredSetup = false;
+  var _openedLog = false;
+
+  /// Lumi L5: the form on [VaccineBookScreen.logKey], once; a dose already given or declined
+  /// opens its page, and anyone who cannot log is told so (as a tap on the dose would).
+  void _openLog(Membership me, VaccineBook book) {
+    final key = widget.logKey;
+    if (key == null || _openedLog) return;
+    _openedLog = true;
+    final item = book.item(key);
+    if (item == null) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final record = item.record;
+      if (!vxCanLog(me) ||
+          (record != null && record.status != DoseRecordStatus.planned)) {
+        openDose(context, me, book, item);
+        return;
+      }
+      unawaited(
+        showDoseFormSheet(
+          context,
+          me: me,
+          book: book,
+          item: item,
+          day: widget.logOn,
+          place: widget.logPlace,
+          facility: widget.logFacility,
+        ),
+      );
+    });
+  }
 
   /// Cùng nuôi keep the plan's date in step with the profile (for caregivers, P-133), and are
   /// offered the first-time list once (VX 0).
@@ -240,6 +284,7 @@ class _VaccineBookScreenState extends ConsumerState<VaccineBookScreen> {
     final view = ref.watch(vaccineViewProvider);
     return _withBook(context, ref, (me, book, dob) {
       _maintain(me, book, dob);
+      _openLog(me, book);
       final next = book.nextGroup;
       final overdue = book.overdue;
       // D-084: the family's country has its own schedule here; D-078: it does not.
