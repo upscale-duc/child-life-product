@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { productRegistrySchema, type CopilotModelAnswer } from '@child-life/contracts';
 import { beforeAll, describe, expect, it } from 'vitest';
-import { groundAnswer, renderBlocks, sourcesOnly, type Retrieved } from '../src/product-copilot.js';
+import { groundAnswer, renderBlocks, retrieve, sourcesOnly, type Retrieved } from '../src/product-copilot.js';
 import { buildChangeSet, emptyState, sha256, type RepoFile } from '../src/product-hub-ingest.js';
 import { buildIndex, excerpt, search, tokenize, type SearchDoc, type SearchIndex } from '../src/product-hub-search.js';
 
@@ -106,6 +106,42 @@ describe('grounding', () => {
     const out = renderBlocks(evil);
     expect(out.match(/<block /g)).toHaveLength(1);
     expect(out.match(/<\/block>/g)).toHaveLength(1);
+  });
+});
+
+describe('retrieval', () => {
+  const sleep = {
+    id: 'care.sleep',
+    name: { vi: 'Giấc ngủ', en: 'Sleep' },
+    pillar: 'care',
+    aliases: ['ngủ', 'sleep tracker'],
+    hubKey: null,
+    capabilities: ['module.basic'],
+    platforms: ['ios', 'android'],
+    chapters: [],
+    lifecycle: 'built',
+    implementation: 'implemented',
+    verification: 'code_read',
+    release: 'not_released',
+    confidence: 'high',
+    dependsOn: [],
+    note: '',
+    facts: { modules: [], functions: [], callables: [], tests: [], docs: [], figma: [], decisions: [], codeCitations: [], deadGlobs: [] },
+    revision: 'r1',
+    syncedAt: '2026-10-31',
+  } as unknown as Parameters<typeof retrieve>[1]['features'][number];
+  const live = { features: [sleep], sections: new Map(), conflicts: [], tiers: {} } as Parameters<typeof retrieve>[1];
+  const index = buildIndex([
+    doc({ id: 'D-151', kind: 'decision', title: 'D-151 · Hiểu con answers', text: 'One night window for the whole app: 18:00–06:00 for sleep stats and Lumi.', ids: ['D-151'], authority: 'approved_decision' }),
+    doc({ id: 'other', title: 'Spending', text: 'Monthly budget and CSV import.' }),
+  ]);
+  it('a Vietnamese question about a feature finds English decisions and the feature facts (cross-language)', () => {
+    const r = retrieve(index, live, 'global', 'Nên cải thiện gì cho tính năng theo dõi giấc ngủ?');
+    const ids = r.blocks.map((b) => b.id);
+    expect(ids).toContain('feature:care.sleep');
+    expect(ids).toContain('D-151');
+    expect(ids).not.toContain('other');
+    expect(r.registry).toContain('care.sleep | Giấc ngủ / Sleep');
   });
 });
 

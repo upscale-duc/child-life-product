@@ -21,6 +21,7 @@ import {
   type ProductSourceRecord,
 } from '@child-life/contracts';
 import { FieldValue, type Firestore } from 'firebase-admin/firestore';
+import { fold } from './product-hub-ingest.js';
 import { buildIndex, excerpt, search, type SearchDoc, type SearchIndex } from './product-hub-search.js';
 import { parse, requireStaff, staffAudit, StaffError, type Staff } from './staff.js';
 
@@ -258,6 +259,17 @@ export function retrieve(index: SearchIndex | null, live: Live, scope: string, q
   };
   const named = new Set((question.match(/\b(?:care|grow|remember|platform)\.[a-z][a-z0-9_]+\b/g) ?? []).filter((id) => live.features.some((f) => f.id === id)));
   if (scope !== 'global') named.add(scope);
+  // Features named in words ("giấc ngủ", "auto-save"): their facts join the context, and their
+  // names in both languages widen the search, so a Vietnamese question finds English documents.
+  const folded = fold(question);
+  const byName = live.features
+    .map((f) => ({ f, hits: [f.name.vi, f.name.en, ...f.aliases].filter((n) => n && n.length >= 3 && folded.includes(fold(n))).length }))
+    .filter((x) => x.hits > 0)
+    .sort((a, b) => b.hits - a.hits || a.f.id.localeCompare(b.f.id))
+    .slice(0, 2)
+    .map((x) => x.f);
+  for (const f of byName) named.add(f.id);
+  const expanded = [question, ...byName.flatMap((f) => [f.name.en, f.name.vi, ...f.aliases])].join(' ');
   for (const id of named) {
     const f = live.features.find((x) => x.id === id)!;
     add(featureDoc(f, live));
@@ -273,7 +285,7 @@ export function retrieve(index: SearchIndex | null, live: Live, scope: string, q
   }
   if (index) {
     const feature = scope === 'global' ? undefined : scope;
-    for (const h of search(index, question, { k: scope === 'global' ? 10 : 8, feature })) add(h.doc);
+    for (const h of search(index, expanded, { k: scope === 'global' ? 10 : 8, feature: feature ?? byName[0]?.id })) add(h.doc);
     for (const id of question.match(/\b[DRPQG]-\d{3}\b/g) ?? []) add(index.docs.find((d) => d.id === id));
   }
   const blocks: Retrieved['blocks'] = [];
