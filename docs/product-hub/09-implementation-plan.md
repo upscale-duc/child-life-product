@@ -48,6 +48,13 @@ answer.
 
 ## Phase 3 — Product management
 
+**Progress (2026-10-31):** built — journeys registry (`registry/journeys.json`, 10 journeys from
+the UX journey audit, synced and source-checked), Hành trình tab, Quyết định tab (D/R/P/Q/G with
+the supersession chain and open questions by feature), opportunities with a two-person accept,
+Copilot drafts promoted to opportunities, conflict actions (confirm / dismiss / resolve / accept the
+difference / reopen, with a note or a decision id), "Tìm mâu thuẫn" on Claude (suggestions only,
+two real sources each), section history with a line diff.
+
 User Journeys (seeded from `docs/product-audit/07-ux-journey-audit.md` and plan-site flows A–F,
 each step linked to features); Decisions tab (D/R/P/Q/G mirror with filters, supersession chain,
 "open questions by feature"); Opportunities (draft → triaged → accepted/declined, evidence

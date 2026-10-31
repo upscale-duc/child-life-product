@@ -82,6 +82,7 @@ function textPaths(all: string[], registryText: string): Set<string> {
   const want = new Set(selectFiles(all, defaultSyncConfig));
   want.add('firebase/functions/src/index.ts');
   want.add('docs/product/business-map.md');
+  want.add('docs/product-hub/registry/journeys.json');
   const globs = reg.features.flatMap((f) => [...f.modules, ...f.functions]).map(globToRegExp);
   for (const p of all) {
     if (/\.(dart|ts|tsx|swift|kt)$/.test(p) && globs.some((g) => g.test(p))) want.add(p);
@@ -182,7 +183,7 @@ async function main() {
   );
   const byType = (t: string) => draft.items.filter((i) => i.type === t);
   console.log(
-    `  sources ${byType('source').length} · decisions ${byType('decision').length} · features ${byType('feature').length} · conflicts ${byType('conflict').length}`,
+    `  sources ${byType('source').length} · decisions ${byType('decision').length} · features ${byType('feature').length} · conflicts ${byType('conflict').length} · journeys ${byType('journey').length}`,
   );
   for (const i of draft.items.slice(0, 40)) {
     if (i.type === 'source') console.log(`  ${i.change.padEnd(8)} ${i.source.path} (${i.chunks.length} chunks)`);

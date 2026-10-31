@@ -9,7 +9,6 @@ import {
   premiumCapabilities,
   productChangeSetRefSchema,
   productCoverage,
-  productDecisionsQuerySchema,
   productFeatureRefSchema,
   productReviewChangeSetSchema,
   productSaveSectionSchema,
@@ -50,6 +49,7 @@ const C = {
   decisions: 'productDecisions',
   conflicts: 'productConflicts',
   changeSets: 'productChangeSets',
+  journeys: 'productJourneys',
 } as const;
 
 const iso = (v: unknown): string | null => {
@@ -80,11 +80,12 @@ async function inBatches<T>(db: Firestore, list: T[], write: (b: FirebaseFiresto
 // ---------- Applied state (read by the sync script) ----------
 
 export async function appliedState(db: Firestore): Promise<AppliedState> {
-  const [sources, decisions, features, conflicts] = await Promise.all([
+  const [sources, decisions, features, conflicts, journeys] = await Promise.all([
     db.collection(C.sources).where('kind', '==', 'repo_md').get(),
     db.collection(C.decisions).get(),
     db.collection(C.features).get(),
     db.collection(C.conflicts).select().get(),
+    db.collection(C.journeys).get(),
   ]);
   return {
     sources: sources.docs.map((d) => ({
@@ -102,6 +103,7 @@ export async function appliedState(db: Firestore): Promise<AppliedState> {
       features.docs.filter((d) => d.get('removed') !== true).map((d) => [d.id, recordHash(d.data())]),
     ),
     conflicts: conflicts.docs.map((d) => d.id),
+    journeys: Object.fromEntries(journeys.docs.map((d) => [d.id, recordHash(d.data())])),
   };
 }
 
@@ -284,6 +286,9 @@ export async function changeSetDetail(db: Firestore, staff: Staff | null, data: 
     conflicts: items
       .filter((i): i is Extract<StoredItem, { type: 'conflict' }> => i.type === 'conflict')
       .map((i) => i.conflict),
+    journeys: items
+      .filter((i): i is Extract<StoredItem, { type: 'journey' }> => i.type === 'journey')
+      .map((i) => ({ change: i.change, id: i.journey.id, name: i.journey.name ?? null })),
   };
 }
 
@@ -357,7 +362,9 @@ export async function reviewChangeSet(
     touched.push(i.source.path);
     if (i.before && i.before.path !== i.source.path) touched.push(i.before.path);
   }
-  const rest = items.filter((i) => i.type === 'decision' || i.type === 'feature' || i.type === 'conflict');
+  const rest = items.filter(
+    (i) => i.type === 'decision' || i.type === 'feature' || i.type === 'conflict' || i.type === 'journey',
+  );
   await inBatches(db, rest, (b, i) => {
     if (i.type === 'decision') {
       const r = db.collection(C.decisions).doc(i.decision.id);
@@ -367,6 +374,10 @@ export async function reviewChangeSet(
       const r = db.collection(C.features).doc(i.feature.id);
       if (i.change === 'deleted') b.set(r, { removed: true, removedAt: now }, { merge: true });
       else b.set(r, { ...i.feature, removed: false, hash: recordHash(i.feature) });
+    } else if (i.type === 'journey') {
+      const r = db.collection(C.journeys).doc(i.journey.id);
+      if (i.change === 'deleted') b.delete(r);
+      else b.set(r, { ...i.journey });
     } else if (i.type === 'conflict') {
       b.set(db.collection(C.conflicts).doc(i.conflict.id), { ...i.conflict, createdAt: now, changeSet: req.id });
     }
@@ -698,21 +709,6 @@ export async function productSource(db: Firestore, staff: Staff | null, data: un
       path: v.get('path') as string,
       syncedAt: iso(v.get('syncedAt')),
     })),
-  };
-}
-
-export async function productDecisions(db: Firestore, staff: Staff | null, data: unknown) {
-  requireStaff(staff, 'product.view');
-  const q = parse(productDecisionsQuerySchema, data ?? {});
-  let query: FirebaseFirestore.Query = db.collection(C.decisions);
-  if (q.kind) query = query.where('kind', '==', q.kind);
-  if (q.feature) query = query.where('features', 'array-contains', q.feature);
-  const snap = await query.get();
-  return {
-    decisions: snap.docs
-      .map((d) => d.data() as ProductDecisionRecord)
-      .map((r) => ({ id: r.id, kind: r.kind, title: r.title, date: r.date, status: r.status, features: r.features, line: r.source.line }))
-      .sort((a, b) => b.id.localeCompare(a.id)),
   };
 }
 

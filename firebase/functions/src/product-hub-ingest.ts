@@ -1,7 +1,9 @@
 import { createHash } from 'node:crypto';
 import {
   catalogueFeature,
+  journeyRegistrySchema,
   type ChangeItem,
+  type ProductJourneyRecord,
   type ChangeSetSummary,
   type DecisionKind,
   type DecisionStatus,
@@ -600,15 +602,34 @@ export function detectConflicts(
 
 // ---------- Snapshot → change set ----------
 
+export const journeyRegistryPath = 'docs/product-hub/registry/journeys.json';
+
+/** Problems with a cited source against the snapshot: missing file or missing heading. */
+export function sourceProblem(src: string, files: Map<string, RepoFile>, ids: Set<string>): string | null {
+  if (/^[DRPQG]-\d{3}$/.test(src)) return ids.size === 0 || ids.has(src) ? null : `${src} is not in the business map`;
+  const m = src.match(/^([^#:]+)(?:#(.+)|:(\d+))?$/);
+  if (!m) return `${src} is not a path, path#anchor, path:line or id`;
+  const file = files.get(m[1]!);
+  if (!file) return `${m[1]} does not exist`;
+  if (m[2] && file.text !== undefined) {
+    const anchors = new Set(chunkMarkdown(file.text).map((c) => c.anchor));
+    for (const h of file.text.matchAll(/^#{1,6}\s+(.+?)\s*#*\s*$/gm)) anchors.add(anchorOf(h[1]!.replace(/[*_`]/g, '')));
+    if (!anchors.has(m[2])) return `${src}: no heading with that anchor`;
+  }
+  return null;
+}
+
 export interface AppliedState {
   sources: Array<Pick<ProductSourceRecord, 'id' | 'path' | 'contentHash' | 'blobSha' | 'status' | 'authority' | 'features'>>;
   /** id → hash of the stored record (see `recordHash`). */
   decisions: Record<string, string>;
   features: Record<string, string>;
   conflicts: string[];
+  /** id → hash; absent in states recorded before journeys existed. */
+  journeys?: Record<string, string>;
 }
 
-export const emptyState: AppliedState = { sources: [], decisions: {}, features: {}, conflicts: [] };
+export const emptyState: AppliedState = { sources: [], decisions: {}, features: {}, conflicts: [], journeys: {} };
 
 /**
  * A stable hash of what a record says, to tell "changed" from "unchanged": time stamps, the
@@ -851,6 +872,38 @@ export function buildChangeSet(snapshot: Snapshot, state: AppliedState): ChangeS
     if (registryIds.has(id)) continue;
     const meta = { id } as ProductFeatureRecord;
     items.push({ type: 'feature', change: 'deleted', feature: meta });
+  }
+
+  // Journeys (Phase 3): reviewed like features; every step's feature and every source is checked.
+  const journeyFile = readText(journeyRegistryPath);
+  if (journeyFile !== undefined) {
+    const parsed = journeyRegistrySchema.safeParse(JSON.parse(journeyFile));
+    if (!parsed.success) warnings.push(`${journeyRegistryPath}: not valid (${parsed.error.issues[0]?.message ?? 'schema'}); journeys skipped`);
+    else {
+      const decisionIds = new Set(
+        items.flatMap((i) => (i.type === 'decision' ? [i.decision.id] : [])).concat(Object.keys(state.decisions)),
+      );
+      const seen = new Set<string>();
+      for (const j of parsed.data.journeys) {
+        seen.add(j.id);
+        const features = [...new Set(j.steps.flatMap((st) => (st.feature ? [st.feature] : [])))].sort();
+        for (const f of features) if (!registryIds.has(f)) warnings.push(`journey ${j.id}: unknown feature ${f}`);
+        for (const src of j.sources) {
+          const problem = sourceProblem(src, byPath, decisionIds);
+          if (problem) warnings.push(`journey ${j.id}: ${problem}`);
+        }
+        const record: ProductJourneyRecord = { ...j, features, revision: snapshot.revision, syncedAt };
+        const h = recordHash(record);
+        if (state.journeys?.[j.id] === h) {
+          unchanged++;
+          continue;
+        }
+        items.push({ type: 'journey', change: state.journeys?.[j.id] ? 'changed' : 'added', journey: record });
+      }
+      for (const id of Object.keys(state.journeys ?? {})) {
+        if (!seen.has(id)) items.push({ type: 'journey', change: 'deleted', journey: { id } as ProductJourneyRecord });
+      }
+    }
   }
 
   const known = new Set(state.conflicts);

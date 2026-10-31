@@ -22,7 +22,7 @@ import {
   shortRev,
   useLocalName,
 } from './kit';
-import type { FeatureView } from './types';
+import type { FeatureView, SectionVersionsView } from './types';
 import { Thread } from './Copilot';
 
 /** Errors of the Sản phẩm callables that have their own words. */
@@ -37,6 +37,11 @@ export function productErrorId(e: unknown): string {
     'copilot-limit-hour',
     'copilot-limit-day',
     'copilot-limit-global',
+    'copilot-unconfigured',
+    'copilot-invalid',
+    'opportunity-closed',
+    'bad-transition',
+    'note-required',
   ];
   return e.reason && own.includes(e.reason) ? `ph.error.${e.reason}` : errorMessageId(e);
 }
@@ -167,7 +172,7 @@ export function FeatureView({ data, onChanged = () => undefined }: { data: Featu
             {sections(tabSections.measure)}
           </TabsContent>
           <TabsContent value="sources" className="grid gap-4 [&>*]:min-w-0">
-            <SourcesBlock data={data} />
+            <SourcesBlock data={data} onChanged={onChanged} />
             {sections(tabSections.sources)}
           </TabsContent>
         </Tabs>
@@ -254,6 +259,7 @@ function SectionCard({
   const intl = useIntl();
   const api = useApi();
   const [editing, setEditing] = useState(false);
+  const [history, setHistory] = useState(false);
   const [busy, setBusy] = useState(false);
   const base = section.draft ?? section.approved;
   const [vi, setVi] = useState(base?.body.vi ?? '');
@@ -293,6 +299,14 @@ function SectionCard({
             <FormattedMessage id="ph.section.stale" values={{ paths: section.stale.paths.join(', ') }} />
           </Notice>
         )}
+        {section.approved && section.approved.version > 1 && (
+          <span>
+            <Button kind="ghost" onClick={() => setHistory((h) => !h)}>
+              <FormattedMessage id={history ? 'ph.history.hide' : 'ph.history.show'} values={{ n: section.approved.version - 1 }} />
+            </Button>
+          </span>
+        )}
+        {history && <VersionHistory feature={feature} sectionKey={k} />}
         {section.approved ? (
           <Body version={section.approved} meta={<FormattedMessage
             id="ph.section.approvedMeta"
@@ -555,13 +569,20 @@ function FactsBlock({ data }: { data: FeatureView }) {
   );
 }
 
-function SourcesBlock({ data }: { data: FeatureView }) {
+function SourcesBlock({ data, onChanged }: { data: FeatureView; onChanged: () => void }) {
   const intl = useIntl();
   const navigate = useNavigate();
   return (
     <>
-      {data.conflicts.length > 0 && (
-        <Section title={<FormattedMessage id="ph.conflicts.title" />}>
+      <Section
+        title={<FormattedMessage id="ph.conflicts.title" />}
+        actions={data.canEdit ? <FindConflicts feature={data.feature.id} onDone={onChanged} /> : null}
+      >
+        {data.conflicts.length === 0 ? (
+          <Meta>
+            <FormattedMessage id="ph.conflict.noneForFeature" />
+          </Meta>
+        ) : (
           <ul className="grid gap-3">
             {data.conflicts.map((c) => (
               <li key={c.id} className="grid gap-2 rounded-lg border p-3">
@@ -584,8 +605,8 @@ function SourcesBlock({ data }: { data: FeatureView }) {
               </li>
             ))}
           </ul>
-        </Section>
-      )}
+        )}
+      </Section>
       <Section title={<FormattedMessage id="ph.sources.forFeature" values={{ n: data.sources.length }} />}>
         {data.sources.length === 0 ? (
           <Meta>
@@ -626,5 +647,87 @@ function SourcesBlock({ data }: { data: FeatureView }) {
         )}
       </Section>
     </>
+  );
+}
+
+/** "Tìm mâu thuẫn": Claude reads this feature's sources; what it finds waits as a suggestion. */
+function FindConflicts({ feature, onDone }: { feature: string; onDone: () => void }) {
+  const intl = useIntl();
+  const api = useApi();
+  const [busy, setBusy] = useState(false);
+  return (
+    <Button
+      kind="ghost"
+      disabled={busy}
+      onClick={async () => {
+        setBusy(true);
+        try {
+          const r = await api.call<{ added: number; skipped: number }>('productCopilotFindConflicts', {
+            feature,
+            locale: intl.locale.startsWith('en') ? 'en' : 'vi',
+          });
+          toast.success(intl.formatMessage({ id: 'ph.conflict.found' }, { n: r.added }));
+          onDone();
+        } catch (e) {
+          toast.error(intl.formatMessage({ id: productErrorId(e) }));
+        } finally {
+          setBusy(false);
+        }
+      }}
+    >
+      <FormattedMessage id={busy ? 'ph.conflict.finding' : 'ph.conflict.find'} />
+    </Button>
+  );
+}
+
+/** Lines only in one of two texts: enough to see what an approval changed. */
+export function lineDiff(before: string, after: string) {
+  const a = before.split('\n');
+  const b = after.split('\n');
+  return { removed: a.filter((l) => l.trim() && !b.includes(l)), added: b.filter((l) => l.trim() && !a.includes(l)) };
+}
+
+function VersionHistory({ feature, sectionKey }: { feature: string; sectionKey: string }) {
+  const intl = useIntl();
+  const [load, reload] = useLoad<SectionVersionsView>('productHubSectionVersions', { feature, key: sectionKey }, `${feature}/${sectionKey}`);
+  return (
+    <Loaded load={load} reload={reload}>
+      {(d) => {
+        const chain = [d.current, ...d.versions].filter((v): v is NonNullable<typeof v> => !!v);
+        return (
+          <ol className="grid gap-3 rounded-lg border bg-muted/30 p-3 text-[13px]">
+            {chain.slice(1).map((v, i) => {
+              const next = chain[i]!;
+              const diff = lineDiff(v.body.vi, next.body.vi);
+              return (
+                <li key={v.version} className="grid gap-1">
+                  <span className="font-medium">
+                    <FormattedMessage
+                      id="ph.history.version"
+                      values={{ from: v.version, to: next.version, by: next.approvedBy, date: shortDate(intl, next.approvedAt) }}
+                    />
+                  </span>
+                  {diff.removed.map((l) => (
+                    <span key={`-${l}`} className="rounded bg-destructive/10 px-1.5 whitespace-pre-wrap">
+                      − {l}
+                    </span>
+                  ))}
+                  {diff.added.map((l) => (
+                    <span key={`+${l}`} className="rounded bg-primary/10 px-1.5 whitespace-pre-wrap">
+                      + {l}
+                    </span>
+                  ))}
+                  {!diff.removed.length && !diff.added.length && (
+                    <span className="text-muted-foreground">
+                      <FormattedMessage id="ph.history.sourcesOnly" />
+                    </span>
+                  )}
+                </li>
+              );
+            })}
+          </ol>
+        );
+      }}
+    </Loaded>
   );
 }

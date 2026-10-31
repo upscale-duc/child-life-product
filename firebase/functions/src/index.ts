@@ -25,7 +25,6 @@ import {
   actSection as productActSection,
   changeSetDetail as productChangeSetDetail,
   listChangeSets as productChangeSets,
-  productDecisions,
   productFeature,
   productFeatures,
   productOverview,
@@ -39,6 +38,7 @@ import { COPILOT_MODEL } from '@child-life/contracts';
 import { claudeCopilotModel } from './product-copilot-claude.js';
 import {
   askCopilot as productAskCopilot,
+  findConflicts as productFindConflicts,
   createDraft as productCreateDraft,
   deleteConversation as productDeleteConversation,
   getConversation as productGetConversation,
@@ -48,6 +48,19 @@ import {
   searchKnowledge as productSearchKnowledge,
   type ArtifactStore,
 } from './product-copilot.js';
+import {
+  actConflict as productActConflict,
+  actDraft as productActDraft,
+  getDecision as productGetDecision,
+  getJourney as productGetJourney,
+  listConflicts as productListConflicts,
+  listDecisions as productListDecisions,
+  listJourneys as productListJourneys,
+  listOpportunities as productListOpportunities,
+  saveOpportunity as productSaveOpportunity,
+  sectionVersions as productSectionVersions,
+  setOpportunityStatus as productSetOpportunityStatus,
+} from './product-manage.js';
 import { observeEngagementContent } from './engagement-observers.js';
 import {
   refreshEngagement,
@@ -2556,7 +2569,7 @@ export const productHubSource = staffCall('productHubSource', (s, d) =>
   productSource(getFirestore(), s, d),
 );
 export const productHubDecisions = staffCall('productHubDecisions', (s, d) =>
-  productDecisions(getFirestore(), s, d),
+  productListDecisions(getFirestore(), s, d),
 );
 export const productHubChangeSets = staffCall('productHubChangeSets', (s) =>
   productChangeSets(getFirestore(), s),
@@ -2619,6 +2632,50 @@ export const productHubCreateDraft = staffCall('productHubCreateDraft', (s, d) =
 );
 export const productHubDrafts = staffCall('productHubDrafts', (s) =>
   productListDrafts(getFirestore(), s),
+);
+
+// Sản phẩm · Phase 3: decisions, journeys, opportunities, conflicts, section history.
+export const productHubDecision = staffCall('productHubDecision', (s, d) =>
+  productGetDecision(getFirestore(), s, d),
+);
+export const productHubJourneys = staffCall('productHubJourneys', (s) =>
+  productListJourneys(getFirestore(), s),
+);
+export const productHubJourney = staffCall('productHubJourney', (s, d) =>
+  productGetJourney(getFirestore(), s, d),
+);
+export const productHubOpportunities = staffCall('productHubOpportunities', (s) =>
+  productListOpportunities(getFirestore(), s),
+);
+export const productHubSaveOpportunity = staffCall('productHubSaveOpportunity', (s, d) =>
+  productSaveOpportunity(getFirestore(), s, d, new Date()),
+);
+export const productHubOpportunityStatus = staffCall('productHubOpportunityStatus', (s, d) =>
+  productSetOpportunityStatus(getFirestore(), s, d, new Date()),
+);
+export const productHubDraftAct = staffCall('productHubDraftAct', (s, d) =>
+  productActDraft(getFirestore(), s, d, new Date()),
+);
+export const productHubConflicts = staffCall('productHubConflicts', (s, d) =>
+  productListConflicts(getFirestore(), s, d),
+);
+export const productHubConflictAct = staffCall('productHubConflictAct', (s, d) =>
+  productActConflict(getFirestore(), s, d, new Date()),
+);
+export const productHubSectionVersions = staffCall('productHubSectionVersions', (s, d) =>
+  productSectionVersions(getFirestore(), s, d),
+);
+export const productCopilotFindConflicts = staffCall(
+  'productCopilotFindConflicts',
+  (s, d) => {
+    const key = anthropicKey.value();
+    const model =
+      key && key !== 'unset'
+        ? claudeCopilotModel(key, COPILOT_MODEL, (usage) => recordAiCall(getFirestore(), usage))
+        : null;
+    return productFindConflicts(getFirestore(), s, d, new Date(), { store: productSearchStore, model });
+  },
+  { secrets: [anthropicKey] },
 );
 
 // "Tính năng & Premium" hub (D-089 / P-172): catalogue, tiers, overrides, "toàn bộ Premium".

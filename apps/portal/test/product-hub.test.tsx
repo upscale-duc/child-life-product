@@ -22,6 +22,9 @@ import { OverviewView } from '../src/screens/product/Overview';
 import { PlansView } from '../src/screens/product/Plans';
 import { ChangeSetDetail, LibraryView, ReviewQueue } from '../src/screens/product/Sources';
 import { AnswerView, Thread } from '../src/screens/product/Copilot';
+import { ConflictsView, DecisionsView, DraftsView, OpportunitiesView } from '../src/screens/product/Decisions';
+import { lineDiff } from '../src/screens/product/Feature';
+import { JourneyDetail } from '../src/screens/product/Journeys';
 import type { CopilotAnswer } from '@child-life/contracts';
 import type {
   ChangeSetView,
@@ -164,10 +167,13 @@ describe('routes and access', () => {
     expect(allowedRoute(levelsForRoles(['analyst']), 'product')).toBe('product');
     expect(allowedRoute(levelsForRoles(['support']), 'product')).not.toBe('product');
   });
-  it('shows the built tabs only (Copilot from Phase 2; no Journeys yet)', () => {
+  it('shows the built tabs only (Phase 3: journeys and decisions; no Insights yet)', () => {
     const html = text(render(<ProductHubScreen initial={{ tab: 'plans' }} />));
-    for (const t of ['Tổng quan', 'Tính năng', 'Copilot', 'Gói & quyền', 'Nguồn tri thức']) expect(html).toContain(t);
-    expect(html).not.toContain('Hành trình');
+    for (const t of ['Tổng quan', 'Tính năng', 'Hành trình', 'Quyết định', 'Copilot', 'Gói & quyền', 'Nguồn tri thức']) expect(html).toContain(t);
+    expect(html).not.toContain('Hiệu quả');
+    expect(productPlaceOf('/product/decisions/D-151')).toEqual({ tab: 'decisions', part: 'decisions', decision: 'D-151' });
+    expect(productPlaceOf('/product/decisions/opportunities')).toEqual({ tab: 'decisions', part: 'opportunities', decision: null });
+    expect(productPlaceOf('/product/journeys/first_feeding_log')).toEqual({ tab: 'journeys', journey: 'first_feeding_log' });
     expect(productPlaceOf('/product/copilot/abcDEF12345')).toEqual({ tab: 'copilot', conversation: 'abcDEF12345' });
   });
 });
@@ -393,5 +399,87 @@ describe('copilot', () => {
     const html = text(render(<Thread scope="global" initial={[]} />));
     expect(html).toContain('Free và Premium khác nhau ở những tính năng nào?');
     expect(html).toContain('không có dữ liệu gia đình');
+  });
+});
+
+describe('phase 3', () => {
+  it('decisions show status, the supersession chain and open questions by feature', () => {
+    const html = text(
+      render(
+        <DecisionsView
+          data={{
+            total: 3,
+            decisions: [
+              { id: 'D-002', kind: 'D', title: 'Night 18–06', excerpt: '', date: '2026-10-31', status: 'approved', features: [], resolves: [], supersedes: ['D-001'], supersededBy: [], resolvedBy: [], line: 5 },
+              { id: 'D-001', kind: 'D', title: 'Old night', excerpt: '', date: '2026-10-10', status: 'superseded', features: [], resolves: ['Q-001'], supersedes: [], supersededBy: ['D-002'], resolvedBy: [], line: 4 },
+            ],
+            openByFeature: { 'care.sleep': ['Q-002'], '—': ['G-020'] },
+          }}
+        />,
+      ),
+    );
+    expect(html).toContain('Đã bị thay');
+    expect(html).toContain('bị thay bởi D-002');
+    expect(html).toContain('giải quyết Q-001');
+    expect(html).toContain('care.sleep Q-002');
+    expect(html).toContain('Chưa gắn tính năng G-020');
+  });
+
+  const opp = {
+    id: 'o1', title: 'Next-feed nudge', feature: 'care.feeding', problem: 'Night feeds missed', evidence: ['D-001'], hypothesis: 'A nudge helps', proposal: '', impact: 'high' as const, effort: 's' as const, priority: 'p1' as const, successCriteria: '', decisions: ['D-001'], status: 'triaged' as const, fromDraft: null, createdBy: 'Kỹ sư', createdByUid: 's_eng', createdAt: null, updatedAt: null, history: [],
+  };
+  it('the creator sees no Accept on their own opportunity; another approver does', () => {
+    const mine = text(render(<OpportunitiesView data={{ opportunities: [opp], canEdit: true, canApprove: true }} />, ['admin'], 'vi', 's_eng'));
+    expect(mine).not.toContain('Chấp nhận');
+    expect(mine).toContain('Đưa về đề xuất');
+    const other = text(render(<OpportunitiesView data={{ opportunities: [opp], canEdit: true, canApprove: true }} />, ['admin']));
+    expect(other).toContain('Chấp nhận');
+    expect(other).toContain('Tác động cao · công sức S · ưu tiên P1');
+  });
+
+  it('a Claude suggestion is marked and can only be confirmed or dismissed', () => {
+    const html = text(
+      render(
+        <ConflictsView
+          data={{
+            canApprove: true,
+            canEdit: true,
+            conflicts: [
+              { id: 'cf', topic: 'ai_suggested', feature: 'care.feeding', summary: 'Hai nguồn nói khác nhau', tiers: null, claims: [], status: 'suggested', createdAt: null, resolution: null, history: [] },
+            ],
+          }}
+        />,
+      ),
+    );
+    expect(html).toContain('Do Claude tìm');
+    expect(html).toContain('Xác nhận là xung đột');
+    expect(html).not.toContain('Chấp nhận khác biệt');
+  });
+
+  it('drafts can be promoted or dismissed', () => {
+    const html = text(render(<DraftsView data={{ drafts: [{ id: 'd1', type: 'hypothesis', feature: null, title: 'Nudge', body: 'If…', evidence: [], status: 'draft', createdBy: 'Linh', createdAt: null }] }} />));
+    expect(html).toContain('Chuyển thành cơ hội');
+  });
+
+  it('a journey lists its steps with their features', () => {
+    const html = text(
+      render(
+        <JourneyDetail
+          data={{
+            journey: {
+              id: 'first_feeding_log', name: { vi: 'Ghi cữ ăn đầu tiên', en: 'First feeding log' }, goal: { vi: 'Ghi một cữ ăn.', en: '' }, trigger: { vi: 'Chạm thẻ.', en: '' }, preconditions: [], steps: [{ text: { vi: 'Mở sheet.', en: '' }, feature: 'care.feeding' }], alternatives: [], errors: [{ vi: 'Ngoại tuyến.', en: '' }], completion: { vi: 'Bản ghi hiện.', en: '' }, metrics: ['A09'], verification: 'code_read', sources: ['docs/product-audit/07-ux-journey-audit.md#j11'], features: ['care.feeding'], revision: 'abc12345', syncedAt: '',
+            },
+            features: [{ id: 'care.feeding', name: { vi: 'Cho ăn', en: 'Feeding' }, lifecycle: 'built', verification: 'code_read' }],
+          }}
+        />,
+      ),
+    );
+    expect(html).toContain('Mở sheet. Cho ăn');
+    expect(html).toContain('Ngoại tuyến.');
+    expect(html).toContain('A09');
+  });
+
+  it('line diff shows what an approval changed', () => {
+    expect(lineDiff('a\nb', 'a\nc')).toEqual({ removed: ['b'], added: ['c'] });
   });
 });

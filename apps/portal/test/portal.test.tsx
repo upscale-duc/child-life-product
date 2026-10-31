@@ -296,6 +296,10 @@ describe('message catalogs (D-012)', () => {
               phrase: 'x',
               stage: 'x',
               // Sản phẩm (D-155).
+              decision: 'x',
+              effort: 'x',
+              impact: 'x',
+              priority: 'x',
               rev: 'x',
               path: 'x',
               paths: 'x',

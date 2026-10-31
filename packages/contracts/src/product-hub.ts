@@ -240,11 +240,12 @@ export type ChangeItem =
       change: Exclude<ChangeKind, 'moved'>;
       feature: ProductFeatureRecord;
     }
-  | { type: 'conflict'; change: 'added'; conflict: ProductConflictRecord };
+  | { type: 'conflict'; change: 'added'; conflict: ProductConflictRecord }
+  | { type: 'journey'; change: Exclude<ChangeKind, 'moved'>; journey: ProductJourneyRecord };
 
 export interface ProductConflictRecord {
   id: string;
-  topic: 'tier' | 'plan_model' | 'superseded_citation' | 'dead_reference';
+  topic: 'tier' | 'plan_model' | 'superseded_citation' | 'dead_reference' | 'ai_suggested';
   feature: string | null;
   /** English, for logs and the sync output; the portal words it from `topic` and `tiers`. */
   summary: string;
@@ -257,7 +258,11 @@ export interface ProductConflictRecord {
     text: string;
     date: string | null;
   }>;
-  status: 'open' | 'resolved' | 'accepted_difference';
+  /**
+   * `suggested` (Phase 3): found by Claude, not yet confirmed by a person; it counts nowhere until
+   * accepted (→ open) or dismissed. `resolved` / `accepted_difference` close an open conflict.
+   */
+  status: 'suggested' | 'open' | 'resolved' | 'accepted_difference' | 'dismissed';
 }
 
 export interface ChangeSetSummary {
@@ -431,6 +436,8 @@ export const productReviewChangeSetSchema = z.object({
 export const productDecisionsQuerySchema = z.object({
   kind: z.enum(decisionKinds).optional(),
   feature: productFeatureIdSchema.optional(),
+  status: z.enum(decisionStatuses).optional(),
+  q: z.string().trim().max(80).optional(),
 });
 
 // ---------- Copilot (Phase 2, doc 07) ----------
@@ -485,7 +492,7 @@ export const copilotModelAnswerSchema = z.object({
 });
 export type CopilotModelAnswer = z.infer<typeof copilotModelAnswerSchema>;
 
-export type CopilotBlockKind = 'chunk' | 'decision' | 'section' | 'feature' | 'registry' | 'conflict';
+export type CopilotBlockKind = 'chunk' | 'decision' | 'section' | 'feature' | 'registry' | 'conflict' | 'journey';
 export interface CopilotCitation {
   id: string;
   kind: CopilotBlockKind;
@@ -544,4 +551,107 @@ export const productCreateDraftSchema = z.object({
 export const productHubSearchSchema = z.object({
   q: z.string().trim().min(2).max(200),
   feature: productFeatureIdSchema.optional(),
+});
+
+// ---------- Phase 3: journeys, opportunities, conflicts, section history ----------
+
+const localizedText = z.object({ vi: z.string().trim().min(1).max(1500), en: z.string().max(1500) });
+
+/** A user journey as kept in `docs/product-hub/registry/journeys.json` (reviewed like features). */
+export const registryJourneySchema = z.object({
+  id: z.string().regex(/^[a-z][a-z0-9_]{2,40}$/),
+  name: localized,
+  goal: localizedText,
+  trigger: localizedText,
+  preconditions: z.array(localizedText).max(10).default([]),
+  steps: z
+    .array(z.object({ text: localizedText, feature: productFeatureIdSchema.nullable().default(null) }))
+    .min(1)
+    .max(20),
+  alternatives: z.array(localizedText).max(10).default([]),
+  errors: z.array(localizedText).max(12).default([]),
+  completion: localizedText,
+  metrics: z.array(z.string().max(120)).max(10).default([]),
+  verification: z.enum(featureVerifications),
+  sources: z.array(z.string().min(3).max(300)).min(1).max(20),
+});
+export type RegistryJourney = z.infer<typeof registryJourneySchema>;
+export const journeyRegistrySchema = z.object({
+  version: z.literal(1),
+  journeys: z.array(registryJourneySchema).max(100),
+});
+export interface ProductJourneyRecord extends RegistryJourney {
+  features: string[];
+  revision: string;
+  syncedAt: string;
+}
+
+export const opportunityStatuses = ['proposed', 'triaged', 'accepted', 'declined', 'done'] as const;
+export type OpportunityStatus = (typeof opportunityStatuses)[number];
+export const opportunityLevels = ['low', 'medium', 'high'] as const;
+export const opportunityEfforts = ['s', 'm', 'l'] as const;
+export const opportunityPriorities = ['p1', 'p2', 'p3'] as const;
+
+export const productSaveOpportunitySchema = z.object({
+  id: z.string().min(10).max(40).optional(),
+  title: z.string().trim().min(3).max(160),
+  feature: productFeatureIdSchema.nullable().default(null),
+  problem: z.string().trim().min(1).max(4000),
+  evidence: z.array(sectionSourceSchema).max(24).default([]),
+  hypothesis: z.string().trim().max(2000).default(''),
+  proposal: z.string().trim().max(4000).default(''),
+  impact: z.enum(opportunityLevels).default('medium'),
+  effort: z.enum(opportunityEfforts).default('m'),
+  priority: z.enum(opportunityPriorities).default('p2'),
+  successCriteria: z.string().trim().max(2000).default(''),
+  decisions: z.array(decisionIdSchema).max(20).default([]),
+});
+export type ProductOpportunityInput = z.infer<typeof productSaveOpportunitySchema>;
+export const productOpportunityStatusSchema = z.object({
+  id: z.string().min(10).max(40),
+  status: z.enum(opportunityStatuses),
+  note: z.string().trim().max(1000).default(''),
+});
+export interface ProductOpportunity extends ProductOpportunityInput {
+  id: string;
+  status: OpportunityStatus;
+  fromDraft: string | null;
+  createdBy: string;
+  createdByUid: string;
+  createdAt: string | null;
+  updatedAt: string | null;
+  history: Array<{ from: OpportunityStatus | null; to: OpportunityStatus; by: string; at: string; note: string }>;
+}
+
+export const productDraftActSchema = z.object({
+  id: z.string().min(10).max(40),
+  action: z.enum(['promote', 'dismiss']),
+});
+export const productConflictActSchema = z.object({
+  id: z.string().min(3).max(60),
+  action: z.enum(['accept', 'dismiss', 'resolve', 'accept_difference', 'reopen']),
+  note: z.string().trim().max(1000).default(''),
+  decision: decisionIdSchema.nullable().default(null),
+});
+export const productConflictsQuerySchema = z.object({
+  status: z.enum(['all', 'suggested', 'open', 'resolved', 'accepted_difference', 'dismissed']).default('all'),
+});
+export const productFindConflictsSchema = z.object({ feature: productFeatureIdSchema, locale: z.enum(['vi', 'en']) });
+export const productSectionRefSchema = z.object({
+  feature: productFeatureIdSchema,
+  key: z.enum(featureSectionKeys),
+});
+export const productJourneyRefSchema = z.object({ id: z.string().regex(/^[a-z][a-z0-9_]{2,40}$/) });
+export const productDecisionRefSchema = z.object({ id: decisionIdSchema });
+
+/** What Claude returns when asked for contradictions (each claim must cite a block). */
+export const copilotConflictsSchema = z.object({
+  conflicts: z
+    .array(
+      z.object({
+        summary: z.string().max(600),
+        claims: z.array(z.object({ block: z.string().max(10), text: z.string().max(600) })).min(2).max(4),
+      }),
+    )
+    .max(6),
 });

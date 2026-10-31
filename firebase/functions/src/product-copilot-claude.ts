@@ -35,7 +35,7 @@ export function claudeCopilotModel(
           fallbacks: 'default',
           output_config: {
             effort: 'medium',
-            format: { type: 'json_schema', schema: copilotOutputSchema as unknown as Record<string, unknown> },
+            format: { type: 'json_schema', schema: call.schema ?? (copilotOutputSchema as unknown as Record<string, unknown>) },
           },
           system: [
             { type: 'text', text: call.system },

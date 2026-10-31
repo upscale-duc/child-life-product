@@ -1,0 +1,816 @@
+{
+  "version": 1,
+  "journeys": [
+    {
+      "id": "first_launch_profile",
+      "name": {
+        "vi": "Lần đầu mở app và tạo hồ sơ bé",
+        "en": "First launch and baby profile"
+      },
+      "goal": {
+        "vi": "Bắt đầu dùng app với hồ sơ bé đúng múi giờ và vai trò của mình.",
+        "en": "Start using the app with the baby profile in the right time zone and role."
+      },
+      "trigger": {
+        "vi": "Mở app lần đầu, hoặc thêm bé từ nút chọn bé.",
+        "en": "First app open, or adding a baby from the baby switcher."
+      },
+      "preconditions": [
+        {
+          "vi": "Có kết nối mạng để đăng nhập.",
+          "en": "A network connection to sign in."
+        }
+      ],
+      "steps": [
+        {
+          "text": {
+            "vi": "Đăng nhập hoặc vào ngay (tài khoản tạm).",
+            "en": "Sign in or start now (temporary account)."
+          },
+          "feature": "platform.onboarding"
+        },
+        {
+          "text": {
+            "vi": "Chọn mình là ai với bé và vai trò.",
+            "en": "Choose your relation to the baby and your role."
+          },
+          "feature": "care.family_roles"
+        },
+        {
+          "text": {
+            "vi": "Nhập hồ sơ bé: tên gọi, ngày sinh, múi giờ, mục cần theo dõi.",
+            "en": "Enter the baby profile: nickname, birth date, time zone, what to track."
+          },
+          "feature": "platform.onboarding"
+        },
+        {
+          "text": {
+            "vi": "Vào Hôm nay với hướng dẫn lần đầu.",
+            "en": "Land on Today with the first-run tour."
+          },
+          "feature": "platform.adaptive_today"
+        }
+      ],
+      "alternatives": [
+        {
+          "vi": "Thêm bé thứ hai dùng lại cùng các bước.",
+          "en": "Adding a second baby reuses the same steps."
+        }
+      ],
+      "errors": [
+        {
+          "vi": "Ngày sinh hoặc giới hạn số bé bị từ chối ở máy chủ.",
+          "en": "Birth date or baby limit refused by the server."
+        },
+        {
+          "vi": "Mất mạng hoặc phản hồi chậm khi tạo hồ sơ (chưa thử trên máy).",
+          "en": "Network loss or a slow callback while creating the profile (not tried on a device)."
+        }
+      ],
+      "completion": {
+        "vi": "Hôm nay hiện với bé đã chọn; trạng thái trống mời ghi việc đầu tiên.",
+        "en": "Today shows the selected baby; the empty state invites the first log."
+      },
+      "metrics": [
+        "A07",
+        "A08",
+        "A09"
+      ],
+      "verification": "code_read",
+      "sources": [
+        "docs/product-audit/07-ux-journey-audit.md#j01-bat-dau-va-tao-ho-so-be",
+        "docs/product/business-map.md#71-onboarding-identity-appearance"
+      ]
+    },
+    {
+      "id": "first_feeding_log",
+      "name": {
+        "vi": "Ghi cữ ăn đầu tiên",
+        "en": "First feeding log"
+      },
+      "goal": {
+        "vi": "Ghi một cữ ăn trong vài chạm để cả nhà cùng thấy.",
+        "en": "Log a feed in a few taps so the family sees it."
+      },
+      "trigger": {
+        "vi": "Chạm thẻ Bú bình / Bú mẹ trên Hôm nay hoặc nút \"+\".",
+        "en": "Tap the Bottle / Breast tile on Today or the \"+\" button."
+      },
+      "preconditions": [
+        {
+          "vi": "Có hồ sơ bé và vai trò được ghi (không phải người thân).",
+          "en": "A baby profile and a role that may log (not a relative)."
+        }
+      ],
+      "steps": [
+        {
+          "text": {
+            "vi": "Mở sheet; loại và sữa lần trước được chọn sẵn, giờ là bây giờ.",
+            "en": "The sheet opens with last type and milk preselected, time = now."
+          },
+          "feature": "care.feeding"
+        },
+        {
+          "text": {
+            "vi": "Nhập ml (không bắt buộc) hoặc bấm giờ bú mẹ.",
+            "en": "Enter ml (optional) or start the breast timer."
+          },
+          "feature": "care.feeding"
+        },
+        {
+          "text": {
+            "vi": "Lưu; thẻ Hôm nay cập nhật \"bao lâu trước · ai ghi\".",
+            "en": "Save; the Today tile shows \"how long ago · who\"."
+          },
+          "feature": "platform.adaptive_today"
+        },
+        {
+          "text": {
+            "vi": "Lịch sử và thống kê ngày/đêm cập nhật.",
+            "en": "History and day/night statistics update."
+          },
+          "feature": "care.history_stats"
+        }
+      ],
+      "alternatives": [
+        {
+          "vi": "Ghi bằng Lumi: \"bé bú 120ml\".",
+          "en": "Log through Lumi: \"bé bú 120ml\"."
+        },
+        {
+          "vi": "Ghi bù từ ngày trống trong Lịch sử.",
+          "en": "Back-log from an empty day in History."
+        }
+      ],
+      "errors": [
+        {
+          "vi": "Ngoại tuyến: bản ghi chờ đồng bộ, đếm trên thẻ hôm nay.",
+          "en": "Offline: the record waits to sync and is counted on the today card."
+        },
+        {
+          "vi": "Hai người cùng bấm timer: người sau nhập vào timer đang chạy.",
+          "en": "Two people start a timer: the second joins the running one."
+        }
+      ],
+      "completion": {
+        "vi": "Bản ghi hiện cho mọi người trong gia đình có quyền xem chăm sóc.",
+        "en": "The record shows for every family member allowed to see care."
+      },
+      "metrics": [
+        "A09",
+        "F04"
+      ],
+      "verification": "code_read",
+      "sources": [
+        "docs/product-audit/07-ux-journey-audit.md#j11-care-nhanh-va-phoi-hop-ban-giao",
+        "docs/product/business-map.md#73-care-logging"
+      ]
+    },
+    {
+      "id": "care_handover",
+      "name": {
+        "vi": "Bàn giao ca chăm",
+        "en": "Care handover"
+      },
+      "goal": {
+        "vi": "Người nhận ca biết ngay tình hình của bé mà không cần nhắn hỏi.",
+        "en": "The next carer knows how the baby is without asking by message."
+      },
+      "trigger": {
+        "vi": "Kết thúc ca, hoặc mở mục bàn giao / Cùng Chăm Con.",
+        "en": "End of a shift, or opening the handover / Cùng Chăm Con entry."
+      },
+      "preconditions": [
+        {
+          "vi": "Có ít nhất hai người chăm cùng bé.",
+          "en": "At least two carers on the baby."
+        }
+      ],
+      "steps": [
+        {
+          "text": {
+            "vi": "Xem kế hoạch trong ngày và việc đã làm.",
+            "en": "See the day plan and what was done."
+          },
+          "feature": "care.care_plan"
+        },
+        {
+          "text": {
+            "vi": "Tạo tóm tắt bàn giao (AI, trừ credit chung).",
+            "en": "Create the handover summary (AI, from the shared credits)."
+          },
+          "feature": "platform.ai_summaries"
+        },
+        {
+          "text": {
+            "vi": "Người nhận xem, nhận việc và xác nhận.",
+            "en": "The receiver reviews, claims tasks and acknowledges."
+          },
+          "feature": "care.care_plan"
+        },
+        {
+          "text": {
+            "vi": "Nhắc việc còn lại chuyển cho người nhận.",
+            "en": "Remaining reminders pass to the receiver."
+          },
+          "feature": "care.reminders"
+        }
+      ],
+      "alternatives": [
+        {
+          "vi": "Không còn credit: tóm tắt theo mẫu, không gọi AI.",
+          "en": "No credits left: a template summary, no AI call."
+        }
+      ],
+      "errors": [
+        {
+          "vi": "Hai máy ngoại tuyến cùng nhận việc: trạng thái nhận việc chưa được kiểm trên máy (giả thuyết của audit).",
+          "en": "Two offline phones claim the same task: claim state not checked on a device (audit hypothesis)."
+        }
+      ],
+      "completion": {
+        "vi": "Bàn giao được xác nhận và trạng thái nhận việc rõ.",
+        "en": "The handover is acknowledged and task claims are clear."
+      },
+      "metrics": [
+        "F04"
+      ],
+      "verification": "code_read",
+      "sources": [
+        "docs/product-audit/07-ux-journey-audit.md#j11-care-nhanh-va-phoi-hop-ban-giao",
+        "D-075",
+        "D-137"
+      ]
+    },
+    {
+      "id": "first_memory_upload",
+      "name": {
+        "vi": "Lưu kỷ niệm đầu tiên",
+        "en": "First memory upload"
+      },
+      "goal": {
+        "vi": "Lưu ảnh hoặc video của bé vào Kỷ niệm chung của gia đình.",
+        "en": "Save a photo or video of the baby to the family Memories."
+      },
+      "trigger": {
+        "vi": "Nút \"+\" ở Kỷ niệm, hoặc chia sẻ từ app Ảnh.",
+        "en": "The \"+\" in Memories, or sharing from the Photos app."
+      },
+      "preconditions": [
+        {
+          "vi": "Vai trò được thêm kỷ niệm; còn dung lượng gia đình.",
+          "en": "A role allowed to add memories; family storage left."
+        }
+      ],
+      "steps": [
+        {
+          "text": {
+            "vi": "Chọn ảnh/video hoặc ghi chú.",
+            "en": "Pick photos/videos or a note."
+          },
+          "feature": "remember.moments"
+        },
+        {
+          "text": {
+            "vi": "Chọn ngày, chú thích, mốc, album và ai thấy (mặc định Gia đình).",
+            "en": "Choose date, caption, milestone, album and audience (Family by default)."
+          },
+          "feature": "remember.moments"
+        },
+        {
+          "text": {
+            "vi": "Thêm vào hàng chờ; tải nền, video chờ Wi-Fi.",
+            "en": "Add to the queue; background upload, video waits for Wi-Fi."
+          },
+          "feature": "remember.upload"
+        },
+        {
+          "text": {
+            "vi": "Xử lý xong thì hiện trong dòng thời gian và báo gia đình.",
+            "en": "When processed it appears in the timeline and the family is notified."
+          },
+          "feature": "remember.moments"
+        }
+      ],
+      "alternatives": [
+        {
+          "vi": "Thêm từ app Ảnh qua tiện ích chia sẻ.",
+          "en": "Add from the Photos app through the share extension."
+        }
+      ],
+      "errors": [
+        {
+          "vi": "Hết dung lượng: không bắt đầu việc không thể xong, luôn có lối ra (D-126, D-127).",
+          "en": "Out of storage: never start what cannot finish, always a way out (D-126, D-127)."
+        },
+        {
+          "vi": "Tệp hỏng sau khi tải: báo riêng từng tệp.",
+          "en": "A file unreadable after upload: reported per file."
+        }
+      ],
+      "completion": {
+        "vi": "Kỷ niệm đã sẵn sàng trên máy chủ (khác với \"đã gửi xong byte\").",
+        "en": "The memory is ready on the server (not just bytes sent)."
+      },
+      "metrics": [
+        "A10",
+        "A11"
+      ],
+      "verification": "code_read",
+      "sources": [
+        "docs/product-audit/07-ux-journey-audit.md#j02-them-moment-thu-cong-va-upload",
+        "D-001",
+        "D-126"
+      ]
+    },
+    {
+      "id": "auto_save_first_review",
+      "name": {
+        "vi": "Tự lưu kỷ niệm: thiết lập và duyệt lần đầu",
+        "en": "Auto-save: setup and first review"
+      },
+      "goal": {
+        "vi": "Để app tìm ảnh có bé trong thư viện và lưu những ảnh được chọn.",
+        "en": "Let the app find photos with the baby and save the chosen ones."
+      },
+      "trigger": {
+        "vi": "Kỷ niệm › Tự lưu, hoặc banner trên Hôm nay (chỉ iOS).",
+        "en": "Memories › Auto-save, or a Today banner (iOS only)."
+      },
+      "preconditions": [
+        {
+          "vi": "iPhone; tính năng mở cho gia đình; vai trò Cùng nuôi.",
+          "en": "An iPhone; the feature rolled out to the family; a co-parent role."
+        }
+      ],
+      "steps": [
+        {
+          "text": {
+            "vi": "Đọc giới thiệu và đồng ý riêng cho phân tích khuôn mặt trên máy.",
+            "en": "Read the intro and give the separate on-device face consent."
+          },
+          "feature": "remember.auto_save"
+        },
+        {
+          "text": {
+            "vi": "Chọn bé và 3–5 ảnh mẫu.",
+            "en": "Pick the baby and 3–5 sample photos."
+          },
+          "feature": "remember.auto_save"
+        },
+        {
+          "text": {
+            "vi": "Cấp quyền thư viện Ảnh; quét 30 ngày gần nhất.",
+            "en": "Grant Photos access; scan the last 30 days."
+          },
+          "feature": "remember.auto_save"
+        },
+        {
+          "text": {
+            "vi": "Duyệt nhóm ảnh gần giống; ảnh đẹp nhất được chọn sẵn.",
+            "en": "Review near-duplicate groups; the best is preselected."
+          },
+          "feature": "remember.auto_save"
+        },
+        {
+          "text": {
+            "vi": "Ảnh được chọn vào hàng chờ tải nền.",
+            "en": "Chosen photos join the background upload queue."
+          },
+          "feature": "remember.upload"
+        }
+      ],
+      "alternatives": [
+        {
+          "vi": "Quyền giới hạn: chỉ quét ảnh đã chia sẻ, có \"Chọn thêm ảnh\".",
+          "en": "Limited access: only shared photos are scanned, with \"Chọn thêm ảnh\"."
+        },
+        {
+          "vi": "\"Để sau · thêm ảnh thủ công\".",
+          "en": "\"Để sau · thêm ảnh thủ công\"."
+        }
+      ],
+      "errors": [
+        {
+          "vi": "Bị từ chối hoặc thu hồi quyền: tạm dừng, nút \"Mở Cài đặt điện thoại\".",
+          "en": "Permission denied or revoked: paused, with \"Mở Cài đặt điện thoại\"."
+        },
+        {
+          "vi": "Không có khuôn mặt / không có gợi ý; ảnh iCloud chưa tải về.",
+          "en": "No faces / no suggestions; iCloud originals not downloaded."
+        }
+      ],
+      "completion": {
+        "vi": "Ảnh đã duyệt vào hàng chờ; lên mây là mốc riêng.",
+        "en": "Approved photos are queued; cloud-ready is a separate milestone."
+      },
+      "metrics": [
+        "M01",
+        "M02",
+        "M03",
+        "M04",
+        "M05"
+      ],
+      "verification": "code_read",
+      "sources": [
+        "docs/product-audit/07-ux-journey-audit.md#j03-auto-save-lan-dau-va-review",
+        "docs/product/auto-save-plan.md#2-owner-decisions-d-066-2026-10-13",
+        "D-066"
+      ]
+    },
+    {
+      "id": "memory_video_export",
+      "name": {
+        "vi": "Tạo và xuất video kỷ niệm",
+        "en": "Memory video export"
+      },
+      "goal": {
+        "vi": "Biến ảnh của bé thành một video ngắn để xem lại và chia sẻ.",
+        "en": "Turn the baby's photos into a short video to watch and share."
+      },
+      "trigger": {
+        "vi": "Kỷ niệm › Video, hoặc gợi ý dịp / mẫu.",
+        "en": "Memories › Video, or an occasion / template suggestion."
+      },
+      "preconditions": [
+        {
+          "vi": "Đủ ảnh cho mẫu; còn lượt video trong quota.",
+          "en": "Enough photos for the template; video quota left."
+        }
+      ],
+      "steps": [
+        {
+          "text": {
+            "vi": "Chọn mẫu.",
+            "en": "Pick a template."
+          },
+          "feature": "remember.memory_video"
+        },
+        {
+          "text": {
+            "vi": "Chọn ảnh, thứ tự, xem trước cảnh.",
+            "en": "Choose photos, order, preview scenes."
+          },
+          "feature": "remember.memory_video"
+        },
+        {
+          "text": {
+            "vi": "Hoàn tất: chữ, nhạc, ai thấy; chọn chất lượng (1080p là Premium, D-125).",
+            "en": "Finish: text, music, audience; choose quality (1080p is Premium, D-125)."
+          },
+          "feature": "platform.premium"
+        },
+        {
+          "text": {
+            "vi": "Theo dõi tiến trình dựng; xem, tải hoặc chia sẻ khi xong.",
+            "en": "Follow render progress; play, download or share when ready."
+          },
+          "feature": "remember.memory_video"
+        }
+      ],
+      "alternatives": [
+        {
+          "vi": "Mẫu Cao cấp: giới thiệu Premium trước khi chặn (D-125).",
+          "en": "Premium template: Premium is introduced before the gate (D-125)."
+        }
+      ],
+      "errors": [
+        {
+          "vi": "Thiếu ảnh/nhạc, hết quota, quá thời gian hoặc dựng lỗi; có thử lại.",
+          "en": "Missing photo/music, quota out, timeout or render failure; retry available."
+        }
+      ],
+      "completion": {
+        "vi": "Video đã được lưu vào Kỷ niệm (dựng xong chưa phải là đã lưu).",
+        "en": "The video is filed in Memories (rendered is not yet filed)."
+      },
+      "metrics": [
+        "M09",
+        "M10",
+        "M12"
+      ],
+      "verification": "code_read",
+      "sources": [
+        "docs/product-audit/07-ux-journey-audit.md#j06-tao-memory-story-video",
+        "D-125",
+        "docs/product/remember-2-plan.md"
+      ]
+    },
+    {
+      "id": "family_invite_join",
+      "name": {
+        "vi": "Mời người thân và tham gia",
+        "en": "Family invite and join"
+      },
+      "goal": {
+        "vi": "Đưa người chăm hoặc người thân vào đúng bé với đúng quyền.",
+        "en": "Bring a carer or relative onto the right baby with the right rights."
+      },
+      "trigger": {
+        "vi": "Màn Gia đình từ header hoặc Tôi; mã, link hoặc email mời.",
+        "en": "The Family screen from the header or Me; a code, link or email invite."
+      },
+      "preconditions": [
+        {
+          "vi": "Người mời là Cùng nuôi.",
+          "en": "The inviter is a co-parent."
+        }
+      ],
+      "steps": [
+        {
+          "text": {
+            "vi": "Chọn quan hệ, vai trò và quyền thêm.",
+            "en": "Choose relation, role and extra rights."
+          },
+          "feature": "care.family_roles"
+        },
+        {
+          "text": {
+            "vi": "Gửi mã / link / email.",
+            "en": "Send a code / link / email."
+          },
+          "feature": "care.family_roles"
+        },
+        {
+          "text": {
+            "vi": "Người được mời xem trước, tham gia bằng tài khoản hoặc vào ngay.",
+            "en": "The invitee previews and joins with an account or as a guest."
+          },
+          "feature": "care.family_roles"
+        },
+        {
+          "text": {
+            "vi": "Vào đúng tab theo vai trò: ba mẹ Hôm nay, người thân Kỷ niệm, người chăm Chăm sóc.",
+            "en": "Lands on the role's tab: parents Today, relatives Memories, caregivers Care."
+          },
+          "feature": "platform.adaptive_today"
+        }
+      ],
+      "alternatives": [
+        {
+          "vi": "Vào ngay rồi lưu tài khoản sau mà không mất quyền.",
+          "en": "Join now and save the account later without losing rights."
+        }
+      ],
+      "errors": [
+        {
+          "vi": "Mã sai, bị khoá, hết hạn, bị thu hồi, đã dùng hoặc đã là thành viên.",
+          "en": "Wrong, locked, expired, revoked or used code, or already a member."
+        }
+      ],
+      "completion": {
+        "vi": "Thành viên đang hoạt động, thấy đúng nội dung theo quyền.",
+        "en": "An active member who sees exactly what the rights allow."
+      },
+      "metrics": [
+        "F04",
+        "F05"
+      ],
+      "verification": "code_read",
+      "sources": [
+        "docs/product-audit/07-ux-journey-audit.md#j09-moi-nguoi-than-va-nhan-vai-tro",
+        "docs/product/business-map.md#72-family-invites-roles",
+        "D-022"
+      ]
+    },
+    {
+      "id": "lumi_logging",
+      "name": {
+        "vi": "Ghi và hỏi bằng Lumi",
+        "en": "Logging and asking with Lumi"
+      },
+      "goal": {
+        "vi": "Nói một câu để ghi việc chăm sóc hoặc hỏi về nhật ký của bé.",
+        "en": "Say one sentence to log care or ask about the baby's log."
+      },
+      "trigger": {
+        "vi": "Nút Lumi, hoặc \"Hỏi Lumi\" trên Lịch sử.",
+        "en": "The Lumi button, or \"Hỏi Lumi\" on History."
+      },
+      "preconditions": [
+        {
+          "vi": "Có tài khoản (không ẩn danh); đồng ý riêng cho trợ lý; còn credit (câu quy tắc không tốn).",
+          "en": "An account (not anonymous); the assistant consent; credits left (rule messages cost none)."
+        }
+      ],
+      "steps": [
+        {
+          "text": {
+            "vi": "Đồng ý lần đầu.",
+            "en": "First-time consent."
+          },
+          "feature": "platform.lumi"
+        },
+        {
+          "text": {
+            "vi": "Nhập, nói hoặc gửi ảnh.",
+            "en": "Type, speak or send a photo."
+          },
+          "feature": "platform.lumi_voice"
+        },
+        {
+          "text": {
+            "vi": "Lumi đọc (quy tắc nhanh hoặc mô hình), có thể hỏi lại.",
+            "en": "Lumi reads (rule fast path or the model), may ask back."
+          },
+          "feature": "platform.lumi"
+        },
+        {
+          "text": {
+            "vi": "Xem bản nháp, sửa, Lưu; bản ghi vào đúng mô-đun.",
+            "en": "Review the draft, edit, Save; the record lands in the right module."
+          },
+          "feature": "care.feeding"
+        }
+      ],
+      "alternatives": [
+        {
+          "vi": "Câu hỏi về nhật ký: thẻ đọc mở đúng màn của bé.",
+          "en": "A question about the log: a read card that opens the right screen."
+        },
+        {
+          "vi": "Câu hỏi sức khoẻ: đường hỗ trợ y tế, không trừ credit.",
+          "en": "A health question: the medical-help path, no credit."
+        }
+      ],
+      "errors": [
+        {
+          "vi": "Hết credit, không có quyền theo vai trò, hết giờ mạng, đầu ra không hợp lệ; gửi lại có thể thành tác vụ mới (A1, audit 21/10).",
+          "en": "No credit, role denied, network timeout, invalid output; a retry can become a new task (A1, 21 Oct audit)."
+        }
+      ],
+      "completion": {
+        "vi": "Có câu trả lời kèm nguồn, hoặc bản ghi đã xác nhận.",
+        "en": "An answer with its source, or a confirmed record."
+      },
+      "metrics": [
+        "F06",
+        "C01"
+      ],
+      "verification": "code_read",
+      "sources": [
+        "docs/product-audit/07-ux-journey-audit.md#j13-lumi-hoi-du-lieu-ghi-va-xac-nhan",
+        "D-075",
+        "D-145",
+        "docs/product/lumi-plan.md#13-audit-2026-10-21-at-0663bb8"
+      ]
+    },
+    {
+      "id": "personalized_today",
+      "name": {
+        "vi": "Hôm nay cá nhân hoá và Nhịp lớn lên",
+        "en": "Personalized Today and growth rhythm"
+      },
+      "goal": {
+        "vi": "Nhận gợi ý hợp tuổi bé mỗi ngày và theo dõi nhịp phát triển.",
+        "en": "Get age-appropriate ideas each day and follow the growth rhythm."
+      },
+      "trigger": {
+        "vi": "Hôm nay \"Dành cho bé hôm nay\", thông báo gợi ý mỗi ngày, hoặc màn Nhịp.",
+        "en": "Today's \"Dành cho bé hôm nay\", the daily suggestion notification, or the Rhythm screen."
+      },
+      "preconditions": [
+        {
+          "vi": "Bé có ngày sinh; nội dung đã xuất bản cho tuổi (đến 3 tuổi).",
+          "en": "A baby birth date; published content for the age (up to 3 years)."
+        }
+      ],
+      "steps": [
+        {
+          "text": {
+            "vi": "Xem thẻ chính và lý do gợi ý.",
+            "en": "See the main card and why it is suggested."
+          },
+          "feature": "grow.personalization"
+        },
+        {
+          "text": {
+            "vi": "Mở, lưu, \"Mình sẽ thử\", \"Để sau\" hoặc \"Không phù hợp\".",
+            "en": "Open, save, \"Mình sẽ thử\", \"Để sau\" or \"Không phù hợp\"."
+          },
+          "feature": "grow.personalization"
+        },
+        {
+          "text": {
+            "vi": "Check-in Nhịp lớn lên.",
+            "en": "Rhythm check-in."
+          },
+          "feature": "grow.rhythm"
+        },
+        {
+          "text": {
+            "vi": "Bật bản tin, chọn giờ.",
+            "en": "Turn on the digest and choose a time."
+          },
+          "feature": "grow.daily_suggestion"
+        }
+      ],
+      "alternatives": [
+        {
+          "vi": "Gia đình Free: lời mời Premium thay cho gợi ý cá nhân hoá (D-153).",
+          "en": "Free family: a Premium invitation instead of personalized ideas (D-153)."
+        },
+        {
+          "vi": "Bé trên 3 tuổi: không có \"Gợi ý mỗi ngày\" (D-152).",
+          "en": "Children over 3: no daily suggestion (D-152)."
+        }
+      ],
+      "errors": [
+        {
+          "vi": "Đang tải, nội dung cũ hoặc hết hạn, chưa có nội dung xuất bản; thông báo bị tắt.",
+          "en": "Loading, stale or expired, no published content; notifications off."
+        }
+      ],
+      "completion": {
+        "vi": "Phản hồi được lưu ở máy chủ; thông báo đã đặt lịch (chưa chứng minh đã gửi tới).",
+        "en": "The response is stored on the server; the notification is scheduled (delivery not proven)."
+      },
+      "metrics": [
+        "F07",
+        "E01"
+      ],
+      "verification": "code_read",
+      "sources": [
+        "docs/product-audit/07-ux-journey-audit.md#j12-home-ca-nhan-hoa-so-tay-va-digest",
+        "D-153",
+        "D-152"
+      ]
+    },
+    {
+      "id": "premium_upgrade_resume",
+      "name": {
+        "vi": "Nâng cấp Premium và làm tiếp",
+        "en": "Premium upgrade and resume"
+      },
+      "goal": {
+        "vi": "Mở một tính năng Premium rồi quay lại đúng việc đang làm.",
+        "en": "Unlock a Premium feature and return to the task in progress."
+      },
+      "trigger": {
+        "vi": "Một lựa chọn hoặc mẫu cần Premium, hoặc màn Gói.",
+        "en": "An option or template that needs Premium, or the Plan screen."
+      },
+      "preconditions": [
+        {
+          "vi": "Trước go-live: lời mời Premium hiện ở mọi chỗ, mua thật làm sau (D-147).",
+          "en": "Before go-live: Premium invitations everywhere, real purchase later (D-147)."
+        }
+      ],
+      "steps": [
+        {
+          "text": {
+            "vi": "Thấy yêu cầu Premium ngay trên lựa chọn, trước khi chạm (D-125).",
+            "en": "See the Premium requirement on the option before tapping (D-125)."
+          },
+          "feature": "platform.premium"
+        },
+        {
+          "text": {
+            "vi": "Mở giới thiệu đúng tính năng, rồi gói.",
+            "en": "Open the feature's introduction, then the plans."
+          },
+          "feature": "platform.premium"
+        },
+        {
+          "text": {
+            "vi": "Mua qua cửa hàng, xác minh, làm mới quyền.",
+            "en": "Buy through the store, verify, refresh capabilities."
+          },
+          "feature": "platform.premium"
+        },
+        {
+          "text": {
+            "vi": "Quay lại bản nháp / trình sửa đang dở.",
+            "en": "Return to the draft / editor in progress."
+          },
+          "feature": "remember.premium_templates"
+        }
+      ],
+      "alternatives": [
+        {
+          "vi": "Giữ đường Free: bản nháp được giữ nếu không nâng cấp.",
+          "en": "Keep the Free path: the draft is kept without upgrading."
+        }
+      ],
+      "errors": [
+        {
+          "vi": "Huỷ, chờ, bị từ chối, không khớp tài khoản, mất mạng.",
+          "en": "Cancelled, pending, rejected, binding mismatch, network loss."
+        }
+      ],
+      "completion": {
+        "vi": "Quyền đúng và việc đang làm được tiếp tục; mua thật chưa thử.",
+        "en": "The capability is right and the task resumes; a real purchase is not yet tested."
+      },
+      "metrics": [
+        "C01"
+      ],
+      "verification": "code_read",
+      "sources": [
+        "docs/product-audit/07-ux-journey-audit.md#j14-premium-va-tiep-tuc-cong-viec-dang-lam",
+        "D-125",
+        "D-147"
+      ]
+    }
+  ]
+}

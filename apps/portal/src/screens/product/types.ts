@@ -214,3 +214,73 @@ export interface DraftsView {
     createdAt: string | null;
   }>;
 }
+
+// ---------- Phase 3 ----------
+
+export type {
+  ProductJourneyRecord,
+  ProductOpportunity,
+  ProductConflictRecord as ConflictRecord,
+} from '@child-life/contracts';
+
+export interface DecisionRow {
+  id: string;
+  kind: string;
+  title: string;
+  excerpt: string;
+  date: string | null;
+  status: string;
+  features: string[];
+  resolves: string[];
+  supersedes: string[];
+  supersededBy: string[];
+  resolvedBy: string[];
+  line: number;
+}
+export interface DecisionsView {
+  decisions: DecisionRow[];
+  openByFeature: Record<string, string[]>;
+  total: number;
+}
+export interface DecisionDetailView {
+  decision: import('@child-life/contracts').ProductDecisionRecord;
+  supersededBy: string[];
+  resolvedBy: string[];
+  opportunities: Array<{ id: string; title: string; status: string }>;
+}
+export interface JourneysView {
+  journeys: Array<{
+    id: string;
+    name: { vi: string; en: string };
+    goal: { vi: string; en: string };
+    steps: number;
+    features: string[];
+    verification: string;
+    metrics: string[];
+    revision: string;
+  }>;
+}
+export interface JourneyView {
+  journey: import('@child-life/contracts').ProductJourneyRecord;
+  features: Array<{ id: string; name: { vi: string; en: string }; lifecycle: string; verification: string }>;
+}
+export interface OpportunitiesView {
+  opportunities: import('@child-life/contracts').ProductOpportunity[];
+  canEdit: boolean;
+  canApprove: boolean;
+}
+export interface ConflictsView {
+  conflicts: Array<
+    import('@child-life/contracts').ProductConflictRecord & {
+      createdAt: string | null;
+      resolution: { note: string; decision: string | null; by: string; at: string } | null;
+      history: Array<{ from: string; to: string; by: string; at: string; note: string }>;
+    }
+  >;
+  canApprove: boolean;
+  canEdit: boolean;
+}
+export interface SectionVersionsView {
+  current: import('@child-life/contracts').FeatureSection['approved'];
+  versions: Array<NonNullable<import('@child-life/contracts').FeatureSection['approved']>>;
+}
