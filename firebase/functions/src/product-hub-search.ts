@@ -30,7 +30,7 @@ const stopwords = new Set(
   ).split(' '),
 );
 
-const idToken = /\b(?:[DRPQG]-\d{3}|(?:care|grow|remember|platform)\.[a-z][a-z0-9_]+)\b/gi;
+const idToken = /\b(?:[DRPQG]-\d{3}|[ACEFM]\d{2}|(?:care|grow|remember|platform)\.[a-z][a-z0-9_]+)\b/gi;
 
 /** Lowercase, accent-folded words (≥ 2 letters) plus whole ids ("d-150", "care.feeding"). */
 export function tokenize(text: string): string[] {

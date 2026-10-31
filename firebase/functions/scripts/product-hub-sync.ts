@@ -28,6 +28,7 @@ import { getFirestore } from 'firebase-admin/firestore';
 import { getStorage } from 'firebase-admin/storage';
 import { rebuildSearchArtifact } from '../src/product-copilot.js';
 import { appliedState, submitChangeSet } from '../src/product-hub.js';
+import { metricProbe } from '../src/product-hub-metric-probe.js';
 import {
   buildChangeSet,
   defaultSyncConfig,
@@ -41,6 +42,7 @@ import { resolveStaff } from '../src/staff-access.js';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 const registryPath = 'docs/product-hub/registry/features.json';
+const reducerPath = 'firebase/functions/src/product-analytics-reducer.ts';
 const argv = process.argv.slice(2);
 const arg = (name: string) => {
   const i = argv.indexOf(`--${name}`);
@@ -83,6 +85,8 @@ function textPaths(all: string[], registryText: string): Set<string> {
   want.add('firebase/functions/src/index.ts');
   want.add('docs/product/business-map.md');
   want.add('docs/product-hub/registry/journeys.json');
+  want.add('docs/product-hub/registry/metrics.json');
+  want.add(reducerPath);
   const globs = reg.features.flatMap((f) => [...f.modules, ...f.functions]).map(globToRegExp);
   for (const p of all) {
     if (/\.(dart|ts|tsx|swift|kt)$/.test(p) && globs.some((g) => g.test(p))) want.add(p);
@@ -174,7 +178,16 @@ async function main() {
     db = getFirestore();
     state = await appliedState(db);
   }
-  const draft = buildChangeSet({ revision: snap.revision, files: snap.files, registry, now }, state);
+  const draft = buildChangeSet(
+    {
+      revision: snap.revision,
+      files: snap.files,
+      registry,
+      now,
+      metricProbe: metricProbe(snap.files.find((f) => f.path === reducerPath)?.text ?? '', now),
+    },
+    state,
+  );
   const s = draft.summary;
   const mode = submit ? 'SUBMIT' : 'DRY RUN';
   console.log(`${mode}: ${snap.revision} → ${flag('offline') ? 'empty state (offline)' : project}`);
@@ -183,7 +196,7 @@ async function main() {
   );
   const byType = (t: string) => draft.items.filter((i) => i.type === t);
   console.log(
-    `  sources ${byType('source').length} · decisions ${byType('decision').length} · features ${byType('feature').length} · conflicts ${byType('conflict').length} · journeys ${byType('journey').length}`,
+    `  sources ${byType('source').length} · decisions ${byType('decision').length} · features ${byType('feature').length} · conflicts ${byType('conflict').length} · journeys ${byType('journey').length} · metrics ${byType('metric').length}`,
   );
   for (const i of draft.items.slice(0, 40)) {
     if (i.type === 'source') console.log(`  ${i.change.padEnd(8)} ${i.source.path} (${i.chunks.length} chunks)`);

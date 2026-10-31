@@ -241,7 +241,8 @@ export type ChangeItem =
       feature: ProductFeatureRecord;
     }
   | { type: 'conflict'; change: 'added'; conflict: ProductConflictRecord }
-  | { type: 'journey'; change: Exclude<ChangeKind, 'moved'>; journey: ProductJourneyRecord };
+  | { type: 'journey'; change: Exclude<ChangeKind, 'moved'>; journey: ProductJourneyRecord }
+  | { type: 'metric'; change: Exclude<ChangeKind, 'moved'>; metric: ProductMetricRecord };
 
 export interface ProductConflictRecord {
   id: string;
@@ -492,7 +493,7 @@ export const copilotModelAnswerSchema = z.object({
 });
 export type CopilotModelAnswer = z.infer<typeof copilotModelAnswerSchema>;
 
-export type CopilotBlockKind = 'chunk' | 'decision' | 'section' | 'feature' | 'registry' | 'conflict' | 'journey';
+export type CopilotBlockKind = 'chunk' | 'decision' | 'section' | 'feature' | 'registry' | 'conflict' | 'journey' | 'metric';
 export interface CopilotCitation {
   id: string;
   kind: CopilotBlockKind;
@@ -655,3 +656,51 @@ export const copilotConflictsSchema = z.object({
     )
     .max(6),
 });
+
+// ---------- Phase 4, before launch: instrumentation and freshness ----------
+
+/**
+ * How a metric of the dictionary stands in code, decided at sync time by running the analytics
+ * reducer with no data (`firebase/functions/src/product-analytics-reducer.ts`): `computed` = the
+ * reducer produces it; `partial` = some of its parts are not instrumented; `not_instrumented` = the
+ * reducer knows it but no event feeds it; `no_source` = the cost source is not connected;
+ * `defined_only` = only in the dictionary. None of this is usage data.
+ */
+export const metricInstrumentations = ['computed', 'partial', 'not_instrumented', 'no_source', 'defined_only'] as const;
+export type MetricInstrumentation = (typeof metricInstrumentations)[number];
+
+export const metricRegistrySchema = z.object({
+  version: z.literal(1),
+  metrics: z
+    .array(
+      z.object({
+        id: z.string().regex(/^[ACEFM]\d{2}$/),
+        reducerIds: z.array(z.string().max(40)).max(12).default([]),
+        features: z.array(productFeatureIdSchema).max(12).default([]),
+        note: z.string().max(300).default(''),
+      }),
+    )
+    .max(120),
+});
+export type MetricRegistry = z.infer<typeof metricRegistrySchema>;
+
+export interface ProductMetricRecord {
+  id: string;
+  name: string;
+  section: string;
+  numerator: string;
+  denominator: string;
+  source: string;
+  /** The dictionary's own plan word: existing · extend · new. */
+  planStatus: 'existing' | 'extend' | 'new' | 'unknown';
+  instrumentation: MetricInstrumentation;
+  /** The reducer's answer per id it maps to, e.g. { "A05_7": "not_instrumented" }. */
+  probe: Record<string, string>;
+  reducerIds: string[];
+  features: string[];
+  note: string;
+  revision: string;
+  syncedAt: string;
+}
+
+export const productMetricsQuerySchema = z.object({ feature: productFeatureIdSchema.optional() });

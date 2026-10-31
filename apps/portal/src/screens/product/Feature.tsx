@@ -24,6 +24,7 @@ import {
 } from './kit';
 import type { FeatureView, SectionVersionsView } from './types';
 import { Thread } from './Copilot';
+import { InstrumentationPill } from './Insights';
 
 /** Errors of the Sản phẩm callables that have their own words. */
 export function productErrorId(e: unknown): string {
@@ -169,6 +170,7 @@ export function FeatureView({ data, onChanged = () => undefined }: { data: Featu
             <Notice tone="info">
               <FormattedMessage id="ph.feature.metricsNote" />
             </Notice>
+            <MetricsBlock metrics={data.metrics ?? []} />
             {sections(tabSections.measure)}
           </TabsContent>
           <TabsContent value="sources" className="grid gap-4 [&>*]:min-w-0">
@@ -729,5 +731,36 @@ function VersionHistory({ feature, sectionKey }: { feature: string; sectionKey: 
         );
       }}
     </Loaded>
+  );
+}
+
+/** The dictionary metrics linked to this feature and what the code measures (Phase 4). */
+function MetricsBlock({ metrics }: { metrics: NonNullable<FeatureView['metrics']> }) {
+  const navigate = useNavigate();
+  return (
+    <Section
+      title={<FormattedMessage id="ph.feature.metrics" values={{ n: metrics.length }} />}
+      actions={
+        <Button kind="ghost" onClick={() => navigate('product', 'insights')}>
+          <FormattedMessage id="ph.feature.allMetrics" />
+        </Button>
+      }
+    >
+      {metrics.length === 0 ? (
+        <Meta>
+          <FormattedMessage id="ph.feature.noMetrics" />
+        </Meta>
+      ) : (
+        <ul className="grid gap-2 text-sm">
+          {metrics.map((m) => (
+            <li key={m.id} className="flex flex-wrap items-center gap-2">
+              <span className="font-mono text-[12.5px] font-semibold">{m.id}</span>
+              <span className="min-w-0 flex-1">{m.name}</span>
+              <InstrumentationPill value={m.instrumentation} />
+            </li>
+          ))}
+        </ul>
+      )}
+    </Section>
   );
 }

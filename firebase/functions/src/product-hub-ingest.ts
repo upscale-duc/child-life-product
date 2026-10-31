@@ -2,7 +2,10 @@ import { createHash } from 'node:crypto';
 import {
   catalogueFeature,
   journeyRegistrySchema,
+  metricRegistrySchema,
   type ChangeItem,
+  type MetricInstrumentation,
+  type ProductMetricRecord,
   type ProductJourneyRecord,
   type ChangeSetSummary,
   type DecisionKind,
@@ -619,6 +622,48 @@ export function sourceProblem(src: string, files: Map<string, RepoFile>, ids: Se
   return null;
 }
 
+export const metricRegistryPath = 'docs/product-hub/registry/metrics.json';
+export const metricDictionaryPath = 'docs/product-analytics/02-metric-dictionary.md';
+
+/** Rows of the metric dictionary: id, name, numerator, denominator, source and plan word. */
+export function parseMetricDictionary(markdown: string) {
+  const out: Array<Pick<ProductMetricRecord, 'id' | 'name' | 'section' | 'numerator' | 'denominator' | 'source' | 'planStatus'>> = [];
+  let section = '';
+  for (const line of markdown.replace(/\r\n?/g, '\n').split('\n')) {
+    const h = line.match(/^##\s+(.+)$/);
+    if (h) {
+      section = h[1]!.trim();
+      continue;
+    }
+    const m = line.match(/^\|\s*([ACEFM]\d{2})\s+([^|]+)\|/);
+    if (!m) continue;
+    const cells = line.split('|').slice(1, -1).map((c) => c.trim());
+    const plan = cells.map((c) => c.match(/\b(existing|extend|new)\b\s*$/)?.[1]).find(Boolean);
+    const source = cells.find((c) => /\b(existing|extend|new)\b\s*$/.test(c)) ?? cells[5] ?? '';
+    out.push({
+      id: m[1]!,
+      name: m[2]!.trim(),
+      section,
+      numerator: (cells[1] ?? '').slice(0, 600),
+      denominator: (cells[2] ?? '').slice(0, 400),
+      source: source.slice(0, 400),
+      planStatus: (plan as ProductMetricRecord['planStatus']) ?? 'unknown',
+    });
+  }
+  return out;
+}
+
+/** What the reducer's answers say about one dictionary metric (see `metricInstrumentations`). */
+export function instrumentationOf(reducerIds: string[], probe: Record<string, string>): MetricInstrumentation {
+  const reasons = reducerIds.map((id) => probe[id]).filter((r): r is string => !!r);
+  if (!reasons.length) return 'defined_only';
+  const missing = reasons.filter((r) => r.endsWith('/not_instrumented') || r.endsWith('/no_source')).length;
+  if (missing === reasons.length && reasons.every((r) => r.endsWith('/no_source'))) return 'no_source';
+  if (missing === reasons.length) return 'not_instrumented';
+  if (missing > 0 || reasons.length < reducerIds.length) return 'partial';
+  return 'computed';
+}
+
 export interface AppliedState {
   sources: Array<Pick<ProductSourceRecord, 'id' | 'path' | 'contentHash' | 'blobSha' | 'status' | 'authority' | 'features'>>;
   /** id → hash of the stored record (see `recordHash`). */
@@ -627,9 +672,10 @@ export interface AppliedState {
   conflicts: string[];
   /** id → hash; absent in states recorded before journeys existed. */
   journeys?: Record<string, string>;
+  metrics?: Record<string, string>;
 }
 
-export const emptyState: AppliedState = { sources: [], decisions: {}, features: {}, conflicts: [], journeys: {} };
+export const emptyState: AppliedState = { sources: [], decisions: {}, features: {}, conflicts: [], journeys: {}, metrics: {} };
 
 /**
  * A stable hash of what a record says, to tell "changed" from "unchanged": time stamps, the
@@ -661,6 +707,8 @@ export interface Snapshot {
   registry: ProductRegistry;
   config?: SyncConfig;
   now: Date;
+  /** The analytics reducer run with no data, id → "status/reason" (from the sync script). */
+  metricProbe?: Record<string, string>;
 }
 
 export interface ChangeSetDraft {
@@ -903,6 +951,44 @@ export function buildChangeSet(snapshot: Snapshot, state: AppliedState): ChangeS
       for (const id of Object.keys(state.journeys ?? {})) {
         if (!seen.has(id)) items.push({ type: 'journey', change: 'deleted', journey: { id } as ProductJourneyRecord });
       }
+    }
+  }
+
+  // Metrics (Phase 4, before launch): the dictionary, the reviewed mapping and the code probe.
+  const dictionary = readText(metricDictionaryPath);
+  const mappingFile = readText(metricRegistryPath);
+  if (dictionary !== undefined && snapshot.metricProbe) {
+    const mapping = mappingFile ? metricRegistrySchema.safeParse(JSON.parse(mappingFile)) : null;
+    if (mapping && !mapping.success) warnings.push(`${metricRegistryPath}: not valid; metrics without mapping`);
+    const byId = new Map((mapping?.success ? mapping.data.metrics : []).map((x) => [x.id, x]));
+    const rows = parseMetricDictionary(dictionary);
+    const seen = new Set<string>();
+    for (const id of byId.keys()) if (!rows.some((r) => r.id === id)) warnings.push(`${metricRegistryPath}: ${id} is not in the dictionary`);
+    for (const r of rows) {
+      seen.add(r.id);
+      const map = byId.get(r.id);
+      const reducerIds = map?.reducerIds ?? [];
+      for (const rid of reducerIds) if (!(rid in snapshot.metricProbe)) warnings.push(`metric ${r.id}: the reducer has no ${rid}`);
+      for (const f of map?.features ?? []) if (!registryIds.has(f)) warnings.push(`metric ${r.id}: unknown feature ${f}`);
+      const record: ProductMetricRecord = {
+        ...r,
+        instrumentation: instrumentationOf(reducerIds, snapshot.metricProbe),
+        probe: Object.fromEntries(reducerIds.filter((x) => x in snapshot.metricProbe!).map((x) => [x, snapshot.metricProbe![x]!])),
+        reducerIds,
+        features: map?.features ?? [],
+        note: map?.note ?? '',
+        revision: snapshot.revision,
+        syncedAt,
+      };
+      const h = recordHash(record);
+      if (state.metrics?.[r.id] === h) {
+        unchanged++;
+        continue;
+      }
+      items.push({ type: 'metric', change: state.metrics?.[r.id] ? 'changed' : 'added', metric: record });
+    }
+    for (const id of Object.keys(state.metrics ?? {})) {
+      if (!seen.has(id)) items.push({ type: 'metric', change: 'deleted', metric: { id } as ProductMetricRecord });
     }
   }
 

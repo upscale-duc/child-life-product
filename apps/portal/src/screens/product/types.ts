@@ -64,6 +64,8 @@ export interface FeatureView {
   decisions: Array<{ id: string; kind: string; title: string; date: string | null; status: string }>;
   conflicts: ProductConflictRecord[];
   dependents: string[];
+  /** Phase 4: the dictionary metrics linked to the feature, with their code status. */
+  metrics?: Array<{ id: string; name: string; instrumentation: string; planStatus: string }>;
   canEdit: boolean;
   canApprove: boolean;
 }
@@ -283,4 +285,26 @@ export interface ConflictsView {
 export interface SectionVersionsView {
   current: import('@child-life/contracts').FeatureSection['approved'];
   versions: Array<NonNullable<import('@child-life/contracts').FeatureSection['approved']>>;
+}
+
+// ---------- Phase 4 before launch ----------
+
+export interface MetricsView {
+  metrics: Array<Omit<import('@child-life/contracts').ProductMetricRecord, 'syncedAt'>>;
+  counts: Record<string, number>;
+}
+export interface HealthView {
+  stale: Array<{ feature: string; key: string; since: string; paths: string[] }>;
+  deadGlobs: Array<{ feature: string; globs: string[] }>;
+  oldSources: Array<{ id: string; path: string; title: string; docDate: string | null; days: number | null; features: string[]; authority: string }>;
+  waiting: {
+    changeSets: Array<{ id: string; revision: string; days: number | null }>;
+    sections: Array<{ feature: string; key: string; days: number | null; origin: string }>;
+    suggestedConflicts: number;
+    openConflicts: number;
+    drafts: number;
+    proposedOpportunities: number;
+  };
+  unreviewed: string[];
+  index: { builtAt: string | null; lastApprovedAt: string | null; behind: boolean };
 }

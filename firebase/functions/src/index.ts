@@ -53,6 +53,8 @@ import {
   actDraft as productActDraft,
   getDecision as productGetDecision,
   getJourney as productGetJourney,
+  knowledgeHealth as productKnowledgeHealth,
+  listMetrics as productListMetrics,
   listConflicts as productListConflicts,
   listDecisions as productListDecisions,
   listJourneys as productListJourneys,
@@ -2664,6 +2666,13 @@ export const productHubConflictAct = staffCall('productHubConflictAct', (s, d) =
 );
 export const productHubSectionVersions = staffCall('productHubSectionVersions', (s, d) =>
   productSectionVersions(getFirestore(), s, d),
+);
+// Sản phẩm · Phase 4 before launch: metric instrumentation and knowledge freshness.
+export const productHubMetrics = staffCall('productHubMetrics', (s, d) =>
+  productListMetrics(getFirestore(), s, d),
+);
+export const productHubHealth = staffCall('productHubHealth', (s) =>
+  productKnowledgeHealth(getFirestore(), s, new Date()),
 );
 export const productCopilotFindConflicts = staffCall(
   'productCopilotFindConflicts',

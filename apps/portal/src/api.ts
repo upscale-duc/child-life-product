@@ -135,6 +135,8 @@ export type Callable =
   | 'productHubConflictAct'
   | 'productHubSectionVersions'
   | 'productCopilotFindConflicts'
+  | 'productHubMetrics'
+  | 'productHubHealth'
   | 'staffFeatureSetTier'
   | 'staffFeatureSetRollout'
   | 'staffFeatureFamily'

@@ -65,6 +65,15 @@ version review.
 
 ## Phase 4 — Product intelligence
 
+**Progress (2026-10-31), the part that is useful before launch:** built — the metric dictionary
+(50 metrics) synced with a reviewed mapping (`registry/metrics.json`: dictionary id → reducer ids
+→ features) and each metric's status taken from code at sync time: the analytics reducer is run on
+dense synthetic data, so "not instrumented" means no producer in code, not "no data yet" (first
+run: 24 computed, 2 partial, 1 not instrumented, 3 no source, 20 defined only). Coverage gives full
+metric points only when a linked metric is computed. Knowledge freshness: stale approved text,
+broken registry paths, old documents still linked, waiting work, index behind. Hiệu quả tab with
+Đo lường and Độ tươi tri thức; usage numbers, funnels and CI sync wait for launch.
+
 Feature ↔ metric links to `docs/product-analytics/02-metric-dictionary.md` ids; Insights tab
 reading `staffProductAnalytics` aggregates (no family-level data); instrumentation status per
 metric ("defined / instrumented / has data"); freshness monitor (stale approvals, dead refs per

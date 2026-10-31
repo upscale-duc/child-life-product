@@ -21,6 +21,7 @@ import {
   type ProductDecisionRecord,
   type ProductFeatureRecord,
   type ProductJourneyRecord,
+  type ProductMetricRecord,
   type ProductSourceRecord,
 } from '@child-life/contracts';
 import { FieldValue, type Firestore } from 'firebase-admin/firestore';
@@ -50,11 +51,12 @@ const decisionAuthority = (d: ProductDecisionRecord): SearchDoc['authority'] =>
 
 /** Chunks and decisions as search documents, with their source's authority and links. */
 export async function buildSearchDocs(db: Firestore): Promise<SearchDoc[]> {
-  const [sources, chunks, decisions, journeys] = await Promise.all([
+  const [sources, chunks, decisions, journeys, metrics] = await Promise.all([
     db.collection('productSources').where('status', '==', 'active').get(),
     db.collection('productChunks').get(),
     db.collection('productDecisions').get(),
     db.collection('productJourneys').get(),
+    db.collection('productMetrics').get(),
   ]);
   const byId = new Map(sources.docs.map((d) => [d.id, d.data() as ProductSourceRecord]));
   const docs: SearchDoc[] = [];
@@ -121,6 +123,23 @@ export async function buildSearchDocs(db: Firestore): Promise<SearchDoc[]> {
       revision: j.revision,
       features: j.features,
       ids: j.sources.filter((x) => /^[DRPQG]-\d{3}$/.test(x)),
+    });
+  }
+  for (const d of metrics.docs) {
+    const m = d.data() as ProductMetricRecord;
+    docs.push({
+      id: `metric:${m.id}`,
+      kind: 'metric',
+      title: `Metric ${m.id} · ${m.name}`,
+      text: `Instrumentation in code: ${m.instrumentation} (reducer: ${Object.entries(m.probe).map(([k, v]) => `${k} ${v}`).join(', ') || 'none'}). Dictionary plan: ${m.planStatus}. Section: ${m.section}.\nNumerator: ${m.numerator}\nDenominator: ${m.denominator}\nSource: ${m.source}${m.note ? `\nNote: ${m.note}` : ''}\nNo usage data before release.`,
+      path: 'docs/product-analytics/02-metric-dictionary.md',
+      anchor: null,
+      authority: 'code',
+      status: 'n/a',
+      date: null,
+      revision: m.revision,
+      features: m.features,
+      ids: [m.id],
     });
   }
   return docs;

@@ -5,6 +5,7 @@ import {
   productDecisionsQuerySchema,
   productDraftActSchema,
   productJourneyRefSchema,
+  productMetricsQuerySchema,
   productOpportunityStatusSchema,
   productSaveOpportunitySchema,
   productSectionRefSchema,
@@ -14,6 +15,8 @@ import {
   type ProductConflictRecord,
   type ProductDecisionRecord,
   type ProductJourneyRecord,
+  type ProductMetricRecord,
+  type ProductSourceRecord,
   type ProductOpportunity,
 } from '@child-life/contracts';
 import { FieldValue, type Firestore } from 'firebase-admin/firestore';
@@ -344,5 +347,87 @@ export async function sectionVersions(db: Firestore, staff: Staff | null, data: 
   return {
     current: approved,
     versions: versions.docs.map((d) => d.data() as NonNullable<FeatureSection['approved']>),
+  };
+}
+
+// ---------- Phase 4 before launch: instrumentation and freshness ----------
+
+/** The metric dictionary with what the code computes for each, never usage numbers. */
+export async function listMetrics(db: Firestore, staff: Staff | null, data: unknown) {
+  requireStaff(staff, 'product.view');
+  const q = parse(productMetricsQuerySchema, data ?? {});
+  let query: FirebaseFirestore.Query = db.collection('productMetrics');
+  if (q.feature) query = query.where('features', 'array-contains', q.feature);
+  const snap = await query.get();
+  const metrics = snap.docs.map((d) => d.data() as ProductMetricRecord).sort((a, b) => a.id.localeCompare(b.id));
+  const counts: Record<string, number> = {};
+  for (const m of metrics) counts[m.instrumentation] = (counts[m.instrumentation] ?? 0) + 1;
+  return { metrics: metrics.map((m) => ({ ...m, syncedAt: undefined })), counts };
+}
+
+const DAY = 86_400_000;
+const ageDays = (iso: string | null, now: Date) => (iso ? Math.floor((now.getTime() - Date.parse(iso)) / DAY) : null);
+
+/**
+ * Knowledge freshness (doc 09 Phase 4): approved text whose sources changed, registry paths that
+ * match nothing, old documents still linked to features, work waiting for review, and whether the
+ * search index is behind the last approved change set. Reads Product Hub data only.
+ */
+export async function knowledgeHealth(db: Firestore, staff: Staff | null, now: Date) {
+  requireStaff(staff, 'product.view');
+  const [features, sections, sources, changeSets, conflicts, drafts, opportunities, meta] = await Promise.all([
+    db.collection('productFeatures').where('removed', '==', false).get(),
+    db.collectionGroup('productSections').get(),
+    db.collection('productSources').where('status', '==', 'active').get(),
+    db.collection('productChangeSets').orderBy('createdAt', 'desc').limit(20).get(),
+    db.collection('productConflicts').where('status', 'in', ['suggested', 'open']).get(),
+    db.collection('productDrafts').where('status', '==', 'draft').get(),
+    db.collection('productOpportunities').where('status', '==', 'proposed').get(),
+    db.doc('productHubMeta/searchIndex').get(),
+  ]);
+  const stale: Array<{ feature: string; key: string; since: string; paths: string[] }> = [];
+  const waitingSections: Array<{ feature: string; key: string; days: number | null; origin: string }> = [];
+  const approvedByFeature = new Map<string, number>();
+  for (const d of sections.docs) {
+    const feature = d.ref.parent.parent!.id;
+    const st = d.get('stale') as FeatureSection['stale'];
+    if (st) stale.push({ feature, key: d.id, since: st.since, paths: st.paths });
+    const draft = d.get('draft') as (FeatureSection['draft'] & { origin?: string }) | null;
+    if (draft) waitingSections.push({ feature, key: d.id, days: ageDays(draft.at, now), origin: draft.origin ?? 'staff' });
+    if (d.get('approved')) approvedByFeature.set(feature, (approvedByFeature.get(feature) ?? 0) + 1);
+  }
+  const dead = features.docs
+    .map((d) => ({ feature: d.id, globs: ((d.get('facts.deadGlobs') as string[]) ?? []) }))
+    .filter((x) => x.globs.length);
+  const oldSources = sources.docs
+    .map((d) => d.data() as ProductSourceRecord)
+    .filter((s) => s.features.length > 0 && s.docDate)
+    .map((s) => ({ id: s.id, path: s.path, title: s.title, docDate: s.docDate, days: ageDays(s.docDate, now), features: s.features, authority: s.authority }))
+    .filter((s) => (s.days ?? 0) > 45)
+    .sort((a, b) => (b.days ?? 0) - (a.days ?? 0))
+    .slice(0, 40);
+  const lastApproved = changeSets.docs.find((d) => d.get('status') === 'approved');
+  const lastApprovedAt = lastApproved ? iso(lastApproved.get('reviewedAt')) : null;
+  const builtAt = (meta.get('builtAt') as string | undefined) ?? null;
+  return {
+    stale,
+    deadGlobs: dead,
+    oldSources,
+    waiting: {
+      changeSets: changeSets.docs
+        .filter((d) => d.get('status') === 'pending')
+        .map((d) => ({ id: d.id, revision: d.get('revision') as string, days: ageDays(iso(d.get('createdAt')), now) })),
+      sections: waitingSections.sort((a, b) => (b.days ?? 0) - (a.days ?? 0)),
+      suggestedConflicts: conflicts.docs.filter((d) => d.get('status') === 'suggested').length,
+      openConflicts: conflicts.docs.filter((d) => d.get('status') === 'open').length,
+      drafts: drafts.size,
+      proposedOpportunities: opportunities.docs.filter((d) => (ageDays(iso(d.get('createdAt')), now) ?? 0) > 14).length,
+    },
+    unreviewed: features.docs.map((d) => d.id).filter((id) => !approvedByFeature.has(id)).sort(),
+    index: {
+      builtAt,
+      lastApprovedAt,
+      behind: !!(lastApprovedAt && (!builtAt || builtAt < lastApprovedAt)),
+    },
   };
 }

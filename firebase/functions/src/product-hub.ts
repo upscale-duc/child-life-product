@@ -26,6 +26,7 @@ import {
   type ProductConflictRecord,
   type ProductDecisionRecord,
   type ProductFeatureRecord,
+  type ProductMetricRecord,
   type ProductSourceRecord,
 } from '@child-life/contracts';
 import type { DocumentSnapshot, Firestore } from 'firebase-admin/firestore';
@@ -50,6 +51,7 @@ const C = {
   conflicts: 'productConflicts',
   changeSets: 'productChangeSets',
   journeys: 'productJourneys',
+  metrics: 'productMetrics',
 } as const;
 
 const iso = (v: unknown): string | null => {
@@ -80,12 +82,13 @@ async function inBatches<T>(db: Firestore, list: T[], write: (b: FirebaseFiresto
 // ---------- Applied state (read by the sync script) ----------
 
 export async function appliedState(db: Firestore): Promise<AppliedState> {
-  const [sources, decisions, features, conflicts, journeys] = await Promise.all([
+  const [sources, decisions, features, conflicts, journeys, metrics] = await Promise.all([
     db.collection(C.sources).where('kind', '==', 'repo_md').get(),
     db.collection(C.decisions).get(),
     db.collection(C.features).get(),
     db.collection(C.conflicts).select().get(),
     db.collection(C.journeys).get(),
+    db.collection(C.metrics).get(),
   ]);
   return {
     sources: sources.docs.map((d) => ({
@@ -104,6 +107,7 @@ export async function appliedState(db: Firestore): Promise<AppliedState> {
     ),
     conflicts: conflicts.docs.map((d) => d.id),
     journeys: Object.fromEntries(journeys.docs.map((d) => [d.id, recordHash(d.data())])),
+    metrics: Object.fromEntries(metrics.docs.map((d) => [d.id, recordHash(d.data())])),
   };
 }
 
@@ -289,6 +293,9 @@ export async function changeSetDetail(db: Firestore, staff: Staff | null, data: 
     journeys: items
       .filter((i): i is Extract<StoredItem, { type: 'journey' }> => i.type === 'journey')
       .map((i) => ({ change: i.change, id: i.journey.id, name: i.journey.name ?? null })),
+    metrics: items
+      .filter((i): i is Extract<StoredItem, { type: 'metric' }> => i.type === 'metric')
+      .map((i) => ({ change: i.change, id: i.metric.id, name: i.metric.name ?? null, instrumentation: i.metric.instrumentation ?? null })),
   };
 }
 
@@ -363,7 +370,8 @@ export async function reviewChangeSet(
     if (i.before && i.before.path !== i.source.path) touched.push(i.before.path);
   }
   const rest = items.filter(
-    (i) => i.type === 'decision' || i.type === 'feature' || i.type === 'conflict' || i.type === 'journey',
+    (i) =>
+      i.type === 'decision' || i.type === 'feature' || i.type === 'conflict' || i.type === 'journey' || i.type === 'metric',
   );
   await inBatches(db, rest, (b, i) => {
     if (i.type === 'decision') {
@@ -374,6 +382,10 @@ export async function reviewChangeSet(
       const r = db.collection(C.features).doc(i.feature.id);
       if (i.change === 'deleted') b.set(r, { removed: true, removedAt: now }, { merge: true });
       else b.set(r, { ...i.feature, removed: false, hash: recordHash(i.feature) });
+    } else if (i.type === 'metric') {
+      const r = db.collection(C.metrics).doc(i.metric.id);
+      if (i.change === 'deleted') b.delete(r);
+      else b.set(r, { ...i.metric });
     } else if (i.type === 'journey') {
       const r = db.collection(C.journeys).doc(i.journey.id);
       if (i.change === 'deleted') b.delete(r);
@@ -446,10 +458,17 @@ function sectionOf(d: DocumentSnapshot): FeatureSection {
   };
 }
 
+/** Features with at least one linked metric the code computes, fully or in part. */
+async function measuredFeatures(db: Firestore): Promise<Set<string>> {
+  const snap = await db.collection(C.metrics).where('instrumentation', 'in', ['computed', 'partial']).get();
+  return new Set(snap.docs.flatMap((d) => (d.get('features') as string[]) ?? []));
+}
+
 function coverageFor(
   f: ProductFeatureRecord,
   sections: FeatureSection[],
   conflicts: ProductConflictRecord[],
+  measured: Set<string>,
 ) {
   const input: CoverageInput = {
     sections: Object.fromEntries(
@@ -467,9 +486,8 @@ function coverageFor(
     moduleCount: f.facts.modules.length,
     testCount: f.facts.tests.length,
     decisionCount: f.facts.decisions.length,
-    metricsInstrumented: !!sections
-      .find((s) => s.key === 'metrics')
-      ?.approved?.sources.some((x) => x.startsWith('docs/product-analytics/')),
+    // A metric the analytics code computes is linked to the feature (Phase 4 probe).
+    metricsInstrumented: measured.has(f.id),
     openConflicts: conflicts.length,
   };
   return productCoverage(input);
@@ -484,11 +502,12 @@ async function openConflicts(db: Firestore) {
 
 export async function productFeatures(db: Firestore, staff: Staff | null) {
   requireStaff(staff, 'product.view');
-  const [features, sections, conflicts, tiers] = await Promise.all([
+  const [features, sections, conflicts, tiers, measured] = await Promise.all([
     db.collection(C.features).where('removed', '==', false).get(),
     db.collectionGroup(C.sections).get(),
     openConflicts(db),
     liveTiers(db),
+    measuredFeatures(db),
   ]);
   const byFeature = new Map<string, FeatureSection[]>();
   for (const d of sections.docs) {
@@ -498,7 +517,7 @@ export async function productFeatures(db: Firestore, staff: Staff | null) {
   const rows = features.docs.map((d) => {
     const f = featureOf(d);
     const mine = conflicts.filter((c) => c.feature === f.id);
-    const cov = coverageFor(f, byFeature.get(f.id) ?? [], mine);
+    const cov = coverageFor(f, byFeature.get(f.id) ?? [], mine, measured);
     return {
       id: f.id,
       name: f.name,
@@ -531,13 +550,19 @@ export async function productFeature(db: Firestore, staff: Staff | null, data: u
   const doc = await db.collection(C.features).doc(id).get();
   if (!doc.exists || doc.get('removed') === true) throw new StaffError('not-found', 'not-found');
   const f = featureOf(doc);
-  const [sectionsSnap, sourcesSnap, conflictsSnap, dependents, tiers] = await Promise.all([
+  const [sectionsSnap, sourcesSnap, conflictsSnap, dependents, tiers, metricsSnap] = await Promise.all([
     doc.ref.collection(C.sections).get(),
     db.collection(C.sources).where('features', 'array-contains', id).get(),
     db.collection(C.conflicts).where('feature', '==', id).get(),
     db.collection(C.features).where('dependsOn', 'array-contains', id).get(),
     liveTiers(db),
+    db.collection(C.metrics).where('features', 'array-contains', id).get(),
   ]);
+  const metrics = metricsSnap.docs
+    .map((d) => d.data() as ProductMetricRecord)
+    .map((m) => ({ id: m.id, name: m.name, instrumentation: m.instrumentation, planStatus: m.planStatus }))
+    .sort((a, b) => a.id.localeCompare(b.id));
+  const measured = new Set(metrics.some((m) => m.instrumentation === 'computed' || m.instrumentation === 'partial') ? [id] : []);
   const decisionRefs = f.facts.decisions.slice(0, 100).map((x) => db.collection(C.decisions).doc(x));
   const decisions = decisionRefs.length ? await db.getAll(...decisionRefs) : [];
   const sections = sectionsSnap.docs.map(sectionOf);
@@ -561,7 +586,8 @@ export async function productFeature(db: Firestore, staff: Staff | null, data: u
     supersededCitations: sections.flatMap((x) =>
       (x.approved?.sources ?? []).filter((src) => superseded.has(src)).map((src) => ({ section: x.key, id: src })),
     ),
-    coverage: coverageFor(f, sections, open),
+    coverage: coverageFor(f, sections, open, measured),
+    metrics,
     access: hub
       ? {
           hubKey: hub.key,

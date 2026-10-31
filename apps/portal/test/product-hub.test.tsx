@@ -25,6 +25,7 @@ import { AnswerView, Thread } from '../src/screens/product/Copilot';
 import { ConflictsView, DecisionsView, DraftsView, OpportunitiesView } from '../src/screens/product/Decisions';
 import { lineDiff } from '../src/screens/product/Feature';
 import { JourneyDetail } from '../src/screens/product/Journeys';
+import { HealthView, InsightsScreen, MetricsView } from '../src/screens/product/Insights';
 import type { CopilotAnswer } from '@child-life/contracts';
 import type {
   ChangeSetView,
@@ -167,10 +168,11 @@ describe('routes and access', () => {
     expect(allowedRoute(levelsForRoles(['analyst']), 'product')).toBe('product');
     expect(allowedRoute(levelsForRoles(['support']), 'product')).not.toBe('product');
   });
-  it('shows the built tabs only (Phase 3: journeys and decisions; no Insights yet)', () => {
+  it('shows every built tab, Hiệu quả included (Phase 4 before launch)', () => {
     const html = text(render(<ProductHubScreen initial={{ tab: 'plans' }} />));
-    for (const t of ['Tổng quan', 'Tính năng', 'Hành trình', 'Quyết định', 'Copilot', 'Gói & quyền', 'Nguồn tri thức']) expect(html).toContain(t);
-    expect(html).not.toContain('Hiệu quả');
+    for (const t of ['Tổng quan', 'Tính năng', 'Hành trình', 'Quyết định', 'Copilot', 'Hiệu quả', 'Gói & quyền', 'Nguồn tri thức']) expect(html).toContain(t);
+    expect(productPlaceOf('/product/insights/freshness')).toEqual({ tab: 'insights', part: 'freshness' });
+    expect(productPlaceOf('/product/insights')).toEqual({ tab: 'insights', part: 'measurement' });
     expect(productPlaceOf('/product/decisions/D-151')).toEqual({ tab: 'decisions', part: 'decisions', decision: 'D-151' });
     expect(productPlaceOf('/product/decisions/opportunities')).toEqual({ tab: 'decisions', part: 'opportunities', decision: null });
     expect(productPlaceOf('/product/journeys/first_feeding_log')).toEqual({ tab: 'journeys', journey: 'first_feeding_log' });
@@ -481,5 +483,54 @@ describe('phase 3', () => {
 
   it('line diff shows what an approval changed', () => {
     expect(lineDiff('a\nb', 'a\nc')).toEqual({ removed: ['b'], added: ['c'] });
+  });
+});
+
+describe('phase 4 before launch', () => {
+  const metric = (id: string, instrumentation: string, features: string[] = []) => ({
+    id, name: `Metric ${id}`, section: 'Memories', numerator: 'n', denominator: 'd', source: 's', planStatus: 'new' as const,
+    instrumentation: instrumentation as 'computed', probe: {}, reducerIds: [], features, note: '', revision: 'r1',
+  });
+  it('says plainly there is no usage data before launch', () => {
+    expect(text(render(<InsightsScreen part="measurement" />))).toContain('Chưa có số liệu sử dụng vì ứng dụng chưa phát hành');
+  });
+  it('counts computed metrics and gaps, and shows each status', () => {
+    const html = text(
+      render(
+        <MetricsView
+          data={{
+            metrics: [metric('M04', 'not_instrumented', ['remember.auto_save']), metric('M09', 'computed'), metric('C04', 'no_source'), metric('F06', 'defined_only', ['platform.lumi'])],
+            counts: { not_instrumented: 1, computed: 1, no_source: 1, defined_only: 1 },
+          }}
+        />,
+      ),
+    );
+    expect(html).toContain('Còn thiếu đo lường 2');
+    expect(html).toContain('1 chưa có sự kiện · 1 chưa có nguồn');
+    expect(html).toContain('Chưa có sự kiện');
+    expect(html).toContain('Chỉ có định nghĩa');
+    expect(html).toContain('remember.auto_save');
+  });
+  it('freshness lists stale text, broken paths, old documents and waiting work', () => {
+    const html = text(
+      render(
+        <HealthView
+          data={{
+            stale: [{ feature: 'care.feeding', key: 'rules', since: '2026-10-31', paths: ['docs/product/feeding.md'] }],
+            deadGlobs: [{ feature: 'remember.auto_save', globs: ['apps/gone/**'] }],
+            oldSources: [{ id: 's1', path: 'docs/a.md', title: 'Old plan', docDate: '2026-08-01', days: 91, features: ['care.feeding'], authority: 'draft_spec' }],
+            waiting: { changeSets: [], sections: [{ feature: 'care.feeding', key: 'summary', days: 2, origin: 'ai' }], suggestedConflicts: 2, openConflicts: 1, drafts: 0, proposedOpportunities: 0 },
+            unreviewed: ['care.sleep'],
+            index: { builtAt: null, lastApprovedAt: '2026-10-31T00:00:00Z', behind: true },
+          }}
+        />,
+      ),
+    );
+    expect(html).toContain('Quy tắc nghiệp vụ');
+    expect(html).toContain('apps/gone/**');
+    expect(html).toContain('Old plan');
+    expect(html).toContain('91 ngày trước');
+    expect(html).toContain('Chỉ mục tìm kiếm cũ hơn');
+    expect(html).toContain('care.sleep');
   });
 });

@@ -1,0 +1,474 @@
+{
+  "version": 1,
+  "metrics": [
+    {
+      "id": "A01",
+      "reducerIds": [
+        "A01"
+      ],
+      "features": [
+        "platform.onboarding"
+      ],
+      "note": ""
+    },
+    {
+      "id": "A02",
+      "reducerIds": [
+        "A02",
+        "A02_1",
+        "A02_7",
+        "A02_30"
+      ],
+      "features": [],
+      "note": ""
+    },
+    {
+      "id": "A03",
+      "reducerIds": [
+        "A03"
+      ],
+      "features": [],
+      "note": ""
+    },
+    {
+      "id": "A05",
+      "reducerIds": [
+        "A05_1",
+        "A05_7",
+        "A05_30"
+      ],
+      "features": [],
+      "note": ""
+    },
+    {
+      "id": "A07",
+      "reducerIds": [],
+      "features": [
+        "platform.onboarding"
+      ],
+      "note": ""
+    },
+    {
+      "id": "A08",
+      "reducerIds": [
+        "A08"
+      ],
+      "features": [
+        "platform.onboarding",
+        "platform.adaptive_today"
+      ],
+      "note": ""
+    },
+    {
+      "id": "A09",
+      "reducerIds": [],
+      "features": [
+        "platform.onboarding",
+        "care.feeding"
+      ],
+      "note": ""
+    },
+    {
+      "id": "A10",
+      "reducerIds": [
+        "A10"
+      ],
+      "features": [
+        "remember.moments",
+        "remember.upload"
+      ],
+      "note": ""
+    },
+    {
+      "id": "A11",
+      "reducerIds": [
+        "A11"
+      ],
+      "features": [],
+      "note": ""
+    },
+    {
+      "id": "M01",
+      "reducerIds": [],
+      "features": [
+        "remember.auto_save"
+      ],
+      "note": ""
+    },
+    {
+      "id": "M02",
+      "reducerIds": [],
+      "features": [
+        "remember.auto_save"
+      ],
+      "note": ""
+    },
+    {
+      "id": "M03",
+      "reducerIds": [
+        "M_discovered",
+        "M_review"
+      ],
+      "features": [
+        "remember.auto_save"
+      ],
+      "note": ""
+    },
+    {
+      "id": "M04",
+      "reducerIds": [
+        "M_approved"
+      ],
+      "features": [
+        "remember.auto_save"
+      ],
+      "note": ""
+    },
+    {
+      "id": "M05",
+      "reducerIds": [
+        "M_cloud_conversion",
+        "M_ready",
+        "M_upload"
+      ],
+      "features": [
+        "remember.auto_save",
+        "remember.upload"
+      ],
+      "note": ""
+    },
+    {
+      "id": "M06",
+      "reducerIds": [],
+      "features": [
+        "remember.auto_save"
+      ],
+      "note": ""
+    },
+    {
+      "id": "M07",
+      "reducerIds": [],
+      "features": [
+        "remember.auto_save"
+      ],
+      "note": ""
+    },
+    {
+      "id": "M08",
+      "reducerIds": [
+        "M_story"
+      ],
+      "features": [
+        "remember.stories"
+      ],
+      "note": ""
+    },
+    {
+      "id": "M09",
+      "reducerIds": [
+        "M_card",
+        "M_video"
+      ],
+      "features": [
+        "remember.milestone_cards",
+        "remember.memory_video"
+      ],
+      "note": ""
+    },
+    {
+      "id": "M10",
+      "reducerIds": [
+        "M_rendered",
+        "M_render_failed"
+      ],
+      "features": [
+        "remember.memory_video"
+      ],
+      "note": ""
+    },
+    {
+      "id": "M11",
+      "reducerIds": [],
+      "features": [
+        "remember.premium_templates",
+        "remember.milestone_cards",
+        "remember.memory_video"
+      ],
+      "note": ""
+    },
+    {
+      "id": "M12",
+      "reducerIds": [
+        "M_video_requested",
+        "M_video"
+      ],
+      "features": [
+        "remember.memory_video"
+      ],
+      "note": ""
+    },
+    {
+      "id": "M13",
+      "reducerIds": [
+        "M_share"
+      ],
+      "features": [
+        "remember.share_links",
+        "remember.memory_video"
+      ],
+      "note": ""
+    },
+    {
+      "id": "M14",
+      "reducerIds": [],
+      "features": [
+        "remember.milestone_cards",
+        "remember.memory_video",
+        "remember.stories"
+      ],
+      "note": ""
+    },
+    {
+      "id": "M15",
+      "reducerIds": [],
+      "features": [
+        "grow.milestones",
+        "remember.milestone_cards"
+      ],
+      "note": ""
+    },
+    {
+      "id": "E01",
+      "reducerIds": [
+        "E_ENG-01",
+        "E_ENG-02",
+        "E_ENG-03",
+        "E_ENG-04",
+        "E_ENG-05",
+        "E_ENG-06"
+      ],
+      "features": [
+        "platform.notifications",
+        "grow.daily_suggestion"
+      ],
+      "note": ""
+    },
+    {
+      "id": "E02",
+      "reducerIds": [
+        "E_ENG-01",
+        "E_ENG-02",
+        "E_ENG-03",
+        "E_ENG-04",
+        "E_ENG-05",
+        "E_ENG-06"
+      ],
+      "features": [
+        "platform.notifications",
+        "grow.daily_suggestion"
+      ],
+      "note": ""
+    },
+    {
+      "id": "E03",
+      "reducerIds": [
+        "E_ENG-01",
+        "E_ENG-02",
+        "E_ENG-03",
+        "E_ENG-04",
+        "E_ENG-05",
+        "E_ENG-06"
+      ],
+      "features": [
+        "platform.notifications",
+        "grow.daily_suggestion"
+      ],
+      "note": ""
+    },
+    {
+      "id": "E04",
+      "reducerIds": [
+        "E_ENG-01",
+        "E_ENG-02",
+        "E_ENG-03",
+        "E_ENG-04",
+        "E_ENG-05",
+        "E_ENG-06"
+      ],
+      "features": [
+        "platform.notifications"
+      ],
+      "note": ""
+    },
+    {
+      "id": "E05",
+      "reducerIds": [
+        "E_ENG-01",
+        "E_ENG-02",
+        "E_ENG-03",
+        "E_ENG-04",
+        "E_ENG-05",
+        "E_ENG-06"
+      ],
+      "features": [
+        "platform.notifications"
+      ],
+      "note": ""
+    },
+    {
+      "id": "E06",
+      "reducerIds": [
+        "E_ENG-01",
+        "E_ENG-02",
+        "E_ENG-03",
+        "E_ENG-04",
+        "E_ENG-05",
+        "E_ENG-06"
+      ],
+      "features": [
+        "platform.notifications"
+      ],
+      "note": ""
+    },
+    {
+      "id": "F01",
+      "reducerIds": [],
+      "features": [],
+      "note": ""
+    },
+    {
+      "id": "F02",
+      "reducerIds": [
+        "F02"
+      ],
+      "features": [],
+      "note": ""
+    },
+    {
+      "id": "F03",
+      "reducerIds": [],
+      "features": [],
+      "note": "Chapter 01 mapping awaits approval (foundation implementation)."
+    },
+    {
+      "id": "F04",
+      "reducerIds": [
+        "F04"
+      ],
+      "features": [
+        "care.family_roles",
+        "care.care_plan",
+        "care.feeding"
+      ],
+      "note": ""
+    },
+    {
+      "id": "F05",
+      "reducerIds": [],
+      "features": [
+        "care.family_roles",
+        "remember.albums"
+      ],
+      "note": ""
+    },
+    {
+      "id": "F06",
+      "reducerIds": [],
+      "features": [
+        "platform.lumi"
+      ],
+      "note": ""
+    },
+    {
+      "id": "F07",
+      "reducerIds": [],
+      "features": [
+        "grow.personalization",
+        "grow.rhythm"
+      ],
+      "note": ""
+    },
+    {
+      "id": "C01",
+      "reducerIds": [
+        "C_credits"
+      ],
+      "features": [
+        "platform.lumi",
+        "platform.ai_summaries"
+      ],
+      "note": ""
+    },
+    {
+      "id": "C02",
+      "reducerIds": [
+        "C_input",
+        "C_output",
+        "C_cached",
+        "C_calls"
+      ],
+      "features": [
+        "platform.lumi",
+        "platform.ai_summaries"
+      ],
+      "note": ""
+    },
+    {
+      "id": "C03",
+      "reducerIds": [
+        "C_estimate",
+        "C_rated"
+      ],
+      "features": [
+        "platform.lumi",
+        "platform.ai_summaries"
+      ],
+      "note": ""
+    },
+    {
+      "id": "C04",
+      "reducerIds": [
+        "C_actual"
+      ],
+      "features": [
+        "platform.lumi",
+        "platform.ai_summaries"
+      ],
+      "note": ""
+    },
+    {
+      "id": "C05",
+      "reducerIds": [
+        "C_render"
+      ],
+      "features": [
+        "remember.memory_video"
+      ],
+      "note": ""
+    },
+    {
+      "id": "C06",
+      "reducerIds": [
+        "C_storage"
+      ],
+      "features": [
+        "remember.upload"
+      ],
+      "note": ""
+    },
+    {
+      "id": "C07",
+      "reducerIds": [],
+      "features": [],
+      "note": ""
+    },
+    {
+      "id": "C08",
+      "reducerIds": [
+        "C_unknown"
+      ],
+      "features": [],
+      "note": ""
+    }
+  ]
+}
