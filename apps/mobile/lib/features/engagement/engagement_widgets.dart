@@ -127,9 +127,13 @@ class _EngagementShelfState extends ConsumerState<EngagementShelf> {
             ),
       data: (data) {
         if (data['enabled'] != true) return const SizedBox.shrink();
-        final suggestions = List<Map>.from(
-          data['suggestions'] as List? ?? const [],
-        );
+        // Kỷ niệm shows only memory suggestions. "Gợi ý mỗi ngày" (ENG-06) is an activity for
+        // the day: Hôm nay already leads "Dành cho bé hôm nay" with it and its push opens there
+        // (owner, 2026-10-31: "sao lại có gợi ý mỗi ngày trong mục kỉ niệm"); ENG-04 is Care's.
+        final suggestions = [
+          for (final i in data['suggestions'] as List? ?? const [])
+            if (i is Map && !const {'ENG-04', 'ENG-06'}.contains(i['kind'])) i,
+        ];
         // One retrospective suggestion leads the shelf; a user may choose any milestone in the creator.
         var historical = false;
         return Column(

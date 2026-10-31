@@ -55,6 +55,27 @@ void main() {
     expect(find.text('Nhìn lại tuần qua'), findsOneWidget);
   });
 
+  // Owner, 2026-10-31: "sao lại có gợi ý mỗi ngày trong mục kỉ niệm". It belongs to Hôm nay.
+  testWidgets('Kỷ niệm leaves "Gợi ý mỗi ngày" to Hôm nay', (tester) async {
+    await pumpRouted(
+      tester,
+      const Scaffold(body: SingleChildScrollView(child: EngagementShelf())),
+      overrides: [
+        engagementProvider.overrideWith(
+          (ref) => Future.value({
+            'enabled': true,
+            'suggestions': [
+              {'id': 'b' * 64, 'kind': 'ENG-06', 'context': 'current'},
+              ..._weekly()['suggestions'] as List,
+            ],
+          }),
+        ),
+      ],
+    );
+    expect(find.text('Gợi ý mỗi ngày'), findsNothing);
+    expect(find.text('Nhìn lại tuần qua'), findsOneWidget);
+  });
+
   testWidgets('"…" offers Xem gợi ý, Để sau and Bỏ qua gợi ý', (tester) async {
     await pumpRouted(
       tester,
