@@ -223,6 +223,16 @@ describe('sections, coverage and freshness', () => {
     expect(f.coverage.stale).toEqual(['rules']);
   });
 
+  it('an AI draft says so and is approved like any other (D-155 #3)', async () => {
+    await seeded();
+    await saveSection(db, owner, { feature: 'care.feeding', key: 'summary', body: { vi: 'Ghi cữ ăn.' }, sources: ['D-001'] }, now, 'ai');
+    const f = await productFeature(db, analyst, { id: 'care.feeding' });
+    expect(f.sections.find((s) => s.key === 'summary')!.draft).toMatchObject({ origin: 'ai', by: 'Owner' });
+    await actSection(db, owner, { feature: 'care.feeding', key: 'summary', action: 'approve' }, now);
+    const after = await productFeature(db, analyst, { id: 'care.feeding' });
+    expect(after.sections.find((s) => s.key === 'summary')!.approved).toMatchObject({ version: 1, approvedBy: 'Owner' });
+  });
+
   it('the same revision again has nothing to submit', async () => {
     await seeded();
     expect(await reason(submit(eng))).toBe('no-changes');

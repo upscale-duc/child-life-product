@@ -556,7 +556,17 @@ export async function productFeature(db: Firestore, staff: Staff | null, data: u
   };
 }
 
-export async function saveSection(db: Firestore, staff: Staff | null, data: unknown, now: Date) {
+/**
+ * Saves a section draft. `origin` is set only by trusted server-side tools (the drafts script):
+ * an AI-written draft says so in the portal and is approved like any other (D-155 #3).
+ */
+export async function saveSection(
+  db: Firestore,
+  staff: Staff | null,
+  data: unknown,
+  now: Date,
+  origin: 'staff' | 'ai' = 'staff',
+) {
   const s = requireStaff(staff, 'product.edit');
   const req = parse(productSaveSectionSchema, data);
   const feature = db.collection(C.features).doc(req.feature);
@@ -566,11 +576,17 @@ export async function saveSection(db: Firestore, staff: Staff | null, data: unkn
   batch.set(
     ref,
     {
-      draft: { body: req.body, sources: req.sources, by: s.name, byUid: s.uid, at: now.toISOString(), origin: 'staff' },
+      draft: { body: req.body, sources: req.sources, by: s.name, byUid: s.uid, at: now.toISOString(), origin },
     },
     { merge: true },
   );
-  staffAudit(batch, db, s, { action: 'product.section.draft', category: 'product', target: `${req.feature}/${req.key}`, reason: null }, now);
+  staffAudit(
+    batch,
+    db,
+    s,
+    { action: 'product.section.draft', category: 'product', target: `${req.feature}/${req.key}`, reason: null, detail: { origin } },
+    now,
+  );
   await batch.commit();
   return { ok: true };
 }

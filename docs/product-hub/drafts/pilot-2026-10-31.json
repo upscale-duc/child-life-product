@@ -1,0 +1,388 @@
+{
+  "version": 1,
+  "revision": "33b6a667",
+  "author": "Claude (AI draft, needs approval)",
+  "features": {
+    "care.feeding": {
+      "summary": {
+        "body": {
+          "vi": "Ghi cữ ăn của bé trong vài chạm: bú bình (ml, sữa mẹ hoặc sữa công thức), bú mẹ (bên trái/phải/cả hai, thời lượng hoặc bấm giờ) và hút sữa (ml, theo bên). Cả nhà thấy cùng một nhật ký, lịch sử và thống kê ngày/đêm theo múi giờ của bé.",
+          "en": "Log a baby's feeds in a few taps: bottle (ml, breast milk or formula), breastfeeding (left/right/both, duration or a timer) and pumping (ml, per side). The whole family sees one log, history and day/night statistics in the baby's time zone."
+        },
+        "sources": [
+          "docs/product/business-map.md#73-care-logging",
+          "docs/product/business-map.md#74-timers-and-sleep",
+          "docs/product/business-map.md#75-history-and-statistics-computation-rules"
+        ]
+      },
+      "problem": {
+        "body": {
+          "vi": "Trong những tháng đầu, ba mẹ và người chăm phải nhớ bé bú lần cuối lúc nào, bao nhiêu, bên nào — thường lúc nửa đêm và khi thay ca. Không có nhật ký chung, người sau phải nhắn hỏi hoặc đoán, dễ cho ăn quá gần hoặc quá xa nhau và khó trả lời bác sĩ khi đi khám.",
+          "en": "In the first months, parents and carers must remember when the baby last fed, how much and on which side — often at night and at shift changes. Without a shared log the next person asks by message or guesses, feeds end up too close or too far apart, and answering the doctor is hard."
+        },
+        "sources": [
+          "docs/discovery/product-plan-site.md#vision"
+        ]
+      },
+      "value": {
+        "body": {
+          "vi": "• Chức năng: biết ngay \"cữ gần nhất\" và khoảng cách trung bình giữa các cữ; ghi bù khi quên.\n• Cảm xúc: bớt phải nhớ, bớt hỏi nhau; người chăm và ba mẹ phối hợp không cần nhắn tin.\n• Kết quả mong đợi: dữ liệu ăn đủ tin cậy để Hiểu con, Lumi và báo cáo đi khám dùng lại.\n• Gắn với tầm nhìn: \"Technology handles the routine\" — phần việc lặp lại được làm nhẹ đi.",
+          "en": "• Functional: see the last feed and the average gap at a glance; back-log a missed feed.\n• Emotional: less to remember and fewer messages; carers and parents coordinate without texting.\n• Expected outcome: feeding data reliable enough for Hiểu con, Lumi and the doctor-visit report to reuse.\n• Vision: \"Technology handles the routine\"."
+        },
+        "sources": [
+          "docs/product/business-map.md#75-history-and-statistics-computation-rules",
+          "docs/discovery/product-plan-site.md#vision"
+        ]
+      },
+      "ux": {
+        "body": {
+          "vi": "Điểm vào: thẻ Bú bình / Bú mẹ trên Hôm nay (một chạm mở sheet), nút \"+\" ở mọi tab, Lumi (\"bé bú 120ml\"), timer bú mẹ trên màn hình khoá (Live Activity).\nLuồng chính bú bình: mở sheet → mặc định loại sữa và kiểu lần trước, giờ = bây giờ → nhập ml (không bắt buộc) → Lưu (2 chạm) → Hôm nay, lịch sử và thống kê cập nhật.\nBú mẹ: chọn bên (gợi ý bên còn lại), nhập thời lượng hoặc \"Bấm giờ thay vì nhập\"; timer đổi bên bằng một chạm, tổng = cộng hai bên.\nHút sữa: sheet riêng, ml và bên.\nTrạng thái trống: lần đầu là \"Chưa có · Chạm để ghi\", không streak, không mục tiêu.\nLỗi/ngoại tuyến: bản ghi lưu cục bộ và đồng bộ sau (số bản chờ hiện trên thẻ hôm nay).\nQuyền: người thân không ghi; người chăm chỉ sửa bản ghi của mình.\nThành công: thẻ Hôm nay cập nhật dòng \"bao lâu trước · chi tiết · ai ghi\".",
+          "en": "Entry points: the Bottle / Breast tiles on Today (one tap opens the sheet), the \"+\" on every tab, Lumi (\"bé bú 120ml\"), the breast timer on the lock screen (Live Activity).\nBottle: sheet opens with last milk and type, time = now → optional ml → Save (2 taps) → Today, history and stats update.\nBreast: pick a side (the other side is suggested), enter a duration or start the timer; the timer switches sides with one tap, total = both sides.\nPump: its own sheet, ml and side.\nEmpty: first run shows \"Chưa có · Chạm để ghi\"; no streaks, no goals.\nOffline: records are kept locally and sync later (pending count on the today card).\nPermissions: relatives never log; caregivers edit only their own records.\nSuccess: the Today line shows \"how long ago · detail · who\"."
+        },
+        "sources": [
+          "docs/product/business-map.md#73-care-logging",
+          "docs/product/business-map.md#74-timers-and-sleep",
+          "docs/product/business-map.md#71-onboarding-identity-appearance",
+          "apps/mobile/lib/features/care/care_sheets.dart:654"
+        ]
+      },
+      "rules": {
+        "body": {
+          "vi": "Ý định (quyết định / thiết kế):\n• Bú bình đo bằng ml, bú mẹ đo bằng thời gian; lượng sữa không bắt buộc (R-052, R-053, R-059).\n• Sữa hút ra không bao giờ cộng vào lượng bé ăn (R-054).\n• Cùng nuôi sửa/xoá mọi bản ghi; người chăm chỉ bản ghi của mình; người thân không ghi (D-022).\n• Một timer đang chạy cho mỗi bé và mỗi loại; cả nhà thấy timer đang chạy (P-011, R-070).\n• Thống kê theo múi giờ của bé; ngày 06:00–18:00, đêm 18:00–06:00; \"Hôm nay\" của bú tính từ 18h hôm qua; số cữ gồm bú mẹ, thể tích chỉ bú bình (R-086, D-151).\n• Gợi ý nhanh ml theo tuổi chỉ là phím tắt, ô nhập vẫn tự do (P-126).\nĐã thấy trong mã (revision 33b6a667):\n• Quyền sửa/xoá do Rules kiểm (canEditRecord, firestore.rules:467–479).\n• Sheet bú nhớ loại và sữa lần trước (care_sheets.dart:654); hút sữa tách khỏi lượng ăn (care_sheets.dart:898, care_calc.dart:241).\n• Bảng gợi ml theo tuổi: bảng đã duyệt (P-138) nếu có, nếu không dùng bảng P-126 (care_sheets.dart:1198).",
+          "en": "Intended (decisions / design):\n• Bottle in ml, breast in time; amounts optional (R-052, R-053, R-059).\n• Pumped milk is never counted as intake (R-054).\n• Co-parents edit or delete any record; caregivers only their own; relatives never log (D-022).\n• One running timer per baby and type, visible to the family (P-011, R-070).\n• Stats in the baby's time zone; day 06:00–18:00, night 18:00–06:00; feeding \"today\" starts 18:00 yesterday; feed counts include breast, volume is bottle only (R-086, D-151).\n• Age-based ml quick picks are shortcuts only; the field stays free (P-126).\nSeen in code (revision 33b6a667):\n• Edit/delete enforced by Rules (canEditRecord, firestore.rules:467–479).\n• The feed sheet remembers last type and milk (care_sheets.dart:654); pumping kept out of intake (care_sheets.dart:898, care_calc.dart:241).\n• ml quick picks: the approved table (P-138) when published, else the P-126 table (care_sheets.dart:1198)."
+        },
+        "sources": [
+          "R-052",
+          "R-054",
+          "D-022",
+          "P-011",
+          "R-086",
+          "D-151",
+          "P-126",
+          "docs/product/business-map.md#73-care-logging",
+          "firebase/firestore.rules:467",
+          "apps/mobile/lib/features/care/care_sheets.dart:898",
+          "apps/mobile/lib/features/care/care_calc.dart:241"
+        ]
+      },
+      "edgeCases": {
+        "body": {
+          "vi": "• Hai người cùng bấm timer: một timer cho mỗi bé và loại, người sau nhập vào timer đang chạy (P-011).\n• Ghi khi ngoại tuyến: bản ghi chờ đồng bộ, đếm riêng trên thẻ hôm nay (R-083).\n• Quên ghi: lịch sử ngày trống mời ghi bù với giờ của ngày đó (R-085).\n• Đổi múi giờ của bé: tổng theo ngày tính lại theo múi giờ của bé (R-074, §7.5).\n• Xoá nhầm: toast \"Đã xóa · Hoàn tác\" 5 giây; bản ghi xoá giữ 30 ngày (R-057, P-013).\n• Người chăm mất quyền giữa chừng: bản ghi đã tạo vẫn còn (luồng A, plan site).\nChưa kiểm trên máy: giờ trong tương lai (G-021 là khoảng trống thiết kế).",
+          "en": "• Two people start a timer: one per baby and type; the second joins the running one (P-011).\n• Logging offline: pending records sync later and are counted on the today card (R-083).\n• Forgot to log: an empty history day invites back-logging at that day's time (R-085).\n• Baby time-zone change: daily totals follow the baby's zone (R-074, §7.5).\n• Deleted by mistake: \"Đã xóa · Hoàn tác\" for 5 s; deleted records kept 30 days (R-057, P-013).\n• A caregiver loses access: their records stay (flow A, plan site).\nNot checked on a device: future times (G-021 is a design gap)."
+        },
+        "sources": [
+          "P-011",
+          "R-083",
+          "R-085",
+          "R-057",
+          "P-013",
+          "docs/product/business-map.md#73-care-logging",
+          "docs/discovery/product-plan-site.md#development-business-model-before-schema"
+        ]
+      },
+      "access": {
+        "body": {
+          "vi": "Miễn phí cho mọi gia đình (quyền module.basic), không nằm trong danh mục gói. Ghi cữ bằng Lumi trừ credit của trợ lý (1 credit cho một câu, quy tắc nhanh không trừ — D-145). Dữ liệu ăn được Hiểu con (Premium, D-150) dùng lại; tính năng ghi chép tự nó không có lời mời nâng cấp.",
+          "en": "Free for every family (module.basic), outside the plan catalogue. Logging through Lumi uses assistant credits (1 per message; the rule fast path uses none — D-145). Hiểu con (Premium, D-150) reuses the feeding data; logging itself has no upgrade prompt."
+        },
+        "sources": [
+          "D-145",
+          "D-150",
+          "docs/assistant/usage.md#what-a-task-costs"
+        ]
+      },
+      "metrics": {
+        "body": {
+          "vi": "Đề xuất (chưa có sự kiện riêng cho tính năng này):\n• Kích hoạt: gia đình có cữ ăn đầu tiên trong 7 ngày sau khi tạo hồ sơ bé (gần với A08/A09).\n• Sử dụng: số ngày có ≥ 1 cữ ăn trên 7 ngày, theo gia đình đang hoạt động.\n• Phối hợp: gia đình có ≥ 2 người ghi cữ ăn trong tuần (F04).\n• Giá trị: tỉ lệ cữ ghi trong vòng 15 phút sau giờ cữ (ghi ngay thay vì ghi bù).\nCác chỉ số A08, A09, A11, F04 đã định nghĩa trong từ điển chỉ số; chỉ số riêng cho cho ăn cần bổ sung.",
+          "en": "Proposed (no feature-specific events yet):\n• Activation: first feed within 7 days of creating the baby (close to A08/A09).\n• Adoption: days with ≥ 1 feed out of 7, per active family.\n• Collaboration: families with ≥ 2 people logging feeds in a week (F04).\n• Value: share of feeds logged within 15 minutes of the feed time.\nA08, A09, A11 and F04 are defined in the metric dictionary; feeding-specific metrics still need definitions."
+        },
+        "sources": [
+          "docs/product-analytics/02-metric-dictionary.md"
+        ]
+      },
+      "issues": {
+        "body": {
+          "vi": "• Bảng gợi ml theo tuổi ngoài mốc 3 tuần là bản nháp kỹ thuật, chờ chủ sản phẩm duyệt hoặc thay (P-126).\n• Ô ghi chú trên bản ghi tồn tại nhưng giao diện nhập chưa được thiết kế (R-058, G-020).\n• Hút sữa: chú thích trong mã nói lượng theo từng bên (G-062) và timer hút (S5) \"làm sau\" — cần kiểm lại trạng thái (care_sheets.dart:898).\n• Kiểm tra giờ trong tương lai chưa được thiết kế (G-021).\n• Chưa được kiểm trên máy theo định nghĩa \"xong\" của checklist (iOS + Android, Ngày + Đêm).\nGiả thuyết: nhắc \"cữ tiếp\" sau khi ghi (Lumi L4 đã có) có thể giảm việc quên ghi ban đêm.",
+          "en": "• The age-based ml table beyond 3 weeks is an engineering draft awaiting owner approval or replacement (P-126).\n• The record note field exists but its entry UI is not designed (R-058, G-020).\n• Pumping: a code comment says per-side amounts (G-062) and the pump timer (S5) \"come later\" — status to re-check (care_sheets.dart:898).\n• Future-time validation is not designed (G-021).\n• Not device-verified per the checklist's definition of done (iOS + Android, Light + Night).\nHypothesis: a \"next feed\" nudge after logging (Lumi L4 has one) may reduce missed night logs."
+        },
+        "sources": [
+          "P-126",
+          "R-058",
+          "apps/mobile/lib/features/care/care_sheets.dart:898",
+          "docs/product/figma-coverage-checklist.md",
+          "docs/product/lumi-plan.md#13-audit-2026-10-21-at-0663bb8"
+        ]
+      },
+      "decisions": {
+        "body": {
+          "vi": "Quyết định chính: D-022 (ai sửa bản ghi), D-151 (một cửa sổ đêm 18:00–06:00 cho toàn app), D-145 (Lumi ghi cữ bằng quy tắc nhanh, không trừ credit). Đề xuất đang áp dụng: P-011 (một timer mỗi bé và loại), P-013 (thùng rác 30 ngày), P-126 (bảng gợi ml, chờ duyệt). Quy tắc thiết kế R-052–R-059, R-070–R-076, R-080–R-087 là lịch sử Figma V1, vẫn đúng về nghiệp vụ trừ khi có quyết định sau.",
+          "en": "Key decisions: D-022 (who edits records), D-151 (one night window 18:00–06:00 app-wide), D-145 (Lumi logs feeds through the rule fast path, no credit). Proposals in use: P-011 (one timer per baby and type), P-013 (30-day bin), P-126 (ml table, awaiting approval). Design rules R-052–R-059, R-070–R-076, R-080–R-087 are V1 Figma history and still hold as business rules unless a later decision says otherwise."
+        },
+        "sources": [
+          "D-022",
+          "D-151",
+          "D-145",
+          "P-011",
+          "P-013",
+          "P-126"
+        ]
+      }
+    },
+    "remember.auto_save": {
+      "summary": {
+        "body": {
+          "vi": "Trên iPhone, Tự lưu kỷ niệm quét thư viện ảnh ngay trên máy, gợi ý ảnh và video có bé để ba mẹ duyệt, rồi tải những mục được chọn vào Kỷ niệm ở chế độ nền. Không lưu ảnh của bé để nhận diện — chỉ lưu dãy số đặc trưng khuôn mặt trên chính máy đó.",
+          "en": "On iPhone, Auto-save scans the photo library on the device, suggests photos and videos with the baby for parents to review, and uploads the chosen ones to Memories in the background. No photos of the baby are kept for recognition — only face feature numbers, on that phone."
+        },
+        "sources": [
+          "docs/product/auto-save-plan.md#2-owner-decisions-d-066-2026-10-13",
+          "docs/product/auto-save-plan.md#6-architecture-ios",
+          "P-147"
+        ]
+      },
+      "problem": {
+        "body": {
+          "vi": "Ảnh của bé nằm rải rác trong thư viện điện thoại giữa ảnh chụp màn hình, hoá đơn và ảnh khác. Ba mẹ bận nên ít khi chọn lại để lưu, và ảnh đẹp không bao giờ tới được Kỷ niệm chung của gia đình.",
+          "en": "The baby's photos sit scattered in the phone library among screenshots, receipts and everything else. Busy parents rarely go back to pick them, so good photos never reach the family's shared Memories."
+        },
+        "sources": [
+          "docs/product/auto-save-plan.md#1-what-the-design-settles"
+        ]
+      },
+      "value": {
+        "body": {
+          "vi": "• Chức năng: ứng dụng tìm giúp ảnh có bé, gom ảnh chụp liên tiếp và chọn sẵn ảnh đẹp nhất trong nhóm.\n• Cảm xúc: kỷ niệm được giữ mà không phải nhớ làm; quyền riêng tư được giải thích trước.\n• Kết quả mong đợi: nhiều kỷ niệm hơn được lưu mỗi tuần, ít tải trùng.\n• Gắn với trụ cột Remember và câu \"Technology handles the routine. Family enjoys the moments\".",
+          "en": "• Functional: finds photos with the baby, groups bursts and pre-selects the best of each group.\n• Emotional: memories are kept without having to remember; privacy is explained first.\n• Expected outcome: more memories saved per week, fewer duplicate uploads.\n• Fits the Remember pillar and \"Technology handles the routine. Family enjoys the moments\"."
+        },
+        "sources": [
+          "P-146",
+          "docs/product/auto-save-plan.md#3-grouping-and-ranking-in-the-review-grid-p-146"
+        ]
+      },
+      "ux": {
+        "body": {
+          "vi": "Điểm vào: Kỷ niệm › Tự lưu (giới thiệu AS02, nhãn \"Beta miễn phí\" theo hạng ở portal — D-122).\nThiết lập: chọn 3–5 ảnh mẫu của bé → tick riêng \"Nhận ra {bé} ngay trên máy này\" (đồng ý phân tích khuôn mặt, bỏ trống mặc định) → cấp quyền thư viện iOS → quét lần đầu 30 ngày gần nhất (hoặc từ ngày sinh) (P-147, §6.2).\nDuyệt (AS07): gợi ý chia theo khoảnh khắc và nhóm ảnh gần giống; ảnh đẹp nhất được chọn sẵn; có thể duyệt theo tuần tuổi; \"Chọn / Bỏ chọn tất cả\"; mỗi lần tối đa 200 mục (P-146, P-171, D-123).\nSau duyệt: mục được chọn vào hàng chờ tải nền như tải tay; mục đã có hiện \"Đã có\" (P-150).\nThoát: tắt Tự lưu trong cài đặt; \"Để sau · thêm ảnh thủ công\" ở bước thiết lập.",
+          "en": "Entry: Memories › Auto-save (intro AS02; the \"Beta miễn phí\" badge follows the portal tier — D-122).\nSetup: pick 3–5 sample photos → a separate, unticked \"Nhận ra {bé} ngay trên máy này\" consent → the iOS library prompt → first scan of the last 30 days (or since birth) (P-147, §6.2).\nReview (AS07): suggestions by moment and near-duplicate group; the best is pre-selected; review by week of age; select / deselect all; at most 200 items per review (P-146, P-171, D-123).\nAfter approval: items join the background upload queue like manual uploads; already-saved items show \"Đã có\" (P-150).\nWay out: turn Auto-save off in settings; \"Để sau · thêm ảnh thủ công\" during setup."
+        },
+        "sources": [
+          "D-122",
+          "P-147",
+          "P-146",
+          "P-171",
+          "D-123",
+          "P-150",
+          "docs/discovery/figma-extract/27-auto-save.md"
+        ]
+      },
+      "rules": {
+        "body": {
+          "vi": "Ý định (D-066 và đề xuất được áp dụng):\n• Chỉ iOS trong beta; Android chưa làm (D-066 #3).\n• Một bé cho mỗi ảnh trong v1 (D-066 #7, P-149).\n• Cài đặt, ảnh mẫu, dữ liệu khuôn mặt và gợi ý ở trên từng máy, không đồng bộ, không tải lên (D-066 #5).\n• Tải nền luôn bật, không có công tắc (D-066 #6).\n• Nhận diện bằng Apple Vision, chấp nhận sai và sót; người duyệt là lưới an toàn (D-066 #8, P-149).\n• Mỗi lần tải tối đa 30 mục mỗi phiên, gom chung một batch; mỗi lần duyệt tối đa 200 (R-102, D-070).\n• Truy cập do cờ rollout auto_save và getFeatureAccess theo từng bé, chỉ Cùng nuôi (P-148).\n• Thiếu dung lượng: tải ảnh trước video, mục xếp hạng cao trước (§8).\nĐã thấy trong mã: quét chỉ chạy khi quyền thư viện là đầy đủ hoặc giới hạn (auto_save_controller.dart:640).",
+          "en": "Intended (D-066 and adopted proposals):\n• iOS only in the beta; Android not built (D-066 #3).\n• One baby per photo in v1 (D-066 #7, P-149).\n• Settings, samples, face data and suggestions stay on each device; not synced or uploaded (D-066 #5).\n• Background upload always on, no switch (D-066 #6).\n• Apple Vision matching; misses and wrong guesses accepted, the review is the safety net (D-066 #8, P-149).\n• At most 30 items per upload session, one batch; at most 200 per review (R-102, D-070).\n• Access via the auto_save rollout flag and per-baby getFeatureAccess, co-parents only (P-148).\n• Short on space: photos before videos, best-ranked first (§8).\nSeen in code: scanning runs only with full or limited library access (auto_save_controller.dart:640)."
+        },
+        "sources": [
+          "D-066",
+          "P-149",
+          "R-102",
+          "D-070",
+          "P-148",
+          "docs/product/auto-save-plan.md#8-upload-pipeline",
+          "apps/mobile/lib/features/auto_save/auto_save_controller.dart:640"
+        ]
+      },
+      "edgeCases": {
+        "body": {
+          "vi": "• Từ chối hoặc thu hồi quyền Ảnh: Tự lưu tạm dừng (không tắt), báo \"Child Life chưa được xem ảnh · Tự lưu đang tạm dừng. Kỷ niệm đã lưu không bị ảnh hưởng.\" và nút \"Mở Cài đặt điện thoại\"; chưa hỏi quyền thì nút xin quyền (auto_save_home.dart:102).\n• Quyền giới hạn: trạng thái bình thường, chỉ quét ảnh đã chia sẻ, có \"Chọn thêm ảnh\" (auto_save_home.dart:157).\n• Không đọc được thư viện lần này: bỏ qua, lần mở sau thử lại (auto_save_controller.dart:640–655).\n• Ảnh tải từ Child Life về máy không được gợi ý lại; ảnh người khác đã tải hiện \"Đã có\" (P-150).\n• Cờ tính năng tắt: lần kiểm tra nền cũng dừng theo câu trả lời đã lưu (P-148).\n• Ảnh iCloud: trạng thái \"Đang lấy tệp gốc từ iCloud\" trước khi tải (§8).\nChưa kiểm: hành vi khi app bị tắt hẳn hoặc máy khoá trên iOS thật.",
+          "en": "• Photos permission denied or revoked: Auto-save pauses (not off), says \"Child Life chưa được xem ảnh · Tự lưu đang tạm dừng. Kỷ niệm đã lưu không bị ảnh hưởng.\" with \"Mở Cài đặt điện thoại\"; not yet asked → the request button (auto_save_home.dart:102).\n• Limited access: a normal state that scans only shared photos, with \"Chọn thêm ảnh\" (auto_save_home.dart:157).\n• Library unreadable this time: skipped, retried on next open (auto_save_controller.dart:640–655).\n• Photos saved from Child Life are not suggested back; items another member uploaded show \"Đã có\" (P-150).\n• Flag off: background checks stop with the stored answer (P-148).\n• iCloud originals: \"Đang lấy tệp gốc từ iCloud\" before upload (§8).\nNot checked: behaviour when the app is killed or the phone locked on a real iPhone."
+        },
+        "sources": [
+          "apps/mobile/lib/features/auto_save/auto_save_home.dart:102",
+          "apps/mobile/lib/features/auto_save/auto_save_home.dart:157",
+          "apps/mobile/lib/features/auto_save/auto_save_controller.dart:640",
+          "P-150",
+          "P-148",
+          "docs/product/auto-save-plan.md#8-upload-pipeline",
+          "docs/product-audit/01-current-product-inventory.md"
+        ]
+      },
+      "access": {
+        "body": {
+          "vi": "Hạng mặc định trong mã: Beta (featureCatalogue). Hạng đang đặt trên dev: Miễn phí (config/features, 31/10). Nhãn \"Beta miễn phí\" chỉ hiện khi hạng là Beta (D-122). Ý định ban đầu: tính năng Premium tương lai, cho dùng thử beta miễn phí không giới hạn thời gian; thử 7 ngày chờ gói trả phí (D-066 #2, Q-058). Premium v2 (D-101) không nhắc Tự lưu — xếp hạng sau beta còn mở (D-121).",
+          "en": "Default tier in code: Beta (featureCatalogue). Tier set on dev: Free (config/features, 31 Oct). The \"Beta miễn phí\" badge shows only when the tier is Beta (D-122). Original intent: a future Premium feature offered as a free beta with no end date; a 7-day trial waits for the paid plan (D-066 #2, Q-058). Premium v2 (D-101) does not mention Auto-save — its tier after the beta is open (D-121)."
+        },
+        "sources": [
+          "D-066",
+          "D-122",
+          "D-121",
+          "Q-058",
+          "packages/contracts/src/features-hub.ts"
+        ]
+      },
+      "metrics": {
+        "body": {
+          "vi": "Đã định nghĩa trong từ điển chỉ số: M01 đủ điều kiện, M02 bật Tự lưu, M03 phát hiện→duyệt, M04 duyệt→chấp nhận, M05 chấp nhận→lên mây, M06 bỏ dở duyệt, M07 nhập ảnh cũ. Đo độ chính xác nhận diện trong beta là điều kiện để quyết định Q-054. Trạng thái ghi sự kiện cho từng chỉ số cần kiểm trong mã analytics.",
+          "en": "Defined in the metric dictionary: M01 eligibility, M02 adoption, M03 discovery→review, M04 review→approval, M05 approved→cloud-ready, M06 pending-review abandonment, M07 historical import. Measuring recognition accuracy in the beta decides Q-054. Instrumentation status per metric still needs checking in the analytics code."
+        },
+        "sources": [
+          "docs/product-analytics/02-metric-dictionary.md",
+          "Q-054"
+        ]
+      },
+      "issues": {
+        "body": {
+          "vi": "• Q-054: mô hình khuôn mặt sau beta (mua bản quyền hay tự huấn luyện).\n• Q-055: luật sư cần duyệt đồng ý phân tích khuôn mặt và chính sách riêng tư theo Luật 91/2025 trước beta.\n• Q-056: \"Chỉ tải qua Wi-Fi\" áp cho video hay mọi mục (đề xuất: chỉ video).\n• Q-057: ai được bật — mọi Cùng nuôi hay chỉ chủ gia đình (đề xuất: mọi Cùng nuôi).\n• Hạng sau beta chưa quyết (D-121); Android chưa có.\n• Chất lượng nhận diện trên ảnh thật chưa đo (audit sản phẩm 20/10).\nGiả thuyết: duyệt theo tuần tuổi (P-171) giảm số lần bỏ dở duyệt (M06).",
+          "en": "• Q-054: face model after the beta (licence or train our own).\n• Q-055: a lawyer must review the face-analysis consent and privacy policy under Law 91/2025 before the beta.\n• Q-056: does \"Chỉ tải qua Wi-Fi\" cover videos or every item (proposal: videos only).\n• Q-057: who may turn it on — any co-parent or only the family owner (proposal: any co-parent).\n• Tier after the beta undecided (D-121); no Android.\n• Recognition quality on real photos not measured (product audit, 20 Oct).\nHypothesis: reviewing by week of age (P-171) lowers review abandonment (M06)."
+        },
+        "sources": [
+          "docs/product/auto-save-plan.md#10-open-questions-for-the-owner",
+          "D-121",
+          "P-171",
+          "docs/product-audit/01-current-product-inventory.md"
+        ]
+      },
+      "decisions": {
+        "body": {
+          "vi": "Nền: D-066 (beta miễn phí trên iOS, tám câu trả lời của chủ sản phẩm). Sau đó: D-120 (Kỷ niệm theo trạng thái thật), D-121 và D-122 (nhãn Beta theo hạng portal), D-123 (duyệt: không ẩn gì, người dùng quyết thay thuật toán), D-126 và D-127 (luồng tải và trạng thái lỗi). Đề xuất đã áp dụng: P-146 (nhóm và xếp hạng), P-147 (đồng ý), P-148 (truy cập beta), P-149 (nhận diện v1), P-150 (chống trùng), P-171 (duyệt theo tuần tuổi).",
+          "en": "Foundation: D-066 (free beta on iOS, the owner's eight answers). Then: D-120 (Memories on live state), D-121 and D-122 (Beta badge follows the portal tier), D-123 (review: nothing hidden, the person overrules the algorithm), D-126 and D-127 (upload flow and error states). Adopted proposals: P-146 (grouping and ranking), P-147 (consent), P-148 (beta access), P-149 (v1 matching), P-150 (dedupe), P-171 (review by week of age)."
+        },
+        "sources": [
+          "D-066",
+          "D-120",
+          "D-121",
+          "D-122",
+          "D-123",
+          "D-126",
+          "D-127",
+          "P-146",
+          "P-147",
+          "P-148",
+          "P-149",
+          "P-150",
+          "P-171"
+        ]
+      }
+    },
+    "platform.lumi": {
+      "summary": {
+        "body": {
+          "vi": "Lumi là trợ lý trong app: nói, gõ hoặc gửi ảnh, Lumi hiểu và chuẩn bị bản nháp (cữ ăn, giấc ngủ, tã, chi tiêu, nhắc việc…) để người dùng xem lại rồi lưu bằng một chạm; trả lời câu hỏi về nhật ký của bé; bắt đầu/dừng timer; gợi ý chăm sóc từ nội dung đã duyệt. Mô hình chỉ đọc và chuẩn bị; máy chủ ghi sau khi người dùng xác nhận.",
+          "en": "Lumi is the in-app assistant: speak, type or send a photo; Lumi understands and prepares drafts (feeds, sleep, diapers, spending, reminders…) that the person reviews and saves in one tap; answers questions about the baby's log; starts and stops timers; suggests care from reviewed content. The model only reads and prepares; the server writes after the person confirms."
+        },
+        "sources": [
+          "docs/assistant/architecture.md#child-life-assistant-architecture-v3-2026-10-15",
+          "docs/product/lumi-plan.md#1-where-we-start"
+        ]
+      },
+      "problem": {
+        "body": {
+          "vi": "Ba mẹ thường rảnh tay để ghi chỉ khi con đã ngủ, và việc mở đúng màn, đúng sheet cho từng loại bản ghi tốn công. Họ cũng có câu hỏi (\"hôm nay bé bú bao nhiêu?\", \"bé ngủ ít có sao không?\") mà câu trả lời nằm rải rác trong nhiều màn.",
+          "en": "Parents often have free hands only once the baby sleeps, and finding the right screen and sheet for each record takes effort. They also have questions (\"how much did the baby drink today?\", \"is short sleep a problem?\") whose answers are spread across screens."
+        },
+        "sources": [
+          "docs/product/lumi-plan.md#lumi-product-review-and-plan-2026-10-19",
+          "D-088"
+        ]
+      },
+      "value": {
+        "body": {
+          "vi": "• Chức năng: một câu thành nhiều bản ghi đã kiểm tra; hỏi đáp trên dữ liệu thật của bé; mở đúng màn của tính năng.\n• Cảm xúc: nhẹ nhàng, nhanh, không phải nhớ app nằm ở đâu; câu hỏi sức khoẻ luôn được dẫn tới hỗ trợ y tế.\n• Kết quả mong đợi: ghi chép đều hơn ở các mô-đun, nhiều người dùng Lumi lặp lại.\n• Gắn với \"Technology handles the routine\".",
+          "en": "• Functional: one sentence becomes several checked records; questions answered from the baby's real data; jumps to the right feature screen.\n• Emotional: quick and light, no need to remember where things live; health questions always routed to medical help.\n• Expected outcome: steadier logging across modules and repeat Lumi use.\n• Fits \"Technology handles the routine\"."
+        },
+        "sources": [
+          "docs/product/lumi-plan.md#3-principles-p-167",
+          "D-088"
+        ]
+      },
+      "ux": {
+        "body": {
+          "vi": "Điểm vào: nút Lumi, dòng \"Hỏi Lumi: …\" trên Lịch sử, bước tiếp theo sau một bản ghi (L4).\nLuồng chính: nhập câu/giọng nói/ảnh → báo giá credit → Lumi đọc → bản nháp (Thẻ nháp) → sửa nếu cần → Lưu → bản ghi vào đúng mô-đun.\nLuồng phụ: câu hỏi làm rõ (tối đa 4 lượt, không trừ thêm); hỏi về nhật ký (công cụ đọc); câu sức khoẻ đi đường hỗ trợ y tế miễn phí trước khi gọi mô hình.\nTrạng thái: \"Mức dùng\" hiện credit còn lại; gần hết / hết lượt mời nâng cấp hoặc chờ kỳ mới.\nQuyền: cần tài khoản (không dùng \"Vào ngay\" ẩn danh); cần đồng ý riêng trước khi gửi gì tới nhà cung cấp AI.",
+          "en": "Entry points: the Lumi button, the \"Hỏi Lumi: …\" line on History, a next step after a record (L4).\nMain flow: message/voice/photo → credit quote → Lumi reads → draft cards → edit if needed → Save → records land in the right module.\nAlternatives: clarifying questions (up to 4 rounds, no extra credit); questions about the log (read tools); health messages take the free medical-help path before any model call.\nStates: \"Mức dùng\" shows credits left; near / out of credits offers an upgrade or the next window.\nPermissions: an account is required (no anonymous \"Vào ngay\"); a separate consent before anything goes to the AI provider."
+        },
+        "sources": [
+          "docs/assistant/architecture.md",
+          "docs/assistant/usage.md#what-a-task-costs",
+          "docs/assistant/security.md#1-authentication-and-authorization",
+          "docs/assistant/security.md#4-consent-p-160",
+          "docs/product/lumi-plan.md#13-audit-2026-10-21-at-0663bb8"
+        ]
+      },
+      "rules": {
+        "body": {
+          "vi": "Ý định (quyết định):\n• Một quỹ credit chung của hộ gia đình cho mọi AI, gồm tóm tắt AI (D-075 #1).\n• Một cuộc trò chuyện chung mỗi bé cho Ba, Mẹ và người chăm; chi tiêu ở luồng riêng (D-075 #2).\n• Câu quy tắc đọc được (\"bé bú 120ml\") đi đường nhanh: không gọi mô hình, không trừ credit (D-145).\n• Một mô hình: OPENAI_MODEL (gpt-4.1-mini trên dev) (D-146); gọi phía máy chủ qua adapter (D-003).\nĐã thấy trong mã/cấu hình:\n• Giá: văn bản 1 credit, ảnh 3, hỗ trợ sức khoẻ 0, sửa/lưu/huỷ 0 (usage.md; config/entitlements trên dev: free 20, premium 200, text 1, image 3 — cấu hình QA, không phải ưu đãi, Q-071).\n• Mỗi lời gọi kiểm thành viên của bé; vai trò theo mô-đun kiểm cả lúc chuẩn bị và lúc lưu (security.md §1).\n• Không có đồng ý → không gửi gì tới nhà cung cấp, app vẫn chạy (P-160).\n• ai.assistance cần vùng nâng cao: VN, US trên dev (config/entitlements).",
+          "en": "Intended (decisions):\n• One household credit pool for all AI, including AI summaries (D-075 #1).\n• One shared conversation per baby for Ba, Mẹ and the caregiver; spending in a private thread (D-075 #2).\n• Messages the rules can read (\"bé bú 120ml\") take the fast path: no model call, no credit (D-145).\n• One model: OPENAI_MODEL (gpt-4.1-mini on dev) (D-146); server-side behind the adapter (D-003).\nSeen in code / config:\n• Prices: text 1 credit, photo 3, health support 0, edit/save/cancel 0 (usage.md; dev config/entitlements: free 20, premium 200, text 1, image 3 — QA configuration, not an offer, Q-071).\n• Every call checks membership of the baby; module roles are checked when preparing and when saving (security.md §1).\n• No consent → nothing goes to the provider; the app keeps working (P-160).\n• ai.assistance needs an advanced region: VN, US on dev (config/entitlements)."
+        },
+        "sources": [
+          "D-075",
+          "D-145",
+          "D-146",
+          "D-003",
+          "P-160",
+          "docs/assistant/usage.md#what-a-task-costs",
+          "docs/assistant/security.md#1-authentication-and-authorization"
+        ]
+      },
+      "edgeCases": {
+        "body": {
+          "vi": "Từ audit 21/10 (P1, cần sửa trước vòng thử máy tiếp theo):\n• App gửi lại cùng câu khi hết giờ/ngoại tuyến có thể thành tác vụ mới (A1).\n• \"tối qua 9h\" có thể bị hiểu thành 21:00 hôm nay — bản ghi tương lai (A3).\n• \"cảm ơn Lumi\" khi đang chờ câu trả lời bị coi là câu trả lời (A4).\n• Luồng chung: cùng câu của người B khi bản nháp của người A đang chờ không tạo nháp cho B (A7).\nKhác: hết credit → mời nâng cấp (CH22) hoặc chờ kỳ mới; lời gọi AI lỗi thì trả lại credit; cờ assistant_live tắt thì giữ lịch sử và các mô-đun trực tiếp.",
+          "en": "From the 21 Oct audit (P1, fix before the next device round):\n• An app retry of the same words after a timeout or offline can become a new task (A1).\n• \"tối qua 9h\" can resolve to 21:00 today — a future record (A3).\n• \"cảm ơn Lumi\" while a question waits is taken as the answer (A4).\n• Shared thread: member B's identical words while A's draft waits draft nothing for B (A7).\nOther: out of credits → upgrade (CH22) or the next window; a failed AI call returns the credit; with assistant_live off, history and direct modules keep working."
+        },
+        "sources": [
+          "docs/product/lumi-plan.md#13-audit-2026-10-21-at-0663bb8",
+          "docs/assistant/usage.md#exhaustion",
+          "docs/product/plans-credits-analysis.md",
+          "P-161"
+        ]
+      },
+      "access": {
+        "body": {
+          "vi": "Hạng mặc định trong mã và hạng đang đặt trên dev: Premium, có credit (featureCatalogue: assistant). Gia đình Free vẫn dùng trong phạm vi rollout với quỹ Free (20/tháng trên dev); Premium có quỹ lớn hơn (200/kỳ trả phí) qua quyền assistant.premium_budget; chiến dịch beta có thể cho quỹ Premium (D-075 #1). Trước go-live, lời mời Premium hiện ở mọi chỗ để thử; mua thật làm sau (D-147). Xung đột mở: plans-credits-analysis.md đề xuất Free / Plus / Pro — chỉ là đề xuất, chưa được quyết.",
+          "en": "Default tier in code and tier set on dev: Premium, with credits (featureCatalogue: assistant). Free families still use it inside the rollout with the Free budget (20/month on dev); Premium has a larger budget (200/paid period) through assistant.premium_budget; a beta campaign may grant the Premium budget (D-075 #1). Before go-live, Premium invitations show everywhere for testing; real purchase comes later (D-147). Open conflict: plans-credits-analysis.md proposes Free / Plus / Pro — a proposal only, not decided."
+        },
+        "sources": [
+          "D-075",
+          "D-147",
+          "packages/contracts/src/features-hub.ts",
+          "docs/product/plans-credits-analysis.md"
+        ]
+      },
+      "metrics": {
+        "body": {
+          "vi": "Đã định nghĩa: F06 dùng Lumi có ý nghĩa / hữu ích, C01 credit đã dùng, C02 token quan sát được, C03 chi phí AI ước tính. Đề xuất thêm: tỉ lệ bản nháp được lưu trên bản nháp đã tạo; tỉ lệ câu đi đường nhanh (không tốn mô hình); người dùng Lumi lặp lại trong 7 ngày. Lưu ý: token usage hiện bị bỏ qua (LUM-01), nên C02/C03 chưa đủ.",
+          "en": "Defined: F06 meaningful / useful Lumi use, C01 credits consumed, C02 observed tokens, C03 rated AI cost. Proposed: drafts saved / drafts created; share of messages on the fast path (no model); users returning to Lumi within 7 days. Note: token usage is currently ignored (LUM-01), so C02/C03 are incomplete."
+        },
+        "sources": [
+          "docs/product-analytics/02-metric-dictionary.md",
+          "docs/product-audit/06-lumi-audit.md"
+        ]
+      },
+      "issues": {
+        "body": {
+          "vi": "• LUM-01 (P1): token usage bị bỏ qua — chi phí thật chưa đo được.\n• LUM-02 (P1): thiếu bằng chứng eval chạy mô hình thật ở revision mới.\n• A1–A8 từ audit 21/10 (xem Trường hợp biên); 'ga-11-rejected-output' trượt ở mọi lần chạy e2e.\n• App Check chưa bật cho các callable của trợ lý.\n• Nhiều phần chưa thử trên điện thoại thật; prod chưa deploy.\nGiả thuyết: gợi ý bước tiếp theo ngay sau bản ghi (L4) tăng việc dùng Lumi lặp lại.",
+          "en": "• LUM-01 (P1): token usage ignored — real cost not measured.\n• LUM-02 (P1): no live-model eval evidence on the latest revision.\n• A1–A8 from the 21 Oct audit (see Edge cases); 'ga-11-rejected-output' fails on every e2e run.\n• App Check not enforced on the assistant callables.\n• Much not yet tried on a real phone; prod not deployed.\nHypothesis: next-step suggestions right after a record (L4) increase repeat Lumi use."
+        },
+        "sources": [
+          "docs/product-audit/06-lumi-audit.md",
+          "docs/product/lumi-plan.md#13-audit-2026-10-21-at-0663bb8",
+          "docs/assistant/security.md#1-authentication-and-authorization"
+        ]
+      },
+      "decisions": {
+        "body": {
+          "vi": "D-003 (OpenAI phía máy chủ qua adapter), D-075 (quỹ credit chung, luồng chung mỗi bé, beta cho Premium), D-088 (định hướng Lumi kết nối mọi chức năng), D-145 (giữ đường nhanh bằng quy tắc), D-146 (một mô hình), D-147 (lời mời Premium trước go-live). Đề xuất kiến trúc P-155–P-161, nguyên tắc P-167, thiết kế lại hội thoại P-168, một bộ đọc P-169.",
+          "en": "D-003 (OpenAI server-side behind an adapter), D-075 (one credit pool, one shared thread per baby, beta may grant Premium), D-088 (Lumi connects every feature), D-145 (keep the rule fast path), D-146 (one model), D-147 (Premium invitations before go-live). Architecture proposals P-155–P-161, principles P-167, conversation redesign P-168, one reader P-169."
+        },
+        "sources": [
+          "D-003",
+          "D-075",
+          "D-088",
+          "D-145",
+          "D-146",
+          "D-147",
+          "P-155",
+          "P-167",
+          "P-168",
+          "P-169"
+        ]
+      }
+    }
+  }
+}
