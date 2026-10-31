@@ -72,6 +72,9 @@ void main() {
         '/stages/stg_m7',
         '/care/reminders/rules/rr_test',
         '/care/timer/pump',
+        // Hiểu con (D-151 #7): the insight_basis card opens the screen or one insight.
+        '/care/insights',
+        '/care/insights/night_longest',
       ]) {
         expect(assistantReadRoute(path), path);
       }

@@ -19,6 +19,8 @@ String? assistantReadRoute(String? link) {
     '/care/history',
     '/care/stats/feed',
     '/care/stats/sleep',
+    // Hiểu con (D-151 #7): Lumi's insight_basis card.
+    '/care/insights',
     '/care/growth',
     '/care/vaccines',
     '/care/reminders',
@@ -32,7 +34,7 @@ String? assistantReadRoute(String? link) {
     '/stages',
   };
   final detail = RegExp(
-    r'^/(care/record|care/reminders|care/reminders/rules|care/vaccines/dose|care/solids/food|care/solids/recipe|utilities/milestones|utilities/first-aid/s|library/a|stages)/[A-Za-z0-9_-]{1,128}$',
+    r'^/(care/record|care/insights|care/reminders|care/reminders/rules|care/vaccines/dose|care/solids/food|care/solids/recipe|utilities/milestones|utilities/first-aid/s|library/a|stages)/[A-Za-z0-9_-]{1,128}$',
   );
   final timer = RegExp(r'^/care/timer/(sleep|breast|pump)$');
   if (!exact.contains(path) &&
