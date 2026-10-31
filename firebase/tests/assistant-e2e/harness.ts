@@ -351,6 +351,8 @@ export async function seedWorld(c: Case, files: ReturnType<typeof memoryAttachme
   ] as const) {
     flags[k] = (w.off ?? []).includes(k) ? off(k) : on(k);
   }
+  // Hiểu con (D-150): rhythm.advanced also needs the personalization flag (on on dev).
+  if (w.premium) flags.personalization = on('personalization');
   await db.doc('config/flags').set(flags);
   await db.doc('config/entitlements').set({
     ...defaultEntitlementsConfig,
@@ -396,6 +398,25 @@ export async function seedWorld(c: Case, files: ReturnType<typeof memoryAttachme
   await db
     .doc(`families/${F}`)
     .set({ ownerUid: UID.MOM, country: 'VN', timeZone: ZONE, babyIds: [B] });
+  if (w.premium) {
+    // Hiểu con (D-150): a paid grant of rhythm.advanced for this family only.
+    await db.doc(`families/${F}/grants/paid_e2e`).set({
+      familyId: F,
+      source: 'paid',
+      status: 'active',
+      environment: 'test',
+      capabilities: ['rhythm.advanced'],
+      validFrom: Timestamp.fromDate(new Date('2026-10-01T00:00:00Z')),
+      validUntil: Timestamp.fromDate(new Date('2026-12-01T00:00:00Z')),
+      billingOwnerUid: UID.MOM,
+      provider: 'apple',
+      sourceRef: 'e2e',
+      campaignId: null,
+      autoRenew: true,
+      periodStart: Timestamp.fromDate(new Date('2026-10-01T00:00:00Z')),
+      updatedAt: Timestamp.fromDate(new Date('2026-10-01T00:00:00Z')),
+    });
+  }
   await db.doc(`babies/${B}`).set({
     familyId: F,
     timeZone: { mode: 'auto', zone: ZONE },
@@ -567,6 +588,41 @@ async function seedPreset(name: string) {
         deleted: false,
       });
       return;
+    // Hiểu con (D-151 #7): a computed "Điều đáng chú ý" (S1 longer) as the server stores it.
+    case 'insightLongestUp': {
+      const day = (n: number) => addDays(DAY, n);
+      const points = Array.from({ length: 14 }, (_, i) => ({
+        date: day(i - 14),
+        value: i === 8 ? null : i < 7 ? 141 : 172,
+        reason: i === 8 ? 'no_sleep' : null,
+      }));
+      await db.doc(`babies/${B}/insights/current`).set({
+        ruleVersion: 1,
+        computedAt: Timestamp.fromDate(localAt('D0 06:30')),
+        premium: true,
+        progress: { validNights: 6, neededNights: 5 },
+        items: [
+          {
+            kind: 'night_longest',
+            direction: 'up',
+            unit: 'minutes',
+            value: 172,
+            baselineValue: 141,
+            delta: 31,
+            recent: { from: day(-7), to: day(-1) },
+            baseline: { from: day(-14), to: day(-8) },
+            coverage: { valid: 6, total: 7 },
+            baselineCoverage: { valid: 7, total: 7 },
+            points,
+            peak: { date: day(-3), value: 185, startedAt: localAt('D-3 22:40').toISOString() },
+            authors: [{ name: 'Mai', relation: 'mother' }],
+            todayEligible: true,
+            score: 1.5,
+          },
+        ],
+      });
+      return;
+    }
     default:
       throw new Error(`unknown seed ${name}`);
   }

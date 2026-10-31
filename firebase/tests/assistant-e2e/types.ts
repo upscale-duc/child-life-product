@@ -179,7 +179,7 @@ export interface Expect {
 export interface World {
   /** Record presets: "bottle0800", "day", "sleepNight", "expense500k", "solidsOn" (L5),
    * "dtp1Given" (L5 vaccines),
-   * "milestones", "rolledOver" (L5 Mốc). */
+   * "milestones", "rolledOver" (L5 Mốc), "insightLongestUp" (Hiểu con, D-151). */
   seed?: string[];
   /** Flags to switch off. */
   off?: string[];
@@ -189,6 +189,8 @@ export interface World {
   quota?: number;
   /** Baby date of birth (default 2026-03-10, ~7 months); null = unknown. */
   dob?: string | null;
+  /** Hiểu con (D-150): the family has Premium's rhythm.advanced (default Free). */
+  premium?: boolean;
 }
 
 export interface Case {

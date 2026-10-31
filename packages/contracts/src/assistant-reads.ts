@@ -23,6 +23,18 @@ export const assistantReadTools = [
   'insight_basis',
 ] as const;
 export type AssistantReadTool = (typeof assistantReadTools)[number];
+
+/**
+ * Reads only the rule reader asks for (`assistantReadsIn`). They stay out of the model's schema:
+ * its prompt does not describe them, and adding them would change the prompt contract
+ * (`understandingVersion`) and need a full live run (docs/assistant/test-plan.md §5a).
+ */
+export const ruleOnlyReadTools = ['insight_basis'] as const satisfies readonly AssistantReadTool[];
+type ModelReadTool = Exclude<AssistantReadTool, (typeof ruleOnlyReadTools)[number]>;
+/** The reads the model may request, in the order of `assistantReadTools`. */
+export const modelReadTools = assistantReadTools.filter(
+  (t): t is ModelReadTool => !(ruleOnlyReadTools as readonly string[]).includes(t),
+) as [ModelReadTool, ...ModelReadTool[]];
 export interface AssistantReadRequest {
   tool: AssistantReadTool;
   dayOffset: number;
@@ -79,7 +91,11 @@ export function assistantReadsIn(text: string): AssistantReadRequest[] {
   // L10 (e2e tk-07, ex-44): "viết bài thơ", "bài hát" and buying advice ("nên mua bỉm loại
   // nào") are not questions about what was logged.
   if (/\bbai (tho|hat|ca|van)\b|\b(poem|song)\b/u.test(t)) return [];
-  if (/\b(nen mua|mua loai nao|mua hang nao|loai nao tot|hang nao tot|which brand|should i buy)\b/u.test(t))
+  if (
+    /\b(nen mua|mua loai nao|mua hang nao|loai nao tot|hang nao tot|which brand|should i buy)\b/u.test(
+      t,
+    )
+  )
     return [];
   const tool = (name: AssistantReadTool): AssistantReadRequest[] => [
     {

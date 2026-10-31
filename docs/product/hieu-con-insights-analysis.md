@@ -339,7 +339,7 @@ Phạm vi áp dụng theo D-137:
 
 ## 10. Trạng thái triển khai
 
-**P1 xong (31/10/2026), chưa commit, chưa deploy lên dev.**
+**P1 xong (31/10/2026).**
 
 | Việc | File | Kiểm thử |
 | --- | --- | --- |
@@ -354,7 +354,7 @@ Phạm vi áp dụng theo D-137:
 - Hộ Free vẫn được tính, để server biết loại insight cho lời mời; số liệu không bao giờ được ghi vào tài liệu của hộ Free.
 - Ngưỡng đọc từ `config/insights` (gộp đè lên giá trị mặc định); tab chỉnh trên Portal để ở P4.
 
-**P2 xong (31/10/2026), chưa commit.**
+**P2 xong (31/10/2026).**
 
 | Việc | File | Kiểm thử |
 | --- | --- | --- |
@@ -377,7 +377,7 @@ Phạm vi áp dụng theo D-137:
 
 **Golden lỗi thời từ trước, không do thay đổi này:** `hn/home_*` (baseline từ 35ed262c, trước khi D-139 đổi các ô trên Hôm nay) và `care_plan_today/today_tasks_*`. Không cập nhật.
 
-**P3 xong (31/10/2026), chưa commit.**
+**P3 xong (31/10/2026).**
 
 | Việc | File | Kiểm thử |
 | --- | --- | --- |
@@ -406,3 +406,21 @@ Phạm vi áp dụng theo D-137:
 - Dòng insight trong Thống kê; NL07 đọc S2.
 - Đổi tên nhóm trong Khám phá.
 
+**Commit và deploy (31/10/2026):** P1–P3 ở commit e60e569b. Deploy dev: rules, indexes, `insightScheduler` (mới), `onCareRecordWrite`, `runAssistantTask`, `sweepAssistant`, `runDeletion`, `resumeDeletions`. Các khác biệt với Figma và bản tiếng Anh được chấp nhận (D-156).
+
+**Eval Lumi (31/10/2026, D-156):**
+
+- `insight_basis` chỉ dành cho đường quy tắc. Schema gửi model (`modelReadTools`) giữ nguyên như trước khi có Hiểu con, nên prompt `assistant-understand-v2` không đổi.
+- Fake: 372 case, chỉ hỏng `ga-11`, lỗi đã ghi nhận từ trước. App replay: 787 test qua.
+- Bảy case mới nằm trong `cases/44-insights-d151.json`:
+  - hộ Premium nhận phần giải thích bằng vi và en;
+  - bé chưa có insight được báo "0/5 đêm";
+  - hộ Free nhận lời mời Premium;
+  - người thân bị từ chối;
+  - câu hỏi mở đi đường quy tắc bằng `care_summary`.
+- Harness có thêm `world.premium` (một gói trả phí kèm cờ `personalization`) và dữ liệu mẫu `insightLongestUp`.
+- Live: 2 lần gọi `gpt-4.1-mini`, 14.914 token vào (6.016 token cache) và 143 token ra, khoảng 0,005 USD. Cả hai case `in-01` và `in-02` đều chưa đạt, và đó là hành vi của prompt hiện tại:
+  - câu hỏi "vì sao" về xu hướng được trả lời bằng tóm tắt hôm nay;
+  - "bú đêm ít hơn, có sao không?" bị ghi thành một quan sát.
+
+  Nên xử lý ở lần đổi prompt tới, kèm một lần chạy live toàn bộ có chủ sản phẩm duyệt.

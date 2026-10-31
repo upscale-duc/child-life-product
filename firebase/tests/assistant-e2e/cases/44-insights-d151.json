@@ -1,0 +1,199 @@
+{
+  "group": "read",
+  "note": "Hiểu con (D-150, D-151 #7): the detail's \"Hỏi Lumi về điều này\" question is read by the rules (insight_basis) at 0 credits; insight_basis stays out of the model's schema, so an open question about the change still goes to the model as before.",
+  "cases": [
+    {
+      "id": "in-r01-basis-vi",
+      "group": "read",
+      "title": "D-151 #7: the prefilled sleep question → the insight_basis card at 0 credits, no model",
+      "live": false,
+      "world": {
+        "seed": ["day", "insightLongestUp"],
+        "premium": true
+      },
+      "turns": [
+        {
+          "say": "Điều đáng chú ý về giấc ngủ đêm được tính thế nào?",
+          "model": null
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["insight_basis"],
+        "credits": 0,
+        "calls": 0
+      }
+    },
+    {
+      "id": "in-r02-basis-en",
+      "group": "read",
+      "title": "D-151 #7: the English prefilled question → the same card at 0 credits",
+      "locale": "en",
+      "live": false,
+      "world": {
+        "seed": ["day", "insightLongestUp"],
+        "premium": true
+      },
+      "turns": [
+        {
+          "say": "How was \"Worth noticing\" about night sleep worked out?",
+          "model": null
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["insight_basis"],
+        "credits": 0,
+        "calls": 0
+      }
+    },
+    {
+      "id": "in-r03-nothing-yet",
+      "group": "read",
+      "title": "D-151 #7: nothing computed yet → the card says so plainly, still 0 credits",
+      "live": false,
+      "world": {
+        "seed": ["day"],
+        "premium": true
+      },
+      "turns": [
+        {
+          "say": "Điều đáng chú ý về cữ bú đêm được tính thế nào?",
+          "model": null
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["insight_basis"],
+        "credits": 0,
+        "calls": 0
+      }
+    },
+    {
+      "id": "in-r04-relative-denied",
+      "group": "read",
+      "title": "D-151 #6: a relative never reads the figures through Lumi (READ_DENIED is said as text: \"Vai trò của bạn không xem được nhật ký chăm sóc.\")",
+      "live": false,
+      "as": "AUNT",
+      "world": {
+        "seed": ["day", "insightLongestUp"],
+        "premium": true
+      },
+      "turns": [
+        {
+          "say": "Điều đáng chú ý về giấc ngủ đêm được tính thế nào?",
+          "model": null
+        }
+      ],
+      "expect": {
+        "credits": 0,
+        "calls": 0
+      }
+    },
+    {
+      "id": "in-r06-free-invite",
+      "group": "read",
+      "title": "D-150: a Free household asking the prefilled question gets \"Hiểu con có trong Premium.\", no figures, 0 credits",
+      "live": false,
+      "world": {
+        "seed": ["day", "insightLongestUp"]
+      },
+      "turns": [
+        {
+          "say": "Điều đáng chú ý về giấc ngủ đêm được tính thế nào?",
+          "model": null
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["insight_basis"],
+        "credits": 0,
+        "calls": 0
+      }
+    },
+    {
+      "id": "in-r05-open-why-rules",
+      "group": "read",
+      "title": "D-151 #7: with the rules on, an open \"why\" about night sleep is the care summary at 0 credits (unchanged behaviour), never insight_basis",
+      "live": false,
+      "world": {
+        "seed": ["day", "insightLongestUp"],
+        "premium": true
+      },
+      "turns": [
+        {
+          "say": "Sao dạo này đêm bé ngủ liền được lâu hơn vậy?",
+          "model": null
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["care_summary"],
+        "credits": 0,
+        "calls": 0
+      }
+    },
+    {
+      "id": "in-01-open-why",
+      "group": "read",
+      "title": "D-151 #7: the model reading an open question about the change (rules off) picks the sleep facts — insight_basis is not in its schema",
+      "world": {
+        "seed": ["day", "insightLongestUp"],
+        "premium": true
+      },
+      "turns": [
+        {
+          "say": "Sao dạo này đêm bé ngủ liền được lâu hơn vậy?",
+          "model": {
+            "u": {
+              "act": "read",
+              "reads": [
+                {
+                  "tool": "sleep_facts",
+                  "dayOffset": 0
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "reads": ["sleep_facts"],
+        "calls": 1
+      },
+      "rules": false
+    },
+    {
+      "id": "in-02-open-feeds",
+      "group": "read",
+      "title": "D-151 #7: \"Is it fine that she feeds less at night?\" read by the model (rules off): a care read, no diagnosis",
+      "locale": "en",
+      "world": {
+        "seed": ["day", "insightLongestUp"],
+        "premium": true
+      },
+      "turns": [
+        {
+          "say": "She's been feeding less at night this week, is that ok?",
+          "model": {
+            "u": {
+              "act": "read",
+              "reads": [
+                {
+                  "tool": "care_summary",
+                  "dayOffset": 0
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "expect": {
+        "outcome": "answer",
+        "calls": 1
+      },
+      "rules": false
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import { assistantReadTools } from './assistant-reads.js';
+import { modelReadTools } from './assistant-reads.js';
 import { z } from 'zod';
 import { draftKinds, type DraftKind } from './assistant.js';
 
@@ -171,7 +171,7 @@ export const understandingEventSchema = z
   .strict();
 export type UnderstandingEvent = z.infer<typeof understandingEventSchema>;
 
-export const understandingReadTools = assistantReadTools;
+export const understandingReadTools = modelReadTools;
 
 /**
  * The only questions the model may raise: an ambiguous written clock (the server phrases and

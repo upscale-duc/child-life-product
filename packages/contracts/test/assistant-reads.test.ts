@@ -6,6 +6,15 @@ import {
   readCardSchema,
 } from '../src/index.js';
 
+describe('rule-only reads', () => {
+  it("insight_basis never reaches the model's schema (the prompt contract is unchanged)", () => {
+    const tool = (t: string) => ({ act: 'read', reads: [{ tool: t, dayOffset: 0 }] });
+    const reads = understandingSchema.shape.reads;
+    expect(reads.safeParse(tool('first_aid').reads).success).toBe(true);
+    expect(reads.safeParse(tool('insight_basis').reads).success).toBe(false);
+  });
+});
+
 describe('Lumi Phase 2 questions', () => {
   it.each([
     ['Hôm nay bé thế nào?', 'day_overview'],

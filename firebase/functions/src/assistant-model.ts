@@ -1,5 +1,5 @@
 import { aiCallId, providerUsage, type AiCallUsage } from './ai-telemetry.js';
-import { assistantReadTools } from '@child-life/contracts';
+import { modelReadTools } from '@child-life/contracts';
 import { logger } from 'firebase-functions';
 import { z } from 'zod';
 import {
@@ -73,7 +73,7 @@ import {
 export const assistantPromptVersion = understandingVersion;
 
 /** Read tools the model may request; the server runs them in the trusted scope. */
-export const readToolNames = assistantReadTools;
+export const readToolNames = modelReadTools;
 export type ReadToolName = (typeof readToolNames)[number];
 
 /** The only clarifications the model may ask for; the question text is the server's (catalog). */

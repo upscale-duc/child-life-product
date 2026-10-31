@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { z } from 'zod';
-import { assistantReadTools, draftKinds, understandingSchema } from '@child-life/contracts';
+import { modelReadTools, draftKinds, understandingSchema } from '@child-life/contracts';
 import { parseUnderstanding, understandingJsonSchema } from '../src/assistant-model.js';
 import {
   imageJsonSchema,
@@ -108,7 +108,7 @@ function refusals(
 }
 
 const kinds = [...draftKinds];
-const reads = [...assistantReadTools];
+const reads = [...modelReadTools];
 
 describe('model JSON schemas and the server parsers agree', () => {
   it('Lumi understanding (v9): every reply the schema allows parses', () => {
