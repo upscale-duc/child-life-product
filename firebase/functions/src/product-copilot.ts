@@ -275,6 +275,11 @@ export function retrieve(index: SearchIndex | null, live: Live, scope: string, q
     add(featureDoc(f, live));
     for (const d of sectionDocs(id, live.sections.get(id) ?? [])) add(d);
     for (const c of live.conflicts.filter((x) => x.feature === id)) add(conflictDoc(c));
+    // The feature's own decisions, newest first: their text, not just their ids.
+    if (index) {
+      const decisions = f.facts.decisions.filter((x) => x.startsWith('D-')).sort().reverse().slice(0, 6);
+      for (const d of decisions) add(index.docs.find((x) => x.id === d));
+    }
   }
   // Approved and draft sections of other features, ranked like everything else.
   const others = [...live.sections.entries()].filter(([f]) => !named.has(f)).flatMap(([f, s]) => sectionDocs(f, s));

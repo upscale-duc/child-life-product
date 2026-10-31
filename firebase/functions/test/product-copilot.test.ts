@@ -126,7 +126,7 @@ describe('retrieval', () => {
     confidence: 'high',
     dependsOn: [],
     note: '',
-    facts: { modules: [], functions: [], callables: [], tests: [], docs: [], figma: [], decisions: [], codeCitations: [], deadGlobs: [] },
+    facts: { modules: [], functions: [], callables: [], tests: [], docs: [], figma: [], decisions: ['D-151'], codeCitations: [], deadGlobs: [] },
     revision: 'r1',
     syncedAt: '2026-10-31',
   } as unknown as Parameters<typeof retrieve>[1]['features'][number];
@@ -134,7 +134,12 @@ describe('retrieval', () => {
   const index = buildIndex([
     doc({ id: 'D-151', kind: 'decision', title: 'D-151 · Hiểu con answers', text: 'One night window for the whole app: 18:00–06:00 for sleep stats and Lumi.', ids: ['D-151'], authority: 'approved_decision' }),
     doc({ id: 'other', title: 'Spending', text: 'Monthly budget and CSV import.' }),
+    doc({ id: 'D-025', kind: 'decision', title: 'D-025 · Quick log', text: 'Long-press enters by hand.', ids: ['D-025'], authority: 'approved_decision' }),
   ]);
+  it("a feature's linked decisions come in with their text, even without matching words", () => {
+    const r = retrieve(index, live, 'care.sleep', 'What should change?');
+    expect(r.blocks.map((b) => b.id)).toEqual(expect.arrayContaining(['feature:care.sleep', 'D-151']));
+  });
   it('a Vietnamese question about a feature finds English decisions and the feature facts (cross-language)', () => {
     const r = retrieve(index, live, 'global', 'Nên cải thiện gì cho tính năng theo dõi giấc ngủ?');
     const ids = r.blocks.map((b) => b.id);

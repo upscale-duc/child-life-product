@@ -97,7 +97,11 @@
       ],
       "docs": [],
       "figma": [],
-      "decisions": [],
+      "decisions": [
+        "D-022",
+        "D-025",
+        "D-151"
+      ],
       "dependsOn": [],
       "note": ""
     },
